@@ -1,6 +1,6 @@
-# y
+# NiuNiu-Admin-Vue
 
-> a web project
+> 一个不怎么酷炫的后台管理系统
 
 ## Build Setup
 
