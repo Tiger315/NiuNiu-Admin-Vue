@@ -8,8 +8,7 @@ import PVDetail from '@/components/count/PVDetail'
 
 Vue.use(Router)
 
-export default new Router({
-  // mode: 'history',  
+export default new Router({  
   routes: [{
     path: '/',
     name: 'Index',
