@@ -396,36 +396,36 @@ export default {
         that.tHeight = document.documentElement.clientHeight - 135;
       })();
     };
-    // that.$nextTick(() => {
-    //   //全局变量，动态的文章ID
-    //   var fgid = ''
-    //   $(function() {
-    //     $('.bdsharebuttonbox a').mouseover(function() {
-    //       fgid = $(this).attr('data-id')
-    //     })
-    //   })
-    //   function SetShareUrl(cmd, config) {
-    //     if (fgid) {
-    //       config.bdUrl =
-    //         'http://h5.niuniu.com:8088/static/pages/law/law_list_det.html?id=' +
-    //         fgid
-    //     }
-    //     return config
-    //   }
-    //   window._bd_share_config = {
-    //     common: {
-    //       onBeforeClick: SetShareUrl
-    //     },
-    //     share: { bdSize: '24' }
-    //   }
+    that.$nextTick(() => {
+      //全局变量，动态的文章ID
+      var fgid = ''
+      $(function() {
+        $('.bdsharebuttonbox a').mouseover(function() {
+          fgid = $(this).attr('data-id')
+        })
+      })
+      function SetShareUrl(cmd, config) {
+        if (fgid) {
+          config.bdUrl =
+            'http://h5.niuniu.com:8088/static/pages/law/law_list_det.html?id=' +
+            fgid
+        }
+        return config
+      }
+      window._bd_share_config = {
+        common: {
+          onBeforeClick: SetShareUrl
+        },
+        share: { bdSize: '24' }
+      }
 
-    //   const s = document.createElement('script')
-    //   s.type = 'text/javascript'
-    //   s.src =
-    //     'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' +
-    //     ~(-new Date() / 36e5)
-    //   document.body.appendChild(s)
-    // })
+      const s = document.createElement('script')
+      s.type = 'text/javascript'
+      s.src =
+        'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' +
+        ~(-new Date() / 36e5)
+      document.body.appendChild(s)
+    })
   }
 };
 </script>
