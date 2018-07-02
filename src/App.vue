@@ -24,4 +24,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
 }
+.shareLawList.el-popover{
+	min-width: 0px;
+}
 </style>

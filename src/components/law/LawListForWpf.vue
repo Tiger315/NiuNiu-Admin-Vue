@@ -132,7 +132,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button-group>
-          <el-popover placement="bottom" trigger="click">
+          <el-popover placement="bottom" popper-class="shareLawList" trigger="click">
             <div class="bdsharebuttonbox">
               <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信" :data-id="zCurLaw.id"></a>
               <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博" :data-id="zCurLaw.id"></a>
