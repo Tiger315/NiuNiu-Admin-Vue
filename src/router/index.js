@@ -5,6 +5,7 @@ import LawList from '@/components/law/LawList'
 import LawListForWpf from '@/components/law/LawListForWpf'
 import PVDays from '@/components/count/PVDays'
 import PVDetail from '@/components/count/PVDetail'
+import CsrcIPO from '@/components/law/CsrcIPO'
 
 Vue.use(Router)
 
@@ -29,5 +30,9 @@ export default new Router({
     path: '/count/PVDetail',
     name: 'PVDetail',
     component: PVDetail
+  }, {
+    path: '/Law/CsrcIPO',
+    name: 'CsrcIPO',
+    component: CsrcIPO
   }]
 })
