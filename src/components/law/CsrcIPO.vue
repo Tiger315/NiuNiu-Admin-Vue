@@ -8,7 +8,7 @@
           <span style="color: #0d308c; cursor: pointer; font" @click="seeLawDialog(scope.row)">{{ scope.row.Title }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="Issue_Date2" label="发布日期" width="120"></el-table-column>
+      <el-table-column prop="Issue_Date" label="发布日期" width="120"></el-table-column>
     </el-table>
     <!--表格结束-->
 
@@ -32,7 +32,7 @@
           </el-col>
           <el-col :span="8">
             <div class="grid-content" style="text-align: right;">
-              <span class="ssp">{{zCurLaw.Issue_Date2}}</span>
+              <span class="ssp">{{zCurLaw.Issue_Date}}</span>
               <span class="ssp">{{zCurLaw.sign}}</span>
             </div>
           </el-col>
@@ -102,11 +102,6 @@
         </el-button-group>
       </span>
     </el-dialog>
-    <el-dialog title="法律法规编辑" :visible.sync="zEditDialog" style="font-weight: bold;" fullscreen="true">
-      <div>
-        <iframe :src="zEditUrl" width="100%" height="585px" frameborder="0"></iframe>
-      </div>
-    </el-dialog>
     <!--dialog结束-->
   </div>
 </template>
@@ -141,7 +136,7 @@ export default {
       zCurLaw: {
         id: '',
         title: '法律法规详情',
-        Issue_Date2: '1900-00-00',
+        Issue_Date: '1900-00-00',
         organization:"",
         sign:"",
         topic_Word:"",
@@ -194,7 +189,7 @@ export default {
         this.zCurLaw.title = row.Title
         this.zCurLaw.id = row.ID
         console.log(row.ID)
-        this.zCurLaw.Issue_Date2 = row.Issue_Date2
+        this.zCurLaw.Issue_Date = row.Issue_Date
         this.zCurLaw.sign = row.Sign
         this.zCurLaw.content = row.Content
         this.zCurLaw.organization = row.Organization
