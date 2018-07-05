@@ -38,40 +38,7 @@
           </el-col>
         </el-row>
         <el-row style="margin-top: 20px;">
-          <el-col :span="4">
-            <el-menu collapse="true" style="width: 100%; height: 470px; max-height: 470px; overflow: auto;">
-              <template v-for="nZ in zCurLaw.navigation">
-                <el-submenu :index="nZ.id" :key="nZ.id">
-                  <template slot="title">
-                    <a :href="'#' + nZ.id" class="el-menu-a">
-                      <i>{{ nZ.name }}</i>
-                    </a>
-                    <span>{{ nZ.name }}</span>
-                  </template>
-                  <template v-if="nZ.j !== undefined">
-                    <template v-for="nJ in nZ.j">
-                      <el-menu-item-group :key="nJ.id">
-                        <template slot="title">{{ nJ.name }}</template>
-                        <template v-for="nT in nJ.t">
-                          <el-menu-item :index="nT.id" :key="nT.id">
-                            <a :href="'#' + nT.id" class="el-menu-a">{{ nT.name }}</a>
-                          </el-menu-item>
-                        </template>
-                      </el-menu-item-group>
-                    </template>
-                  </template>
-                  <template v-else>
-                    <el-menu-item-group v-for="nT in nZ.t" :key="nT.id">
-                      <el-menu-item :index="nT.id">
-                        <a :href="'#' + nT.id" class="el-menu-a">{{ nT.name }}</a>
-                      </el-menu-item>
-                    </el-menu-item-group>
-                  </template>
-                </el-submenu>
-              </template>
-            </el-menu>
-          </el-col>
-          <el-col :span="20" style="height: 470px; max-height: 470px; overflow: auto;">
+          <el-col :span="24" style="height: 470px; min-height: 470px; overflow: auto;">
             <div v-html="zCurLaw.content" style="margin-left: 10px;" class="nOnly"></div>
           </el-col>
         </el-row>
@@ -188,7 +155,6 @@ export default {
       if (row) {
         this.zCurLaw.title = row.Title
         this.zCurLaw.id = row.ID
-        console.log(row.ID)
         this.zCurLaw.Issue_Date = row.Issue_Date
         this.zCurLaw.sign = row.Sign
         this.zCurLaw.content = row.Content
