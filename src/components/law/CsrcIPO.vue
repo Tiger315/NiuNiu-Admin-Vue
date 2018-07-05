@@ -8,7 +8,7 @@
           <span style="color: #0d308c; cursor: pointer; font" @click="seeLawDialog(scope.row)">{{ scope.row.Title }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="Issue_Date" label="发布日期" width="120"></el-table-column>
+      <el-table-column prop="Issue_Date" label="发布日期" width="150"></el-table-column>
     </el-table>
     <!--表格结束-->
 
