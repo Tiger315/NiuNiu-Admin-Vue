@@ -26,10 +26,10 @@
 
 <script>
 	export default {
-		name: 'LawList',
+		name: 'MailStatus',
 		data() {
 			return {
-				tHeight: document.documentElement.clientHeight - 135,
+				tHeight: document.documentElement.clientHeight - 50,
 				zLoading: true,
 				mailData: [],
 				zPager: {
@@ -97,7 +97,7 @@
 			const that = this;
 			window.onresize = () => {
 				return(() => {
-					that.tHeight = document.documentElement.clientHeight - 135;
+					that.tHeight = document.documentElement.clientHeight - 50;
 				})()
 			}
 		}
@@ -117,55 +117,5 @@
 		font-size: 14px;
 	}
 	
-	.ssp {
-		padding: 0 5px;
-		border-right: 1px solid #717171;
-		font-weight: bold;
-	}
 	
-	.ssp:last-child {
-		border: none;
-	}
-	
-	a {
-		text-decoration: none;
-	}
-	
-	a:link {
-		text-decoration: none;
-	}
-	
-	a:visited {
-		text-decoration: none;
-	}
-	
-	a:hover {
-		text-decoration: none;
-	}
-	
-	a:active {
-		text-decoration: none;
-	}
-	
-	.el-menu-item {
-		height: 18px;
-		line-height: 18px;
-		color: #606266;
-	}
-	
-	.el-submenu__title {
-		height: 32px;
-		line-height: 32px;
-		color: #606266;
-	}
-	
-	.el-submenu__title i {
-		color: #606266;
-		font-style: normal;
-	}
-	
-	.el-menu-a {
-		color: #0d308c;
-		font-size: 13px;
-	}
 </style>

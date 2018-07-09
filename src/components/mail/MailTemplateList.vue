@@ -1,7 +1,7 @@
 <template>
 	<div class="MailTemplateList-box" v-cloak>
 		<div class="add_btn">
-			<el-button type="primary" @click="addMail.centerDialogVisible = true;isEditDialog=1">新增邮件模板</el-button>
+			<el-button type="primary" @click="addMail.centerDialogVisible = true;isEditDialog=1" size="small">新增邮件模板</el-button>
 		</div>
 		<!--表格开始-->
 		<el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="mailData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
@@ -46,7 +46,7 @@
 		name: 'MailTemplateList',
 		data() {
 			return {
-				tHeight: document.documentElement.clientHeight - 50,
+				tHeight: document.documentElement.clientHeight - 130,
 				zLoading: true,
 				mailData: [],
 				zPager: {
@@ -191,7 +191,7 @@
 			const that = this;
 			window.onresize = () => {
 				return(() => {
-					that.tHeight = document.documentElement.clientHeight - 50;
+					that.tHeight = document.documentElement.clientHeight - 130;
 				})()
 			}
 		}
@@ -210,79 +210,17 @@
 		margin: 0;
 		font-size: 14px;
 	}
-<<<<<<< HEAD
+
 	
 	.add_btn {
 		margin: 20px 10px;
 		text-align: right;
 	}
 	
-	.ssp {
-		padding: 0 5px;
-		border-right: 1px solid #717171;
-		font-weight: bold;
-	}
-	/*.el-dialog__header{
-		border-bottom: 1px solid #eee;
-		padding: 10px;
-		background-color: red;
-	}
-	.el-dialog__header .el-dialog__title{
-		color: #606266;
-	}
-	.el-dialog__header .el-dialog__headerbtn{
-		top: 14px;
-		border: 1px solid #cfcfcf;
-		border-radius: 2px;
-	}*/
 	
 	.mail-textarea {
 		margin-top: 20px;
 	}
 	
-	.ssp:last-child {
-		border: none;
-	}
-	
-	a {
-		text-decoration: none;
-	}
-	
-	a:link {
-		text-decoration: none;
-	}
-	
-	a:visited {
-		text-decoration: none;
-	}
-	
-	a:hover {
-		text-decoration: none;
-	}
-	
-	a:active {
-		text-decoration: none;
-	}
-	
-	.el-menu-item {
-		height: 18px;
-		line-height: 18px;
-		color: #606266;
-	}
-	
-	.el-submenu__title {
-		height: 32px;
-		line-height: 32px;
-		color: #606266;
-	}
-	
-	.el-submenu__title i {
-		color: #606266;
-		font-style: normal;
-	}
-	
-	.el-menu-a {
-		color: #0d308c;
-		font-size: 13px;
-	}
+
 </style>
