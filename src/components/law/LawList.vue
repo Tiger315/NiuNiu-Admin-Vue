@@ -40,7 +40,7 @@
           <el-tag :type="scope.row.valid_flag === 1 ? 'primary' : 'danger'" close-transition>{{scope.row.valid_flag === 1 ? '现行有效' : '已失效'}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="publish_date" label="发布日期" width="120"></el-table-column>
+      <el-table-column prop="publish_date" label="发布日期" width="110"></el-table-column>
       <el-table-column fixed="right" label="操作" width="160" align="center">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click.native.prevent="ediLaw(scope.row)">编辑</el-button>

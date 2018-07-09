@@ -40,7 +40,7 @@
           <el-tag :type="scope.row.valid_flag === 1 ? 'primary' : 'danger'" close-transition>{{scope.row.valid_flag === 1 ? '现行有效' : '已失效'}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="publish_date" label="发布日期" width="120"></el-table-column>
+      <el-table-column prop="publish_date" label="发布日期" width="110"></el-table-column>
     </el-table>
     <!--表格结束-->
 
