@@ -3,15 +3,17 @@
 		<!--表格开始-->
 		<el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="mailData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
 			<el-table-column type="index" fixed="left" width="70" :index="typeIndex"></el-table-column>
-			<el-table-column fixed="left" prop="title" label="标题" fit show-overflow-tooltip></el-table-column>
-			<el-table-column prop="body" label="内容">
-			</el-table-column>
+			<el-table-column fixed="left" prop="send_to" label="发送" fit show-overflow-tooltip></el-table-column>
+			<el-table-column prop="send_cc" label="抄送"></el-table-column>
+			<el-table-column prop="state" label="状态"></el-table-column>
+			<el-table-column prop="create_date" label="创建时间"></el-table-column>
 			<el-table-column fixed="right" label="操作" width="160" align="center">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click.native.prevent="">编辑</el-button>
 					<el-button type="text" size="small" @click.native.prevent="">删除</el-button>
 				</template>
 			</el-table-column>
+
 		</el-table>
 		<!--表格结束-->
 		<!--分页开始-->
@@ -41,8 +43,10 @@
 				},
 				zMail: {
 					id: '',
-					title: '',
-					body: ''
+					sendTo: '',
+					sendCc: '',
+					state: '',
+					createDate: ''
 				},
 				zDialog: false,
 				zEditDialog: false,
@@ -53,12 +57,13 @@
 			typeIndex(index) {
 				return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
 			},
+
 			getMail() {
 				const that = this;
 				that.zLoading = true;
 				let pageNum = that.zPager.currentPage;
 				let pageSize = that.zPager.size;
-				let apiPath =that.apiPath + 'MailTemplate';
+				let apiPath = that.apiPath + 'SendMail';
 				that.$ajax
 					.get(apiPath)
 					.then(function(response) {
@@ -75,11 +80,14 @@
 				this.getMail();
 			},
 			seeLawDialog(row) {
-				this.zLoading = true;
+				this.zLoading = true
+				console.log(row)
 				if(row) {
-					this.zMail.title = row.title;
+					this.zMail.sendTo = row.send_to;
 					this.zMail.id = row.id;
-					this.zMail.body = row.body;
+					this.zMail.sendCc = row.send_cc;
+					this.zMail.state = row.state;
+					this.zMail.createDate = row.create_date;
 				}
 				this.zLoading = false;
 				this.zDialog = true;

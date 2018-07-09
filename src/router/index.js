@@ -6,7 +6,8 @@ import LawListForWpf from '@/components/law/LawListForWpf'
 import PVDays from '@/components/count/PVDays'
 import PVDetail from '@/components/count/PVDetail'
 import CsrcIPO from '@/components/law/CsrcIPO'
-
+import MailTemplate from '@/components/mail/MailTemplateList'
+import MailStatus from '@/components/mail/MailStatus'
 Vue.use(Router)
 
 export default new Router({  
@@ -34,5 +35,13 @@ export default new Router({
     path: '/Law/CsrcIPO',
     name: 'CsrcIPO',
     component: CsrcIPO
+  }, {
+    path: '/Mail/MailTemplateList',
+    name: 'MailTemplate',
+    component: MailTemplate
+  }, {
+    path: '/Mail/MailStatus',
+    name: 'MailStatus',
+    component: MailStatus
   }]
 })
