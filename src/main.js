@@ -11,35 +11,6 @@ Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.prototype.apiPath = 'http://sign.niuniu.com:8814/api/v1/'
 Vue.prototype.$ajax = axios
-// Vue.prototype.getData = function (cName, isAsync, sCallback, eCallback) {
-//   var url = this.apiPath + cName
-//   $.ajax({
-//     async: isAsync,
-//     url: url,
-//     dataType: 'json',
-//     type: 'GET',
-//     success: function (res) {
-//       sCallback(res)
-//     },
-//     error: function (a, b, c) {
-//       eCallback(a, b, c)
-//     }
-//   })
-// }
-// Vue.prototype.delData = function (cName, sCallback, eCallback) {
-//   var url = this.apiPath + cName;
-//   $.ajax({
-//     url: url,
-//     dataType: "json",
-//     type: "DELETE",
-//     success: function (res) {
-//       sCallback(res);
-//     },
-//     error: function (a, b, c) {
-//       eCallback(a, b, c);
-//     }
-//   });
-// }
 
 /* eslint-disable no-new */
 new Vue({
