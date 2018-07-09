@@ -1,5 +1,5 @@
 <template>
-	<div class="LawList-box" v-cloak>
+	<div class="sendMailList-box" v-cloak>
 		<!--表格开始-->
 		<el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="mailData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
 			<el-table-column type="index" fixed="left" width="70" :index="typeIndex"></el-table-column>
