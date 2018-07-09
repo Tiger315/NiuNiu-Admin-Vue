@@ -1,5 +1,9 @@
 <template>
+<<<<<<< HEAD
 	<div class="MailStatus-box" v-cloak>
+=======
+	<div class="sendMailList-box" v-cloak>
+>>>>>>> 403894f9e5cacda5bab9d481e5428b09a38177ed
 		<!--表格开始-->
 		<el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMailStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
 			<el-table-column type="index" fixed="left" width="70" :index="typeIndex"></el-table-column>
