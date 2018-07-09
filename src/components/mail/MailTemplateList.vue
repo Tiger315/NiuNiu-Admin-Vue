@@ -1,5 +1,5 @@
 <template>
-  <div class="LawListForWpf-box" v-cloak>
+  <div class="LawList-box" v-cloak>
     <!--搜索开始-->
     <el-container style="margin-bottom: 10px;">
       <el-cascader placeholder="请选择业务类别" :options="sBox.zLawTypeData" v-model="sBox.zLawTypeVal" @change="sBox.lawTypeChange" size="small" style="width: 350px;" :props="sBox.zLawTypeProps" filterable clearable></el-cascader>
@@ -41,6 +41,12 @@
         </template>
       </el-table-column>
       <el-table-column prop="publish_date" label="发布日期" width="120"></el-table-column>
+      <el-table-column fixed="right" label="操作" width="160" align="center">
+        <template slot-scope="scope">
+          <el-button type="text" size="small" @click.native.prevent="ediLaw(scope.row)">编辑</el-button>
+          <el-button type="text" size="small" @click.native.prevent="delLaw(scope.$index, scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <!--表格结束-->
 
@@ -73,7 +79,7 @@
         </el-row>
         <el-row style="margin-top: 20px;">
           <el-col :span="4">
-            <el-menu collapse="true" style="width: 100%; height: 595px; max-height: 595px; overflow: auto;">
+            <el-menu collapse="true" style="width: 100%; height: 470px; max-height: 470px; overflow: auto;">
               <template v-for="nZ in zCurLaw.navigation">
                 <el-submenu :index="nZ.id" :key="nZ.id">
                   <template slot="title">
@@ -105,7 +111,7 @@
               </template>
             </el-menu>
           </el-col>
-          <el-col :span="20" style="height: 595px; max-height: 595px; overflow: auto;">
+          <el-col :span="20" style="height: 470px; max-height: 470px; overflow: auto;">
             <div v-html="zCurLaw.content" style="margin-left: 10px;" class="nOnly"></div>
           </el-col>
         </el-row>
@@ -120,7 +126,7 @@
                 <el-col :span="8" v-for="att in zCurLaw.attachementData" :key="att.id">
                   <el-row>
                     <el-col style="text-align: left;">
-                      <a :href="'http://sign.niuniu.com:8814/' + att.att_url" style="color: #0d308c; font-size: 13px;" :title="att.old_name" target="_balnk">{{att.name}}</a>
+                      <a :href="'http://sign.niuniu.com:8814/' + att.att_url" style="color: #0d308c; font-size: 13px;" :title="att.old_name">{{att.name}}</a>
                       <span class="nsm" style="margin-left: 3px;">({{att.size}})</span>
                     </el-col>
                   </el-row>
@@ -132,16 +138,14 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button-group>
-          <el-popover placement="bottom" popper-class="shareLawList" trigger="click">
-            <div class="bdsharebuttonbox">
-              <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信" :data-id="zCurLaw.id"></a>
-              <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博" :data-id="zCurLaw.id"></a>
-            </div>
-            <el-button slot="reference" type="primary" size="small" icon="el-icon-share">分 享</el-button>
-            <el-button slot="reference" type="primary" size="small" icon="el-icon-download" @click="exportToWord">导 出 (Only Word)</el-button>
-          </el-popover>
+          <el-button type="primary" @click="dialog = false" size="small" icon="el-icon-circle-close-outline">关 闭</el-button>
         </el-button-group>
       </span>
+    </el-dialog>
+    <el-dialog title="法律法规编辑" :visible.sync="zEditDialog" style="font-weight: bold;" fullscreen="true">
+      <div>
+        <iframe :src="zEditUrl" width="100%" height="585px" frameborder="0"></iframe>
+      </div>
     </el-dialog>
     <!--dialog结束-->
   </div>
@@ -149,7 +153,7 @@
 
 <script>
 export default {
-  name: "LawListForWpf",
+  name: 'LawList',
   data() {
     return {
       tHeight: document.documentElement.clientHeight - 135,
@@ -158,25 +162,25 @@ export default {
       sBox: {
         zLawTypeData: [],
         zLawTypeProps: {
-          value: "Name",
-          label: "Name",
-          children: "Child"
+          value: 'Name',
+          label: 'Name',
+          children: 'Child'
         },
-        zLawTypeVal: "",
+        zLawTypeVal: '',
         zLawWjData: [],
         zLawWjProps: {
-          value: "Name",
-          label: "Name",
-          children: "Child"
+          value: 'Name',
+          label: 'Name',
+          children: 'Child'
         },
-        zLawWjVal: "",
+        zLawWjVal: '',
         zLawScopeData: [],
-        zLawScopeVal: "",
+        zLawScopeVal: '',
         zLawSourceData: [],
-        zLawSourceVal: "",
-        zLawT1Val: "",
-        zLawT2Val: "",
-        zLawT3Val: ""
+        zLawSourceVal: '',
+        zLawT1Val: '',
+        zLawT2Val: '',
+        zLawT3Val: ''
       },
       zLawData: [],
       zPager: {
@@ -186,248 +190,248 @@ export default {
         currentPage: 1
       },
       zCurLaw: {
-        id: "",
-        title: "法律法规详情",
-        publish_date: "1900-00-00",
+        id: '',
+        title: '法律法规详情',
+        publish_date: '1900-00-00',
         valid_flag: 1,
         law_wj_name: [],
-        law_scope_name: "",
-        source_place: "",
-        sign: "",
+        law_scope_name: '',
+        source_place: '',
+        sign: '',
         grade: 5,
-        content: "",
+        content: '',
         navigation: [],
         attchementTotal: 0,
         attachementData: []
       },
-      zDialog: false
-    };
+      zDialog: false,
+      zEditDialog: false,
+      zEditUrl: '#'
+    }
   },
   methods: {
     typeIndex(index) {
-      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1;
+      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
     },
     getLawType() {
-      const that = this;
-      let apiPath = that.apiPath + "LawType";
+      const that = this
+      let apiPath = that.apiPath + 'LawType'
 
       that.$ajax
         .get(apiPath)
         .then(function(response) {
-          let res = response.data;
-          that.sBox.zLawTypeData = res.Result.Data;
+          let res = response.data
+          that.sBox.zLawTypeData = res.Result.Data
         })
         .catch(function(response) {
-          console.log(response);
-        });
+          console.log(response)
+        })
     },
     lawTypeChange(value) {
-      this.sBox.zLawTypeVal = value;
+      this.sBox.zLawTypeVal = value
     },
     getLawWj() {
-      const that = this;
-      let apiPath = that.apiPath + "LawWj";
+      const that = this
+      let apiPath = that.apiPath + 'LawWj'
 
       that.$ajax
         .get(apiPath)
         .then(function(response) {
-          let res = response.data;
-          that.sBox.zLawWjData = res.Result.Data;
+          let res = response.data
+          that.sBox.zLawWjData = res.Result.Data
         })
         .catch(function(response) {
-          console.log(response);
-        });
+          console.log(response)
+        })
     },
     lawWjChange(value) {
-      this.sBox.zLawWjVal = value;
+      this.sBox.zLawWjVal = value
     },
     getLawScope() {
-      const that = this;
-      let apiPath = that.apiPath + "LawScope";
+      const that = this
+      let apiPath = that.apiPath + 'LawScope'
 
       that.$ajax
         .get(apiPath)
         .then(function(response) {
-          let res = response.data;
-          that.sBox.zLawScopeData = res.Result.Data;
+          let res = response.data
+          that.sBox.zLawScopeData = res.Result.Data
         })
         .catch(function(response) {
-          console.log(response);
-        });
+          console.log(response)
+        })
     },
     getLawSource() {
-      const that = this;
-      let apiPath = that.apiPath + "LawSource";
+      const that = this
+      let apiPath = that.apiPath + 'LawSource'
 
       that.$ajax
         .get(apiPath)
         .then(function(response) {
-          let res = response.data;
-          that.sBox.zLawSourceData = res.Result.Data;
+          let res = response.data
+          that.sBox.zLawSourceData = res.Result.Data
         })
         .catch(function(response) {
-          console.log(response);
-        });
+          console.log(response)
+        })
     },
     getLaw() {
-      const that = this;
-      that.zLoading = true;
-      var t1 = that.sBox.zLawT1Val.trim() === "" ? "[]" : that.sBox.zLawT1Val;
-      var t2 = that.sBox.zLawT2Val.trim() === "" ? "[]" : that.sBox.zLawT2Val;
-      var t3 = that.sBox.zLawT3Val.trim() === "" ? "[]" : that.sBox.zLawT3Val;
+      const that = this
+      that.zLoading = true
+      var t1 = that.sBox.zLawT1Val.trim() === '' ? '[]' : that.sBox.zLawT1Val
+      var t2 = that.sBox.zLawT2Val.trim() === '' ? '[]' : that.sBox.zLawT2Val
+      var t3 = that.sBox.zLawT3Val.trim() === '' ? '[]' : that.sBox.zLawT3Val
       var t4 =
         that.sBox.zLawWjVal[1] === undefined
-          ? "[]"
-          : that.sBox.zLawWjVal[0] + "|" + that.sBox.zLawWjVal[1];
+          ? '[]'
+          : that.sBox.zLawWjVal[0] + '|' + that.sBox.zLawWjVal[1]
       var t5 =
-        that.sBox.zLawTypeVal[1] === undefined
-          ? "[]"
-          : that.sBox.zLawTypeVal[1];
+        that.sBox.zLawTypeVal[1] === undefined ? '[]' : that.sBox.zLawTypeVal[1]
       var t6 =
-        that.sBox.zLawScopeVal.length === 0 ? "[]" : that.sBox.zLawScopeVal;
+        that.sBox.zLawScopeVal.length === 0 ? '[]' : that.sBox.zLawScopeVal
       var t7 =
-        that.sBox.zLawSourceVal.length === 0 ? "[]" : that.sBox.zLawSourceVal;
+        that.sBox.zLawSourceVal.length === 0 ? '[]' : that.sBox.zLawSourceVal
 
-      let pageNum = that.zPager.currentPage;
-      let pageSize = that.zPager.size;
+      let pageNum = that.zPager.currentPage
+      let pageSize = that.zPager.size
       let apiPath =
         that.apiPath +
-        "Law/Pager/" +
+        'Law/Pager/' +
         t1 +
-        "/" +
+        '/' +
         t2 +
-        "/" +
+        '/' +
         t3 +
-        "/" +
+        '/' +
         t4 +
-        "/" +
+        '/' +
         t5 +
-        "/" +
+        '/' +
         t6 +
-        "/" +
+        '/' +
         t7 +
-        "/" +
+        '/' +
         pageNum +
-        "/" +
-        pageSize;
+        '/' +
+        pageSize
 
       that.$ajax
         .get(apiPath)
         .then(function(response) {
-          let res = response.data;
+          let res = response.data
           if (res.Code === 1000) {
-            that.zLawData = res.Result.Data;
-            that.zPager.total = res.Result.Total;
+            that.zLawData = res.Result.Data
+            that.zPager.total = res.Result.Total
           }
-          that.zLoading = false;
+          that.zLoading = false
         })
         .catch(function(response) {
-          console.log(response);
-        });
+          console.log(response)
+        })
     },
     pagerChange(val) {
-      this.getLaw();
+      this.getLaw()
     },
     seeLawDialog(row) {
-      this.zLoading = true;
+      this.zLoading = true
       if (row) {
-        this.zCurLaw.title = row.title;
-        this.zCurLaw.id = row.id;
-        this.zCurLaw.title = row.title;
-        this.zCurLaw.publish_date = row.publish_date;
-        this.zCurLaw.sign = row.sign;
-        this.zCurLaw.law_scope_name = row.law_scope_name;
-        this.zCurLaw.source_place = row.source_place;
-        this.zCurLaw.valid_flag = row.valid_flag;
-        this.zCurLaw.law_wj_name = row.law_wj_name.split("|")[1];
-        this.getLawDetail(row.id);
-        this.getLawAttachement(row.id);
+        this.zCurLaw.title = row.title
+        this.zCurLaw.id = row.id
+        this.zCurLaw.title = row.title
+        this.zCurLaw.publish_date = row.publish_date
+        this.zCurLaw.sign = row.sign
+        this.zCurLaw.law_scope_name = row.law_scope_name
+        this.zCurLaw.source_place = row.source_place
+        this.zCurLaw.valid_flag = row.valid_flag
+        this.zCurLaw.law_wj_name = row.law_wj_name.split('|')[1]
+        this.getLawDetail(row.id)
+        this.getLawAttachement(row.id)
       }
-      this.zLoading = false;
-      this.zDialog = true;
+      this.zLoading = false
+      this.zDialog = true
     },
     getLawDetail(id) {
-      const that = this;
-      let apiPath = that.apiPath + "Law/Det/" + id;
+      const that = this
+      let apiPath = that.apiPath + 'Law/Det/' + id
 
       that.$ajax
         .get(apiPath)
         .then(function(response) {
-          let res = response.data;
-          let new_css =
-            "<style>.nZ{font-size:18px;font-weight:bold}.nJ{font-size:16px;font-weight:bold;text-indent:20px;padding:10px 5px 5px 5px}.nT{font-weight:bold}.nT-content{font-weight:normal}.nt-box{text-indent:40px;padding:5px 5px 5px 5px}.nt-box:hover{cursor:pointer;background-color:#e7eaf4}table.gt {font-family:verdana,arial,sans-serif;font-size:11px;color:#333333;border-width:1px;border-color:#666666;border-collapse:collapse;} table.gt th {border-width:1px;padding:8px;border-style:solid;border-color:#666666;background-color:#dedede;} table.gt td {border-width:1px;padding:8px;border-style:solid;border-color:#666666;background-color:#ffffff;}</style>";
-          that.zCurLaw.content = new_css + res.Result.Data[0].content;
-          that.zCurLaw.navigation = JSON.parse(res.Result.Data[0].navigation);
+          let res = response.data
+          that.zCurLaw.content =
+            '<style>.nZ{font-size:18px;font-weight:bold}.nJ{font-size:16px;font-weight:bold;text-indent:20px;padding:10px 5px 5px 5px}.nT{font-weight:bold}.nT-content{font-weight:normal}.nt-box{text-indent:40px;padding:5px 5px 5px 5px}.nt-box:hover{cursor:pointer;background-color:#e7eaf4}table.gt {font-family:verdana,arial,sans-serif;font-size:11px;color:#333333;border-width:1px;border-color:#666666;border-collapse:collapse;} table.gt th {border-width:1px;padding:8px;border-style:solid;border-color:#666666;background-color:#dedede;} table.gt td {border-width:1px;padding:8px;border-style:solid;border-color:#666666;background-color:#ffffff;}</style>' +
+            res.Result.Data[0].content
+          that.zCurLaw.navigation = JSON.parse(res.Result.Data[0].navigation)
         })
         .catch(function(response) {
-          console.log(response);
-        });
+          console.log(response)
+        })
     },
     getLawAttachement(id) {
-      const that = this;
-      let apiPath = that.apiPath + "LawAttachement/" + id;
+      const that = this
+      let apiPath = that.apiPath + 'LawAttachement/' + id
 
       that.$ajax
         .get(apiPath)
         .then(function(response) {
-          let res = response.data;
-          that.zCurLaw.attchementTotal = res.Result.Total;
-          that.zCurLaw.attachementData = res.Result.Data;
+          let res = response.data
+          that.zCurLaw.attchementTotal = res.Result.Total
+          that.zCurLaw.attachementData = res.Result.Data
         })
         .catch(function(response) {
-          console.log(response);
-        });
+          console.log(response)
+        })
+    },
+    delLaw(index, row) {
+      const that = this
+      this.$confirm('此操作将永久删除此条数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          let apiPath = that.apiPath + 'Law/' + row.id
+          that.$ajax
+            .delete(apiPath)
+            .then(function(response) {
+              let res = response.data
+              if (res.Code === 1000) {
+                that.zLawData.splice(index, 1)
+              }
+            })
+            .catch(function(response) {
+              console.log(response)
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除操作...'
+          })
+        })
+    },
+    ediLaw(row) {
+      this.zEditUrl =
+        './static/pages/Law/law_edit.html?row=' + encodeURI(JSON.stringify(row))
+      this.zEditDialog = true
     }
-    // exportToWord () {
-    //   Host.alert('This is a tesing..')
-    // }
   },
   created() {
-    this.getLawType();
-    this.getLawWj();
-    this.getLawScope();
-    this.getLawSource();
-    this.getLaw();
+    this.getLawType()
+    this.getLawWj()
+    this.getLawScope()
+    this.getLawSource()
+    this.getLaw()
   },
   mounted() {
-    const that = this;
+    const that = this
     window.onresize = () => {
       return (() => {
-        that.tHeight = document.documentElement.clientHeight - 135;
-      })();
-    };
-    that.$nextTick(() => {
-      //全局变量，动态的文章ID
-      var fgid = ''
-      $(function() {
-        $('.bdsharebuttonbox a').mouseover(function() {
-          fgid = $(this).attr('data-id')
-        })
-      })
-      function SetShareUrl(cmd, config) {
-        if (fgid) {
-          config.bdUrl =
-            'http://h5.niuniu.com:8088/static/pages/law/law_list_det.html?id=' +
-            fgid
-        }
-        return config
-      }
-      window._bd_share_config = {
-        common: {
-          onBeforeClick: SetShareUrl
-        },
-        share: { bdSize: '24' }
-      }
-
-      const s = document.createElement('script')
-      s.type = 'text/javascript'
-      s.src =
-        'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' +
-        ~(-new Date() / 36e5)
-      document.body.appendChild(s)
-    })
+        that.tHeight = document.documentElement.clientHeight - 135
+      })()
+    }
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

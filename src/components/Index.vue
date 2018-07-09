@@ -18,17 +18,15 @@
               </template>
               <el-menu-item index="1-1" @click="addTab('新增法律法规','./static/pages/Law/law_add.html')">新增法律法规</el-menu-item>
               <el-menu-item index="1-2" @click="addTab('法律法规列表','./#/Law/LawList')">法律法规列表</el-menu-item>
-              <el-menu-item index="1-2" @click="addTab('IPo','./#/Law/CsrcIPO')">IPo</el-menu-item>
+              <el-menu-item index="1-3" @click="addTab('IPo','./#/Law/CsrcIPO')">IPo</el-menu-item>
             </el-submenu>
             <el-submenu index="2">
               <template slot="title">
                 <i class="el-icon-menu"></i>
-                <span>爬虫中心</span>
+                <span>邮件管理</span>
               </template>
-              <el-menu-item index="2-1" @click="addTab('爬虫1','#')">爬虫1</el-menu-item>
-              <el-menu-item index="2-2" @click="addTab('爬虫2','#')">爬虫2</el-menu-item>
-              <el-menu-item index="2-3" @click="addTab('爬虫3','#')">爬虫3</el-menu-item>
-              <el-menu-item index="2-4" @click="addTab('爬虫4','#')">爬虫4</el-menu-item>
+              <el-menu-item index="2-1" @click="addTab('邮件模版','#')">邮件模版</el-menu-item>
+              <el-menu-item index="2-2" @click="addTab('邮件状态监控','#')">邮件状态监控</el-menu-item>
             </el-submenu>
             <el-submenu index="3">
               <template slot="title">
