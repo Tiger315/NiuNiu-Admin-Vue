@@ -1,7 +1,7 @@
 <template>
 	<div class="MailTemplateList-box" v-cloak>
 		<div class="add_btn">
-			<el-button type="primary" @click="addMail.centerDialogVisible = true;isEditDialog=1" size="small">新增邮件模板</el-button>
+			<el-button type="primary" @click="addMail.centerDialogVisible = true;isEditDialog=1;addMail.addMailTemplate.title='';addMail.addMailTemplate.body=''" size="small">新增邮件模板</el-button>
 		</div>
 		<!--表格开始-->
 		<el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="mailData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
@@ -46,7 +46,7 @@
 		name: 'MailTemplateList',
 		data() {
 			return {
-				tHeight: document.documentElement.clientHeight - 130,
+				tHeight: document.documentElement.clientHeight - 104,
 				zLoading: true,
 				mailData: [],
 				zPager: {
@@ -191,7 +191,7 @@
 			const that = this;
 			window.onresize = () => {
 				return(() => {
-					that.tHeight = document.documentElement.clientHeight - 130;
+					that.tHeight = document.documentElement.clientHeight -104;
 				})()
 			}
 		}
@@ -213,7 +213,7 @@
 
 	
 	.add_btn {
-		margin: 20px 10px;
+		margin:0 10px 20px;
 		text-align: right;
 	}
 	
