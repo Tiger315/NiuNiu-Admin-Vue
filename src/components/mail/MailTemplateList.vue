@@ -1,5 +1,8 @@
 <template>
 	<div class="MailTemplateList-box" v-cloak>
+		<div class="add_btn">
+			<el-button type="primary" @click="addMail.centerDialogVisible = true;isEditDialog=1">新增邮件模板</el-button>
+		</div>
 		<!--表格开始-->
 		<el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="mailData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
 			<el-table-column type="index" fixed="left" width="70" :index="typeIndex"></el-table-column>
@@ -8,8 +11,7 @@
 			</el-table-column>
 			<el-table-column fixed="right" label="操作" width="160" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click.native.prevent="">编辑</el-button>
-					<el-button type="text" size="small" @click.native.prevent="">删除</el-button>
+					<el-button type="text" size="small" @click.native.prevent="editMailTemplate(scope.row)">编辑</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -22,6 +24,20 @@
 		</div>
 		<!--分页结束-->
 
+		<!--对话框开始-->
+		<el-dialog :title="isEditDialog==1? '新增邮件模板' : '编辑邮件模板'" :visible.sync="addMail.centerDialogVisible" width="30%" center>
+			<div>
+				<el-input placeholder="请输入邮件标题" v-model="addMail.addMailTemplate.title" clearable>
+				</el-input>
+				<el-input type="textarea" @keydown.native="getResult($event)" :rows="4" id="Mail" placeholder="请输入邮件内容" class="mail-textarea" v-model="addMail.addMailTemplate.body">
+				</el-input>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click="addMail.centerDialogVisible = false">取 消</el-button>
+				<el-button type="primary" @click="addMailTemplate">确 定</el-button>
+			</div>
+		</el-dialog>
+		<!--对话框结束-->
 	</div>
 </template>
 
@@ -46,7 +62,15 @@
 				},
 				zDialog: false,
 				zEditDialog: false,
-				zEditUrl: '#'
+				zEditUrl: '#',
+				addMail: {
+					centerDialogVisible: false,
+					addMailTemplate: {
+						title: "",
+						body: "",
+					}
+				},
+				isEditDialog: 1, //判断弹框是编辑还是新增的，1新增，2编辑
 			}
 		},
 		methods: {
@@ -58,7 +82,7 @@
 				that.zLoading = true;
 				let pageNum = that.zPager.currentPage;
 				let pageSize = that.zPager.size;
-				let apiPath =that.apiPath + 'MailTemplate';
+				let apiPath = that.apiPath + 'MailTemplate';
 				that.$ajax
 					.get(apiPath)
 					.then(function(response) {
@@ -70,6 +94,45 @@
 						that.zLoading = false;
 					})
 					.catch(function(response) {})
+			},
+			getResult(param) {
+				if(param.code == "Tab") {
+					this.indentWord()
+					//防止浏览器默认行为(W3C) 
+					if(param && param.preventDefault) {
+						param.preventDefault();
+					}
+					//IE中组织浏览器行为 
+					else {
+						window.event.returnValue = fale;
+						return false;
+					}
+				}
+			},
+			addMailTemplate() {
+				var addEmailParam = this.addMail.addMailTemplate;
+				if(!addEmailParam.title) {
+					this.$message({
+						message: '请填写邮件标题！',
+						type: 'warning'
+					});
+					return;
+				} else if(!addEmailParam.body) {
+					this.$message({
+						message: '请填写邮件内容！',
+						type: 'warning'
+					});
+					return;
+				}
+				this.addMail.centerDialogVisible = false;
+				console.log(addEmailParam.body)
+			},
+			editMailTemplate(param) {
+				this.isEditDialog = 2;
+				this.addMail.centerDialogVisible = true;
+				this.addMail.addMailTemplate.title = param.title;
+				this.addMail.addMailTemplate.body = param.body;
+
 			},
 			pagerChange(val) {
 				this.getMail();
@@ -83,7 +146,43 @@
 				}
 				this.zLoading = false;
 				this.zDialog = true;
-			}
+			},
+			indentWord(){
+				var el = document.querySelector('textarea');
+				var start = el.selectionStart,
+            end = el.selectionEnd, 
+            value = el.value;
+
+        var lineStart = value.lastIndexOf('\n', start),
+            lineEnd = value.indexOf('\n', end),
+            offset = 0;
+
+        if (lineStart === -1) lineStart = 0;
+        if (lineEnd === -1) lineEnd = value.length;
+
+        if (lineStart === lineEnd);
+        else if (lineStart !== 0) lineStart += 1;
+
+        var lines = value.substring(lineStart, lineEnd).split('\n');
+
+        if (lines.length > 1) {
+            offset = lines.length;
+            lines = '\t' + lines.join('\n\t');
+
+            el.value = value.substring(0, lineStart) + lines + value.substring(lineEnd);
+
+            el.selectionStart = start + 1;
+            el.selectionEnd = end + offset;
+        } else {
+            offset = 1;
+            lines = lines[0];
+
+            el.value = value.substring(0, start) + '\t' + value.substring(end);
+
+            el.selectionStart = el.selectionEnd = start + offset;
+        }
+        
+			},
 		},
 		created() {
 			this.getMail();
@@ -110,5 +209,80 @@
 		padding: 0;
 		margin: 0;
 		font-size: 14px;
+	}
+<<<<<<< HEAD
+	
+	.add_btn {
+		margin: 20px 10px;
+		text-align: right;
+	}
+	
+	.ssp {
+		padding: 0 5px;
+		border-right: 1px solid #717171;
+		font-weight: bold;
+	}
+	/*.el-dialog__header{
+		border-bottom: 1px solid #eee;
+		padding: 10px;
+		background-color: red;
+	}
+	.el-dialog__header .el-dialog__title{
+		color: #606266;
+	}
+	.el-dialog__header .el-dialog__headerbtn{
+		top: 14px;
+		border: 1px solid #cfcfcf;
+		border-radius: 2px;
+	}*/
+	
+	.mail-textarea {
+		margin-top: 20px;
+	}
+	
+	.ssp:last-child {
+		border: none;
+	}
+	
+	a {
+		text-decoration: none;
+	}
+	
+	a:link {
+		text-decoration: none;
+	}
+	
+	a:visited {
+		text-decoration: none;
+	}
+	
+	a:hover {
+		text-decoration: none;
+	}
+	
+	a:active {
+		text-decoration: none;
+	}
+	
+	.el-menu-item {
+		height: 18px;
+		line-height: 18px;
+		color: #606266;
+	}
+	
+	.el-submenu__title {
+		height: 32px;
+		line-height: 32px;
+		color: #606266;
+	}
+	
+	.el-submenu__title i {
+		color: #606266;
+		font-style: normal;
+	}
+	
+	.el-menu-a {
+		color: #0d308c;
+		font-size: 13px;
 	}
 </style>
