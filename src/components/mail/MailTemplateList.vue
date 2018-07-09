@@ -12,6 +12,7 @@
 			<el-table-column fixed="right" label="操作" width="160" align="center">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click.native.prevent="editMailTemplate(scope.row)">编辑</el-button>
+					<el-button type="text" size="small" @click.native.prevent="deleteMailTemplate(scope.row)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -111,6 +112,7 @@
 			},
 			addMailTemplate() {
 				var addEmailParam = this.addMail.addMailTemplate;
+				var that = this;
 				if(!addEmailParam.title) {
 					this.$message({
 						message: '请填写邮件标题！',
@@ -125,7 +127,24 @@
 					return;
 				}
 				this.addMail.centerDialogVisible = false;
-				console.log(addEmailParam.body)
+				if(this.isEditDialog == 1) { //新增
+					let apiPath = that.apiPath + 'MailTemplate';
+					that.$ajax
+						.post(apiPath, addEmailParam)
+						.then(function(response) {
+							let res = response.data;
+							if(res.Code == 1000) {
+								that.mailData.unshift(addEmailParam);
+								that.$message({
+									message: '添加邮件模板成功',
+									type: 'success'
+								});
+							}
+							that.zLoading = false;
+						})
+						.catch(function(response) {})
+				}
+
 			},
 			editMailTemplate(param) {
 				this.isEditDialog = 2;
@@ -147,41 +166,41 @@
 				this.zLoading = false;
 				this.zDialog = true;
 			},
-			indentWord(){
+			indentWord() {
 				var el = document.querySelector('textarea');
 				var start = el.selectionStart,
-            end = el.selectionEnd, 
-            value = el.value;
+					end = el.selectionEnd,
+					value = el.value;
 
-        var lineStart = value.lastIndexOf('\n', start),
-            lineEnd = value.indexOf('\n', end),
-            offset = 0;
+				var lineStart = value.lastIndexOf('\n', start),
+					lineEnd = value.indexOf('\n', end),
+					offset = 0;
 
-        if (lineStart === -1) lineStart = 0;
-        if (lineEnd === -1) lineEnd = value.length;
+				if(lineStart === -1) lineStart = 0;
+				if(lineEnd === -1) lineEnd = value.length;
 
-        if (lineStart === lineEnd);
-        else if (lineStart !== 0) lineStart += 1;
+				if(lineStart === lineEnd);
+				else if(lineStart !== 0) lineStart += 1;
 
-        var lines = value.substring(lineStart, lineEnd).split('\n');
+				var lines = value.substring(lineStart, lineEnd).split('\n');
 
-        if (lines.length > 1) {
-            offset = lines.length;
-            lines = '\t' + lines.join('\n\t');
+				if(lines.length > 1) {
+					offset = lines.length;
+					lines = '\t' + lines.join('\n\t');
 
-            el.value = value.substring(0, lineStart) + lines + value.substring(lineEnd);
+					el.value = value.substring(0, lineStart) + lines + value.substring(lineEnd);
 
-            el.selectionStart = start + 1;
-            el.selectionEnd = end + offset;
-        } else {
-            offset = 1;
-            lines = lines[0];
+					el.selectionStart = start + 1;
+					el.selectionEnd = end + offset;
+				} else {
+					offset = 1;
+					lines = lines[0];
 
-            el.value = value.substring(0, start) + '\t' + value.substring(end);
+					el.value = value.substring(0, start) + '\t' + value.substring(end);
 
-            el.selectionStart = el.selectionEnd = start + offset;
-        }
-        
+					el.selectionStart = el.selectionEnd = start + offset;
+				}
+
 			},
 		},
 		created() {
@@ -191,7 +210,7 @@
 			const that = this;
 			window.onresize = () => {
 				return(() => {
-					that.tHeight = document.documentElement.clientHeight -104;
+					that.tHeight = document.documentElement.clientHeight - 104;
 				})()
 			}
 		}
@@ -210,17 +229,13 @@
 		margin: 0;
 		font-size: 14px;
 	}
-
 	
 	.add_btn {
-		margin:0 10px 20px;
+		margin: 0 10px 20px;
 		text-align: right;
 	}
-	
 	
 	.mail-textarea {
 		margin-top: 20px;
 	}
-	
-
 </style>
