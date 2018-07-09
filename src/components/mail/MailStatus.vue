@@ -1,16 +1,21 @@
 <template>
-	<div class="LawList-box" v-cloak>
+	<div class="MailStatus-box" v-cloak>
 		<!--表格开始-->
-		<el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="mailData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
+		<el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMailStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
 			<el-table-column type="index" fixed="left" width="70" :index="typeIndex"></el-table-column>
-			<el-table-column fixed="left" prop="send_to" label="发送" fit show-overflow-tooltip></el-table-column>
-			<el-table-column prop="send_cc" label="抄送"></el-table-column>
+			<el-table-column fixed="left" prop="send_to" label="发送给" fit></el-table-column>
+			<el-table-column prop="send_cc" label="抄送给" fit></el-table-column>
 			<el-table-column prop="state" label="状态">
 				<template slot-scope="scope">
 					<el-tag :type="scope.row.state === '待发送' ? 'danger' : 'primary'" close-transition>{{scope.row.state}}</el-tag>
 				</template>
 			</el-table-column>
 			<el-table-column prop="create_date" label="创建时间"></el-table-column>
+			<el-table-column fixed="right" label="操作" width="160" align="center">
+				<template slot-scope="scope">
+					<el-button type="text" size="small" @click.native.prevent="sendMail(scope.row)">重新发送</el-button>
+				</template>
+			</el-table-column>
 		</el-table>
 		<!--表格结束-->
 		<!--分页开始-->
@@ -20,41 +25,29 @@
 			</el-pagination>
 		</div>
 		<!--分页结束-->
-
 	</div>
 </template>
 
 <script>
 	export default {
-		name: 'LawList',
+		name: 'MailStatus',
 		data() {
 			return {
-				tHeight: document.documentElement.clientHeight - 135,
+				tHeight: document.documentElement.clientHeight - 50,
 				zLoading: true,
-				mailData: [],
+				zMailStatusData: [],
 				zPager: {
 					total: 0,
 					size: 30,
 					count: 11,
 					currentPage: 1
-				},
-				zMail: {
-					id: '',
-					sendTo: '',
-					sendCc: '',
-					state: '',
-					createDate: ''
-				},
-				zDialog: false,
-				zEditDialog: false,
-				zEditUrl: '#'
+				}
 			}
 		},
 		methods: {
 			typeIndex(index) {
 				return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
 			},
-
 			getMail() {
 				const that = this;
 				that.zLoading = true;
@@ -66,7 +59,7 @@
 					.then(function(response) {
 						let res = response.data;
 						if(res.Code === 1000) {
-							that.mailData = res.Result.Data;
+							that.zMailStatusData = res.Result.Data;
 							that.zPager.total = res.Result.Total;
 						}
 						that.zLoading = false;
@@ -97,7 +90,7 @@
 			const that = this;
 			window.onresize = () => {
 				return(() => {
-					that.tHeight = document.documentElement.clientHeight - 135;
+					that.tHeight = document.documentElement.clientHeight - 50;
 				})()
 			}
 		}
@@ -115,57 +108,5 @@
 		padding: 0;
 		margin: 0;
 		font-size: 14px;
-	}
-	
-	.ssp {
-		padding: 0 5px;
-		border-right: 1px solid #717171;
-		font-weight: bold;
-	}
-	
-	.ssp:last-child {
-		border: none;
-	}
-	
-	a {
-		text-decoration: none;
-	}
-	
-	a:link {
-		text-decoration: none;
-	}
-	
-	a:visited {
-		text-decoration: none;
-	}
-	
-	a:hover {
-		text-decoration: none;
-	}
-	
-	a:active {
-		text-decoration: none;
-	}
-	
-	.el-menu-item {
-		height: 18px;
-		line-height: 18px;
-		color: #606266;
-	}
-	
-	.el-submenu__title {
-		height: 32px;
-		line-height: 32px;
-		color: #606266;
-	}
-	
-	.el-submenu__title i {
-		color: #606266;
-		font-style: normal;
-	}
-	
-	.el-menu-a {
-		color: #0d308c;
-		font-size: 13px;
 	}
 </style>
