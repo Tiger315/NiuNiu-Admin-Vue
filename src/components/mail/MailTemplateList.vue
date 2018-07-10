@@ -5,7 +5,7 @@
 			<el-button type="primary" @click="initModal" size="small">新增邮件模板</el-button>
 		</div>
 		<!--搜索结束-->
-		
+
 		<!--表格开始-->
 		<el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="mailData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
 			<el-table-column type="index" fixed="left" width="70" :index="typeIndex"></el-table-column>
@@ -15,7 +15,7 @@
 			<el-table-column fixed="right" label="操作" width="160" align="center">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click.native.prevent="editMailTemplate(scope.row,scope.$index)">编辑</el-button>
-					<el-button type="text" size="small" @click.native.prevent="addMail.deleteDialogVisible = true">删除</el-button>
+					<el-button type="text" size="small" @click.native.prevent="deleteMailTemplate(scope.row,scope.$index)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -40,14 +40,6 @@
 				<el-button @click="addMail.centerDialogVisible = false">取 消</el-button>
 				<el-button type="primary" @click="addMailTemplate">确 定</el-button>
 			</div>
-		</el-dialog>
-
-		<el-dialog title="" :visible.sync="addMail.deleteDialogVisible" width="30%" center>
-			<h4 style="text-align: center;font-size: 16px;font-weight: 700;">请确认是否删除此模板？</h4>
-			<span slot="footer" class="dialog-footer">
-			    <el-button @click="addMail.deleteDialogVisible = false">取 消</el-button>
-			    <el-button type="primary" @click="deleteMailTemplate()">确 定</el-button>
-			 </span>
 		</el-dialog>
 		<!--对话框结束-->
 	</div>
@@ -186,24 +178,37 @@
 
 				this.addMail.addMailTemplate.id = param.id;
 			},
-			deleteMailTemplate(index) {
-				var that = this;
-				var apiPath = that.apiPath + 'MailTemplate/' + that.mailData[that.clickedIdx].id;
-				that.$ajax
-					.delete(apiPath)
-					.then(function(response) {
-						let res = response.data;
-						if(res.Code == 1000) {
-							that.mailData.splice(that.clickedIdx, 1);
-							that.addMail.deleteDialogVisible = false;
-							that.$message({
-								message: '删除邮件模板成功',
-								type: 'success'
-							});
-						}
-						that.zLoading = false;
+			deleteMailTemplate(index, row) {
+				const that = this
+				this.$confirm('此操作将永久删除此条数据, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
 					})
-					.catch(function(response) {})
+					.then(() => {
+						var apiPath = that.apiPath + 'MailTemplate/' + that.mailData[that.clickedIdx].id;
+						that.$ajax
+							.delete(apiPath)
+							.then(function(response) {
+								let res = response.data;
+								if(res.Code == 1000) {
+									that.mailData.splice(that.clickedIdx, 1);
+									that.addMail.deleteDialogVisible = false;
+									that.$message({
+										message: '删除邮件模板成功',
+										type: 'success'
+									});
+								}
+								that.zLoading = false;
+							})
+							.catch(function(response) {})
+					})
+					.catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除操作...'
+						})
+					})
 			},
 			pagerChange(val) {
 				this.getMail();
@@ -225,23 +230,23 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-[v-cloak] {
-  display: none;
-}
-
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-size: 14px;
-}
-
-.add_btn {
-  margin: 0 10px 20px;
-  text-align: right;
-}
-
-.mail-textarea {
-  margin-top: 20px;
-}
+	[v-cloak] {
+		display: none;
+	}
+	
+	html,
+	body {
+		padding: 0;
+		margin: 0;
+		font-size: 14px;
+	}
+	
+	.add_btn {
+		margin: 0 10px 20px;
+		text-align: right;
+	}
+	
+	.mail-textarea {
+		margin-top: 20px;
+	}
 </style>
