@@ -8,6 +8,9 @@
 	#editor {
 		margin-top: 20px;
 	}
+	.el-dialog--center{
+		width: 50% !important;
+	}
 </style>
 <script>
 	import '../../../static/js/jquery/jquery.min.js';
