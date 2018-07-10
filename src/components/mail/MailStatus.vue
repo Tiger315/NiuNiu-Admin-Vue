@@ -71,7 +71,6 @@
 			},
 			seeLawDialog(row) {
 				this.zLoading = true
-				console.log(row)
 				if(row) {
 					this.zMail.sendTo = row.send_to;
 					this.zMail.id = row.id;

@@ -60,11 +60,7 @@
 					count: 11,
 					currentPage: 1
 				},
-				zDialog: false,
-				zEditDialog: false,
-				zEditUrl: '#',
 				addMail: {
-					deleteDialogVisible: false,
 					centerDialogVisible: false,
 					addMailTemplate: {
 						title: "",
