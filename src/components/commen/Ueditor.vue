@@ -8,7 +8,8 @@
 	#editor {
 		margin-top: 20px;
 	}
-	.el-dialog--center{
+	
+	.el-dialog--center {
 		width: 50% !important;
 	}
 </style>
@@ -51,7 +52,7 @@
 			getUEContent() { // 获取内容方法
 				return this.editor.getContent()
 			},
-			setUEContent(param){
+			setUEContent(param) {
 				var _this = this;
 				_this.editor.setContent(param); // 确保UE加载完成后，放入内容。
 			},
@@ -67,7 +68,7 @@
 					_editor.addListener("blur", function() {
 						var localHtml = _editor.getContent();
 						if(!localHtml) {
-							_editor.setContent('<span style="color:#C7C7Cd">'+justPlainText+'</span>');
+							_editor.setContent('<span style="color:#C7C7Cd">' + justPlainText + '</span>');
 						}
 					});
 					_editor.ready(function() {
