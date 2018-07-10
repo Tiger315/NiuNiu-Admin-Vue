@@ -1,7 +1,7 @@
 <template>
 	<div class="MailTemplateList-box" v-cloak>
 		<div class="add_btn">
-			<el-button type="primary" @click="addMail.centerDialogVisible = true;isEditDialog=1;addMail.addMailTemplate.title='';addMail.addMailTemplate.body=''" size="small">新增邮件模板</el-button>
+			<el-button type="primary" @click="initModal" size="small">新增邮件模板</el-button>
 		</div>
 		<!--表格开始-->
 		<el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="mailData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
@@ -12,7 +12,7 @@
 			<el-table-column fixed="right" label="操作" width="160" align="center">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click.native.prevent="editMailTemplate(scope.row,scope.$index)">编辑</el-button>
-					<el-button type="text" size="small" @click.native.prevent="deleteMailTemplate(scope.row,scope.$index)">删除</el-button>
+					<el-button type="text" size="small" @click.native.prevent="addMail.deleteDialogVisible = true">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -37,6 +37,14 @@
 				<el-button type="primary" @click="addMailTemplate">确 定</el-button>
 			</div>
 		</el-dialog>
+
+		<el-dialog title="" :visible.sync="addMail.deleteDialogVisible" width="30%" center>
+			<h4 style="text-align: center;font-size: 16px;font-weight: 700;">请确认是否删除此模板？</h4>
+			<span slot="footer" class="dialog-footer">
+			    <el-button @click="addMail.deleteDialogVisible = false">取 消</el-button>
+			    <el-button type="primary" @click="deleteMailTemplate()">确 定</el-button>
+			 </span>
+		</el-dialog>
 		<!--对话框结束-->
 	</div>
 </template>
@@ -56,15 +64,11 @@
 					count: 11,
 					currentPage: 1
 				},
-				zMail: {
-					id: '',
-					title: '',
-					body: ''
-				},
 				zDialog: false,
 				zEditDialog: false,
 				zEditUrl: '#',
 				addMail: {
+					deleteDialogVisible: false,
 					centerDialogVisible: false,
 					addMailTemplate: {
 						title: "",
@@ -73,7 +77,7 @@
 					}
 				},
 				isEditDialog: 1, //判断弹框是编辑还是新增的，1新增，2编辑
-				clickedIdx:0
+				clickedIdx: 0 //记录当前点击编辑或者删除的下标
 			}
 		},
 		components: {
@@ -85,11 +89,11 @@
 				return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
 			},
 			getMail() {
-				const that = this;
+				var that = this;
 				that.zLoading = true;
-				let pageNum = that.zPager.currentPage;
-				let pageSize = that.zPager.size;
-				let apiPath = that.apiPath + 'MailTemplate';
+				var pageNum = that.zPager.currentPage;
+				var pageSize = that.zPager.size;
+				var apiPath = that.apiPath + 'MailTemplate';
 				that.$ajax
 					.get(apiPath)
 					.then(function(response) {
@@ -101,6 +105,13 @@
 						that.zLoading = false;
 					})
 					.catch(function(response) {})
+			},
+			initModal() {
+				this.addMail.centerDialogVisible = true;
+				this.isEditDialog = 1;
+				this.addMail.addMailTemplate.title = '';
+				this.addMail.addMailTemplate.body = '';
+				this.$refs.ueditor ? this.$refs.ueditor.setUEContent("") : "";
 			},
 			addMailTemplate() {
 				var addEmailParam = this.addMail.addMailTemplate;
@@ -122,12 +133,14 @@
 				this.addMail.centerDialogVisible = false;
 				var apiPath = that.apiPath + 'MailTemplate';
 				if(this.isEditDialog == 1) { //新增
+
 					delete addEmailParam.id;
 					that.$ajax
 						.post(apiPath, addEmailParam)
 						.then(function(response) {
 							let res = response.data;
 							if(res.Code == 1000) {
+								addEmailParam.id = res.Result.Data;
 								that.mailData.unshift(addEmailParam);
 								that.$message({
 									message: '添加邮件模板成功',
@@ -156,45 +169,40 @@
 				}
 
 			},
-
-			editMailTemplate(param,index) {
-				this.clickedIdx=index;
+			editMailTemplate(param, index) {
+				this.clickedIdx = index;
 				this.isEditDialog = 2;
 				this.addMail.centerDialogVisible = true;
 				this.addMail.addMailTemplate.title = param.title;
-				this.addMail.addMailTemplate.body = param.body;
+				if(this.$refs.ueditor) {
+					this.$refs.ueditor.setUEContent(param.body)
+				} else {
+					this.addMail.addMailTemplate.body = param.body;
+				}
+
 				this.addMail.addMailTemplate.id = param.id;
 			},
-			deleteMailTemplate(param,index){
-				var that=this;
-				var apiPath = that.apiPath + 'MailTemplate/'+param.id;
+			deleteMailTemplate(index) {
+				var that = this;
+				var apiPath = that.apiPath + 'MailTemplate/' + that.mailData[that.clickedIdx].id;
 				that.$ajax
-						.delete(apiPath)
-						.then(function(response) {
-							let res = response.data;
-							if(res.Code == 1000) {
-								that.mailData.splice(that.clickedIdx,1);
-								that.$message({
-									message: '删除邮件模板成功',
-									type: 'success'
-								});
-							}
-							that.zLoading = false;
-						})
-						.catch(function(response) {})
+					.delete(apiPath)
+					.then(function(response) {
+						let res = response.data;
+						if(res.Code == 1000) {
+							that.mailData.splice(that.clickedIdx, 1);
+							that.addMail.deleteDialogVisible = false;
+							that.$message({
+								message: '删除邮件模板成功',
+								type: 'success'
+							});
+						}
+						that.zLoading = false;
+					})
+					.catch(function(response) {})
 			},
 			pagerChange(val) {
 				this.getMail();
-			},
-			seeLawDialog(row) {
-				this.zLoading = true;
-				if(row) {
-					this.zMail.title = row.title;
-					this.zMail.id = row.id;
-					this.zMail.body = row.body;
-				}
-				this.zLoading = false;
-				this.zDialog = true;
 			},
 		},
 		created() {

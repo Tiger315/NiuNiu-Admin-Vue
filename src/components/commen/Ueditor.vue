@@ -39,17 +39,21 @@
 
 		},
 		mounted() {
-			const _this = this;
+			var _this = this;
 			this.getplacehodle()
 			this.editor = UE.getEditor('editor', this.config); // 初始化UE
 			this.editor.placeholder("请输入邮件模版");
 			this.editor.addListener("ready", function() {
-				_this.editor.setContent(_this.defaultValue); // 确保UE加载完成后，放入内容。
+				_this.editor.setContent(_this.defaultValue || ""); // 确保UE加载完成后，放入内容。
 			});
 		},
 		methods: {
 			getUEContent() { // 获取内容方法
 				return this.editor.getContent()
+			},
+			setUEContent(param){
+				var _this = this;
+				_this.editor.setContent(param); // 确保UE加载完成后，放入内容。
 			},
 			getplacehodle() {
 				UE.Editor.prototype.placeholder = function(justPlainText) {
