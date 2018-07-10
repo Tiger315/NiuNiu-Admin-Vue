@@ -6,9 +6,8 @@
 <style>
 	@import url("../../../static/js/ueditor/themes/default/css/ueditor.css");
 	#editor {
-		margin-top: 20px;
+		margin-top: 10px;
 	}
-	
 	.el-dialog--center {
 		width: 50% !important;
 	}
@@ -40,9 +39,7 @@
 		},
 		mounted() {
 			var _this = this;
-			this.getplacehodle();//调用模拟placehodle的方法
 			this.editor = UE.getEditor('editor', this.config); // 初始化UE
-			this.editor.placeholder("请输入邮件模版");//模拟placehodle的效果
 			this.editor.addListener("ready", function() {
 				_this.editor.setContent(_this.defaultValue || ""); // 确保UE加载完成后，放入内容。
 			});
@@ -54,27 +51,7 @@
 			setUEContent(param) {
 				var _this = this;
 				_this.editor.setContent(param); // 确保UE加载完成后，放入内容。
-			},
-			getplacehodle() {
-				UE.Editor.prototype.placeholder = function(justPlainText) {
-					var _editor = this;
-					_editor.addListener("focus", function() {
-						var localHtml = _editor.getPlainTxt();
-						if($.trim(localHtml) === $.trim(justPlainText)) {
-							_editor.setContent(" ");
-						}
-					});
-					_editor.addListener("blur", function() {
-						var localHtml = _editor.getContent();
-						if(!localHtml) {
-							_editor.setContent('<span style="color:#C7C7Cd">' + justPlainText + '</span>');
-						}
-					});
-					_editor.ready(function() {
-						_editor.fireEvent("blur");
-					});
-				};
-			},
+			}
 		},
 		destroyed() {
 			this.editor.destroy();

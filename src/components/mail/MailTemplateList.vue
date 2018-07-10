@@ -31,15 +31,19 @@
 
 		<!--对话框开始-->
 		<el-dialog :title="isEditDialog == 1? '新增邮件模板' : '编辑邮件模板'" :visible.sync="addMail.centerDialogVisible" width="30%" center>
-			<div>
-				<el-input placeholder="请输入邮件标题" v-model="addMail.addMailTemplate.title" clearable>
-				</el-input>
-				<li-ueditor ref="ueditor" :default-value='addMail.addMailTemplate.body'></li-ueditor>
-			</div>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click="addMail.centerDialogVisible = false">取 消</el-button>
-				<el-button type="primary" @click="addMailTemplate">确 定</el-button>
-			</div>
+			<el-form :model="addMail.addMailTemplate" :rules="addMail.rules" ref="addMail.addMailTemplate" label-width="100px" class="demo-ruleForm">
+				<el-form-item label="邮件标题" prop="title">
+					<el-input v-model="addMail.addMailTemplate.title" ></el-input>
+				</el-form-item>
+				<el-form-item label="邮件内容" prop="body">
+					<li-ueditor ref="ueditor" :default-value='addMail.addMailTemplate.body'></li-ueditor>
+				</el-form-item>
+				<el-form-item>
+					<el-button @click="addMail.centerDialogVisible = false">取 消</el-button>
+					<el-button type="primary" @click="isValid('addMail.addMailTemplate')">确 定</el-button>
+				</el-form-item>
+			</el-form>
+
 		</el-dialog>
 		<!--对话框结束-->
 	</div>
@@ -66,6 +70,16 @@
 						title: "",
 						body: "",
 						id: ""
+					},
+					rules: {
+						title: [{
+							required: true,
+							message: '请输入邮件标题'
+						}],
+						body: [{
+							required: true,
+							message: '请输入邮件内容'
+						}],
 					}
 				},
 				isEditDialog: 1, //判断弹框是编辑还是新增的，1新增，2编辑
@@ -105,29 +119,26 @@
 				this.isEditDialog = 1;
 				this.addMail.addMailTemplate.title = '';
 				this.addMail.addMailTemplate.body = '';
-				if(this.$refs.ueditor){
+				if(this.$refs.ueditor) {
 					this.$refs.ueditor.setUEContent("");
 				}
 			},
-			//点击弹框中确定按钮，新增或者编辑模板
-			addMailTemplate() {
+			//验证是否可以提交
+			isValid(formName){
 				var addEmailParam = this.addMail.addMailTemplate;
 				//获取ueditor的值
 				addEmailParam.body = this.$refs.ueditor.getUEContent();
 				var that = this;
-				if(!addEmailParam.title) {
-					this.$message({
-						message: '请填写邮件标题！',
-						type: 'warning'
-					});
-					return;
-				} else if(!addEmailParam.body) {
-					this.$message({
-						message: '请填写邮件内容！',
-						type: 'warning'
-					});
-					return;
-				}
+				this.$refs[formName].validate((valid) => {
+					if(valid) {
+						this.addMailTemplate();
+					} else {
+						return;
+					}
+				});
+			},
+			//点击弹框中确定按钮，新增或者编辑模板
+			addMailTemplate(formName) {
 				this.addMail.centerDialogVisible = false;
 				var apiPath = that.apiPath + 'MailTemplate';
 				if(this.isEditDialog == 1) { //新增
@@ -170,14 +181,14 @@
 			},
 			//点击编辑按钮
 			editMailTemplate(param, index) {
-				this.clickedIdx = index;//获取下标
+				this.clickedIdx = index; //获取下标
 				this.isEditDialog = 2;
 				this.addMail.centerDialogVisible = true;
 				this.addMail.addMailTemplate.title = param.title;
 				if(this.$refs.ueditor) {
 					this.$refs.ueditor.setUEContent(param.body);
 				} else {
-					this.addMail.addMailTemplate.body = param.body;//没有初始化组件时通过传值设置默认值
+					this.addMail.addMailTemplate.body = param.body; //没有初始化组件时通过传值设置默认值
 				}
 
 				this.addMail.addMailTemplate.id = param.id;
