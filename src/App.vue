@@ -27,5 +27,8 @@ body {
 .shareLawList.el-popover{
 	min-width: 0px;
 }
+textarea{
+	resize:none
+}
 
 </style>

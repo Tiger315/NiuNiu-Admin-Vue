@@ -11,8 +11,8 @@
 			</el-table-column>
 			<el-table-column fixed="right" label="操作" width="160" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click.native.prevent="editMailTemplate(scope.row)">编辑</el-button>
-					<el-button type="text" size="small" @click.native.prevent="deleteMailTemplate(scope.row)">删除</el-button>
+					<el-button type="text" size="small" @click.native.prevent="editMailTemplate(scope.row,scope.$index)">编辑</el-button>
+					<el-button type="text" size="small" @click.native.prevent="deleteMailTemplate(scope.row,scope.$index)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -30,8 +30,7 @@
 			<div>
 				<el-input placeholder="请输入邮件标题" v-model="addMail.addMailTemplate.title" clearable>
 				</el-input>
-				<el-input type="textarea" @keydown.native="getResult($event)" :rows="4" id="Mail" placeholder="请输入邮件内容" class="mail-textarea" v-model="addMail.addMailTemplate.body">
-				</el-input>
+				<li-ueditor ref="ueditor" :default-value='addMail.addMailTemplate.body'></li-ueditor>
 			</div>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click="addMail.centerDialogVisible = false">取 消</el-button>
@@ -43,6 +42,7 @@
 </template>
 
 <script>
+	import ueditor from '../commen/Ueditor.vue'
 	export default {
 		name: 'MailTemplateList',
 		data() {
@@ -69,11 +69,17 @@
 					addMailTemplate: {
 						title: "",
 						body: "",
+						id: ""
 					}
 				},
 				isEditDialog: 1, //判断弹框是编辑还是新增的，1新增，2编辑
+				clickedIdx:0
 			}
 		},
+		components: {
+			'li-ueditor': ueditor
+		},
+		props: ['defaultValue'],
 		methods: {
 			typeIndex(index) {
 				return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
@@ -96,22 +102,9 @@
 					})
 					.catch(function(response) {})
 			},
-			getResult(param) {
-				if(param.code == "Tab") {
-					this.indentWord()
-					//防止浏览器默认行为(W3C) 
-					if(param && param.preventDefault) {
-						param.preventDefault();
-					}
-					//IE中组织浏览器行为 
-					else {
-						window.event.returnValue = fale;
-						return false;
-					}
-				}
-			},
 			addMailTemplate() {
 				var addEmailParam = this.addMail.addMailTemplate;
+				addEmailParam.body = this.$refs.ueditor.getUEContent();
 				var that = this;
 				if(!addEmailParam.title) {
 					this.$message({
@@ -127,8 +120,9 @@
 					return;
 				}
 				this.addMail.centerDialogVisible = false;
+				var apiPath = that.apiPath + 'MailTemplate';
 				if(this.isEditDialog == 1) { //新增
-					let apiPath = that.apiPath + 'MailTemplate';
+					delete addEmailParam.id;
 					that.$ajax
 						.post(apiPath, addEmailParam)
 						.then(function(response) {
@@ -143,15 +137,51 @@
 							that.zLoading = false;
 						})
 						.catch(function(response) {})
+				} else if(this.isEditDialog == 2) {
+					that.$ajax
+						.put(apiPath, addEmailParam)
+						.then(function(response) {
+							let res = response.data;
+							if(res.Code == 1000) {
+								that.mailData[that.clickedIdx].title = addEmailParam.title;
+								that.mailData[that.clickedIdx].body = addEmailParam.body;
+								that.$message({
+									message: '修改邮件模板成功',
+									type: 'success'
+								});
+							}
+							that.zLoading = false;
+						})
+						.catch(function(response) {})
 				}
 
 			},
-			editMailTemplate(param) {
+
+			editMailTemplate(param,index) {
+				this.clickedIdx=index;
 				this.isEditDialog = 2;
 				this.addMail.centerDialogVisible = true;
 				this.addMail.addMailTemplate.title = param.title;
 				this.addMail.addMailTemplate.body = param.body;
-
+				this.addMail.addMailTemplate.id = param.id;
+			},
+			deleteMailTemplate(param,index){
+				var that=this;
+				var apiPath = that.apiPath + 'MailTemplate/'+param.id;
+				that.$ajax
+						.delete(apiPath)
+						.then(function(response) {
+							let res = response.data;
+							if(res.Code == 1000) {
+								that.mailData.splice(that.clickedIdx,1);
+								that.$message({
+									message: '删除邮件模板成功',
+									type: 'success'
+								});
+							}
+							that.zLoading = false;
+						})
+						.catch(function(response) {})
 			},
 			pagerChange(val) {
 				this.getMail();
@@ -165,42 +195,6 @@
 				}
 				this.zLoading = false;
 				this.zDialog = true;
-			},
-			indentWord() {
-				var el = document.querySelector('textarea');
-				var start = el.selectionStart,
-					end = el.selectionEnd,
-					value = el.value;
-
-				var lineStart = value.lastIndexOf('\n', start),
-					lineEnd = value.indexOf('\n', end),
-					offset = 0;
-
-				if(lineStart === -1) lineStart = 0;
-				if(lineEnd === -1) lineEnd = value.length;
-
-				if(lineStart === lineEnd);
-				else if(lineStart !== 0) lineStart += 1;
-
-				var lines = value.substring(lineStart, lineEnd).split('\n');
-
-				if(lines.length > 1) {
-					offset = lines.length;
-					lines = '\t' + lines.join('\n\t');
-
-					el.value = value.substring(0, lineStart) + lines + value.substring(lineEnd);
-
-					el.selectionStart = start + 1;
-					el.selectionEnd = end + offset;
-				} else {
-					offset = 1;
-					lines = lines[0];
-
-					el.value = value.substring(0, start) + '\t' + value.substring(end);
-
-					el.selectionStart = el.selectionEnd = start + offset;
-				}
-
 			},
 		},
 		created() {
