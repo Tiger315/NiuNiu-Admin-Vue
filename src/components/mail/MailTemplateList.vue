@@ -80,6 +80,7 @@
 			typeIndex(index) {
 				return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
 			},
+			//获取列表
 			getMail() {
 				var that = this;
 				that.zLoading = true;
@@ -98,15 +99,20 @@
 					})
 					.catch(function(response) {})
 			},
+			//点击新增邮件模板按钮打开弹框并且初始化弹框中内容
 			initModal() {
 				this.addMail.centerDialogVisible = true;
 				this.isEditDialog = 1;
 				this.addMail.addMailTemplate.title = '';
 				this.addMail.addMailTemplate.body = '';
-				this.$refs.ueditor ? this.$refs.ueditor.setUEContent("") : "";
+				if(this.$refs.ueditor){
+					this.$refs.ueditor.setUEContent("");
+				}
 			},
+			//点击弹框中确定按钮，新增或者编辑模板
 			addMailTemplate() {
 				var addEmailParam = this.addMail.addMailTemplate;
+				//获取ueditor的值
 				addEmailParam.body = this.$refs.ueditor.getUEContent();
 				var that = this;
 				if(!addEmailParam.title) {
@@ -125,7 +131,6 @@
 				this.addMail.centerDialogVisible = false;
 				var apiPath = that.apiPath + 'MailTemplate';
 				if(this.isEditDialog == 1) { //新增
-
 					delete addEmailParam.id;
 					that.$ajax
 						.post(apiPath, addEmailParam)
@@ -133,6 +138,7 @@
 							let res = response.data;
 							if(res.Code == 1000) {
 								addEmailParam.id = res.Result.Data;
+								//向数组最前面插入新增的这条数据
 								that.mailData.unshift(addEmailParam);
 								that.$message({
 									message: '添加邮件模板成功',
@@ -148,6 +154,7 @@
 						.then(function(response) {
 							let res = response.data;
 							if(res.Code == 1000) {
+								//更改本条记录
 								that.mailData[that.clickedIdx].title = addEmailParam.title;
 								that.mailData[that.clickedIdx].body = addEmailParam.body;
 								that.$message({
@@ -161,19 +168,21 @@
 				}
 
 			},
+			//点击编辑按钮
 			editMailTemplate(param, index) {
-				this.clickedIdx = index;
+				this.clickedIdx = index;//获取下标
 				this.isEditDialog = 2;
 				this.addMail.centerDialogVisible = true;
 				this.addMail.addMailTemplate.title = param.title;
 				if(this.$refs.ueditor) {
-					this.$refs.ueditor.setUEContent(param.body)
+					this.$refs.ueditor.setUEContent(param.body);
 				} else {
-					this.addMail.addMailTemplate.body = param.body;
+					this.addMail.addMailTemplate.body = param.body;//没有初始化组件时通过传值设置默认值
 				}
 
 				this.addMail.addMailTemplate.id = param.id;
 			},
+			//点击删除按钮
 			deleteMailTemplate(index, row) {
 				const that = this
 				this.$confirm('此操作将永久删除此条数据, 是否继续?', '提示', {
@@ -188,7 +197,9 @@
 							.then(function(response) {
 								let res = response.data;
 								if(res.Code == 1000) {
+									//删除这条数据
 									that.mailData.splice(that.clickedIdx, 1);
+									//隐藏弹框
 									that.addMail.deleteDialogVisible = false;
 									that.$message({
 										message: '删除邮件模板成功',

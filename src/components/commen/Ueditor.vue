@@ -19,7 +19,6 @@
 	import '../../../static/js/ueditor/ueditor.all';
 	import '../../../static/js/ueditor/lang/zh-cn/zh-cn';
 	import '../../../static/js/ueditor/ueditor.parse.min.js';
-	import '../../../static/js/ueditor/ueditor.parse.min.js'
 	export default {
 		data() {
 			return {
@@ -41,9 +40,9 @@
 		},
 		mounted() {
 			var _this = this;
-			this.getplacehodle()
+			this.getplacehodle();//调用模拟placehodle的方法
 			this.editor = UE.getEditor('editor', this.config); // 初始化UE
-			this.editor.placeholder("请输入邮件模版");
+			this.editor.placeholder("请输入邮件模版");//模拟placehodle的效果
 			this.editor.addListener("ready", function() {
 				_this.editor.setContent(_this.defaultValue || ""); // 确保UE加载完成后，放入内容。
 			});
