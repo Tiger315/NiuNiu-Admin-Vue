@@ -13,7 +13,7 @@
 			<el-table-column prop="create_date" label="创建时间"></el-table-column>
 			<el-table-column fixed="right" label="操作" width="160" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click.native.prevent="sendMail(scope.row)">重新发送</el-button>
+					<el-button type="text" size="small" @click.native.prevent="sendMail(scope.row,scope.$index)">{{clickedIdx==scope.$index?'发送中':'重新发送'}}<i :class="clickedIdx==scope.$index?'active el-icon-loading':'el-icon-loading'"></i></el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -30,101 +30,140 @@
 </template>
 
 <script>
-export default {
-  name: "MailStatus",
-  data() {
-    return {
-      tHeight: document.documentElement.clientHeight - 50,
-      zLoading: true,
-      zMailStatusData: [],
-      zPager: {
-        total: 0,
-        size: 30,
-        count: 11,
-        currentPage: 1
-      }
-    };
-  },
-  methods: {
-    typeIndex(index) {
-      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
-    },
-    getMail() {
-      var that = this
-      that.zLoading = true
-      var pageNum = that.zPager.currentPage
-      var pageSize = that.zPager.size
-      var apiPath = that.apiPath + "SendMail"
-      that.$ajax
-        .get(apiPath)
-        .then(function(response) {
-          var res = response.data
-          if (res.Code === 1000) {
-            that.zMailStatusData = res.Result.Data
-            that.zPager.total = res.Result.Total
-          }
-          that.zLoading = false
-        })
-        .catch(function(response) {})
-    },
-    pagerChange(val) {
-      this.getMail()
-    },
-    seeLawDialog(row) {
-      this.zLoading = true
-      if (row) {
-        this.zMail.sendTo = row.send_to
-        this.zMail.id = row.id
-        this.zMail.sendCc = row.send_cc
-        this.zMail.state = row.state
-        this.zMail.createDate = row.create_date
-      }
-      this.zLoading = false
-      this.zDialog = true
-    },
-    sendMail(row) {
-      var that = this
-      var id = row.id
-      var apiPath = that.apiPath + "SendMail"
-      delete row.state, row.create_date
-      that.$ajax
-        .post(apiPath, row)
-        .then(function(response) {
-          var res = response.data;
-          if (res.Code === 1000) {
-            that.$message({
-              message: "发送邮件成功",
-              type: "success"
-            })
-          }
-          that.zLoading = false
-        })
-        .catch(function(response) {})
-    }
-  },
-  created() {
-    this.getMail()
-  },
-  mounted() {
-    var that = this;
-    window.onresize = () => {
-      return (() => {
-        that.tHeight = document.documentElement.clientHeight - 50
-      })();
-    };
-  }
-};
+	export default {
+		name: "MailStatus",
+		data() {
+			return {
+				tHeight: document.documentElement.clientHeight - 50,
+				zLoading: true,
+				zMailStatusData: [],
+				zPager: {
+					total: 0,
+					size: 30,
+					count: 11,
+					currentPage: 1
+				},
+				clickedIdx: -1, //当前被点击的元素
+			};
+		},
+		methods: {
+			typeIndex(index) {
+				return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
+			},
+			getMail() {
+				var that = this
+				that.zLoading = true
+				var pageNum = that.zPager.currentPage
+				var pageSize = that.zPager.size
+				var apiPath = that.apiPath + "SendMail"
+				that.$ajax
+					.get(apiPath)
+					.then(function(response) {
+						var res = response.data
+						if(res.Code === 1000) {
+							that.zMailStatusData = res.Result.Data
+							that.zPager.total = res.Result.Total
+						}
+						that.zLoading = false
+					})
+					.catch(function(response) {})
+			},
+			pagerChange(val) {
+				this.getMail()
+			},
+			seeLawDialog(row) {
+				this.zLoading = true
+				if(row) {
+					this.zMail.sendTo = row.send_to
+					this.zMail.id = row.id
+					this.zMail.sendCc = row.send_cc
+					this.zMail.state = row.state
+					this.zMail.createDate = row.create_date
+				}
+				this.zLoading = false
+				this.zDialog = true
+			},
+			sendMail(rows, index) {
+				var that = this
+				that.clickedIdx = index
+				var apiPath = that.apiPath + "SendMail"
+				var sendEmailParam={
+					id:rows.id,
+					send_cc:rows.send_cc,
+					send_to:rows.send_to,
+					template_id:rows.template_id
+				}
+				that.$ajax
+					.post(apiPath, sendEmailParam)
+					.then(function(response) {
+						var res = response.data;
+						var param={}
+						param.id=row.id
+						if(res.Code === 1000) {
+							param.state="已发送"
+						} else {
+							param.state="发送失败"
+						}
+						that.getMailStatus(param);
+						that.zLoading = false
+					})
+					.catch(function(response) {})
+			},
+			getMailStatus(param) {
+				var that = this
+				var apiPath = that.apiPath + "SendMail"
+				that.$ajax
+					.put(apiPath, param)
+					.then(function(response) {
+						var res = response.data;
+						if(res.Code === 1000) {
+							that.$message({
+								message: "发送邮件成功",
+								type: "success"
+							})
+						}else{
+							that.$message({
+								message: "发送邮件失败",
+								type: "success"
+							})
+						}
+						that.zMailStatusData[that.clickedIdx].state = param.state
+						that.clickedIdx = -1
+						that.zLoading = false
+					})
+					.catch(function(response) {})
+			}
+		},
+		created() {
+			this.getMail()
+		},
+		mounted() {
+			var that = this;
+			window.onresize = () => {
+				return(() => {
+					that.tHeight = document.documentElement.clientHeight - 50
+				})();
+			};
+		}
+	};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-[v-cloak] {
-  display: none;
-}
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-size: 14px;
-}
+	[v-cloak] {
+		display: none;
+	}
+	
+	html,
+	body {
+		padding: 0;
+		margin: 0;
+		font-size: 14px;
+	}
+	.el-icon-loading{
+		display: none;
+	}
+	.active.el-icon-loading{
+		display: inline-block;
+	}
 </style>
