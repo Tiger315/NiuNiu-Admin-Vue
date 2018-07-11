@@ -165,5 +165,7 @@
 	}
 	.active.el-icon-loading{
 		display: inline-block;
+		font-size: 14px;
+		margin-left: 5px;
 	}
 </style>
