@@ -269,7 +269,7 @@
 		margin-top: 20px;
 	}
 	.form_btn{
-		margin-left: 0px !important;
+		margin-right: 100px !important;
 		text-align: center;
 	}
 </style>
