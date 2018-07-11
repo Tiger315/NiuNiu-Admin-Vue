@@ -49,15 +49,15 @@
 				return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
 			},
 			getMail() {
-				const that = this;
+				var that = this;
 				that.zLoading = true;
-				let pageNum = that.zPager.currentPage;
-				let pageSize = that.zPager.size;
-				let apiPath = that.apiPath + 'SendMail';
+				var pageNum = that.zPager.currentPage;
+				var pageSize = that.zPager.size;
+				var apiPath = that.apiPath + 'SendMail';
 				that.$ajax
 					.get(apiPath)
 					.then(function(response) {
-						let res = response.data;
+						var res = response.data;
 						if(res.Code === 1000) {
 							that.zMailStatusData = res.Result.Data;
 							that.zPager.total = res.Result.Total;
@@ -80,13 +80,34 @@
 				}
 				this.zLoading = false;
 				this.zDialog = true;
+			},
+			//重新发送邮件
+			sendMail(row){
+				var that=this;
+				var id=row.id;
+				var apiPath = that.apiPath + 'SendMail';
+				delete row.state;
+				delete row.create_date;
+				that.$ajax
+					.post(apiPath,row)
+					.then(function(response) {
+						var res = response.data;
+						if(res.Code === 1000) {
+							that.$message({
+								message: '发送邮件成功',
+								type: 'success'
+							});
+						}
+						that.zLoading = false;
+					})
+					.catch(function(response) {})
 			}
 		},
 		created() {
 			this.getMail();
 		},
 		mounted() {
-			const that = this;
+			var that = this;
 			window.onresize = () => {
 				return(() => {
 					that.tHeight = document.documentElement.clientHeight - 50;
@@ -101,7 +122,6 @@
 	[v-cloak] {
 		display: none;
 	}
-	
 	html,
 	body {
 		padding: 0;

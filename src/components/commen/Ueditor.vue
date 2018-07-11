@@ -8,8 +8,13 @@
 	#editor {
 		margin-top: 10px;
 	}
+	
 	.el-dialog--center {
 		width: 50% !important;
+	}
+	
+	.el-form-item__content {
+		line-height: 20px;
 	}
 </style>
 <script>
@@ -22,20 +27,19 @@
 		data() {
 			return {
 				editor: null,
-				defaultValues: ""
+				defaultValues: "",
+				config: {
+					BaseUrl: '',
+					UEDITOR_HOME_URL: '/static/js/ueditor/',
+					toolbars: [
+						['fullscreen', 'source', 'undo', 'redo'],
+						['bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall']
+					]
+				}
 			}
 		},
 		props: {
-			'defaultValue': this.defaultValues,
-			'config': {
-				BaseUrl: '',
-				UEDITOR_HOME_URL: '/static/js/ueditor/',
-				toolbars: [
-					['fullscreen', 'source', 'undo', 'redo'],
-					['bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc']
-				]
-			}
-
+			'defaultValue': this.defaultValues
 		},
 		mounted() {
 			var _this = this;
