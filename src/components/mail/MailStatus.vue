@@ -44,7 +44,7 @@
 					currentPage: 1
 				},
 				clickedIdx: -1, //当前被点击的元素
-			};
+			}
 		},
 		methods: {
 			typeIndex(index) {
@@ -96,7 +96,7 @@
 				that.$ajax
 					.post(apiPath, sendEmailParam)
 					.then(function(response) {
-						var res = response.data;
+						var res = response.data
 						var param={}
 						param.id=row.id
 						if(res.Code === 1000) {
@@ -104,7 +104,7 @@
 						} else {
 							param.state="发送失败"
 						}
-						that.getMailStatus(param);
+						that.getMailStatus(param)
 						that.zLoading = false
 					})
 					.catch(function(response) {})
@@ -115,7 +115,7 @@
 				that.$ajax
 					.put(apiPath, param)
 					.then(function(response) {
-						var res = response.data;
+						var res = response.data
 						if(res.Code === 1000) {
 							that.$message({
 								message: "发送邮件成功",
@@ -138,14 +138,14 @@
 			this.getMail()
 		},
 		mounted() {
-			var that = this;
+			var that = this
 			window.onresize = () => {
 				return(() => {
 					that.tHeight = document.documentElement.clientHeight - 50
-				})();
-			};
+				})()
+			}
 		}
-	};
+	}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
