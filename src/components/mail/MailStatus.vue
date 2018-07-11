@@ -47,46 +47,46 @@ export default {
   },
   methods: {
     typeIndex(index) {
-      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1;
+      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
     },
     getMail() {
-      var that = this;
-      that.zLoading = true;
-      var pageNum = that.zPager.currentPage;
-      var pageSize = that.zPager.size;
-      var apiPath = that.apiPath + "SendMail";
+      var that = this
+      that.zLoading = true
+      var pageNum = that.zPager.currentPage
+      var pageSize = that.zPager.size
+      var apiPath = that.apiPath + "SendMail"
       that.$ajax
         .get(apiPath)
         .then(function(response) {
-          var res = response.data;
+          var res = response.data
           if (res.Code === 1000) {
-            that.zMailStatusData = res.Result.Data;
-            that.zPager.total = res.Result.Total;
+            that.zMailStatusData = res.Result.Data
+            that.zPager.total = res.Result.Total
           }
-          that.zLoading = false;
+          that.zLoading = false
         })
-        .catch(function(response) {});
+        .catch(function(response) {})
     },
     pagerChange(val) {
-      this.getMail();
+      this.getMail()
     },
     seeLawDialog(row) {
-      this.zLoading = true;
+      this.zLoading = true
       if (row) {
-        this.zMail.sendTo = row.send_to;
-        this.zMail.id = row.id;
-        this.zMail.sendCc = row.send_cc;
-        this.zMail.state = row.state;
-        this.zMail.createDate = row.create_date;
+        this.zMail.sendTo = row.send_to
+        this.zMail.id = row.id
+        this.zMail.sendCc = row.send_cc
+        this.zMail.state = row.state
+        this.zMail.createDate = row.create_date
       }
-      this.zLoading = false;
-      this.zDialog = true;
+      this.zLoading = false
+      this.zDialog = true
     },
     sendMail(row) {
-      var that = this;
-      var id = row.id;
-      var apiPath = that.apiPath + "SendMail";
-      delete row.state, row.create_date;
+      var that = this
+      var id = row.id
+      var apiPath = that.apiPath + "SendMail"
+      delete row.state, row.create_date
       that.$ajax
         .post(apiPath, row)
         .then(function(response) {
@@ -95,21 +95,21 @@ export default {
             that.$message({
               message: "发送邮件成功",
               type: "success"
-            });
+            })
           }
-          that.zLoading = false;
+          that.zLoading = false
         })
-        .catch(function(response) {});
+        .catch(function(response) {})
     }
   },
   created() {
-    this.getMail();
+    this.getMail()
   },
   mounted() {
     var that = this;
     window.onresize = () => {
       return (() => {
-        that.tHeight = document.documentElement.clientHeight - 50;
+        that.tHeight = document.documentElement.clientHeight - 50
       })();
     };
   }
