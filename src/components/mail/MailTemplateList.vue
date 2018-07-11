@@ -270,6 +270,7 @@
 	}
 	.form_btn{
 		margin-right: 100px !important;
+		margin-bottom: 0px !important;
 		text-align: center;
 	}
 </style>
