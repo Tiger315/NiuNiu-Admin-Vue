@@ -18,6 +18,7 @@
 			</el-table-column>
 		</el-table>
 		<!--表格结束-->
+
 		<!--分页开始-->
 		<div style="margin-top: 10px; height: 32px; line-height: 32px; text-align: center;">
 			<span style="float: left; text-align: right; color: #606266; font-size: 14px; padding-top: 3px;">共 {{ zPager.total }} 条</span>
@@ -29,103 +30,101 @@
 </template>
 
 <script>
-	export default {
-		name: 'MailStatus',
-		data() {
-			return {
-				tHeight: document.documentElement.clientHeight - 50,
-				zLoading: true,
-				zMailStatusData: [],
-				zPager: {
-					total: 0,
-					size: 30,
-					count: 11,
-					currentPage: 1
-				}
-			}
-		},
-		methods: {
-			typeIndex(index) {
-				return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
-			},
-			getMail() {
-				var that = this;
-				that.zLoading = true;
-				var pageNum = that.zPager.currentPage;
-				var pageSize = that.zPager.size;
-				var apiPath = that.apiPath + 'SendMail';
-				that.$ajax
-					.get(apiPath)
-					.then(function(response) {
-						var res = response.data;
-						if(res.Code === 1000) {
-							that.zMailStatusData = res.Result.Data;
-							that.zPager.total = res.Result.Total;
-						}
-						that.zLoading = false;
-					})
-					.catch(function(response) {})
-			},
-			pagerChange(val) {
-				this.getMail();
-			},
-			seeLawDialog(row) {
-				this.zLoading = true
-				if(row) {
-					this.zMail.sendTo = row.send_to;
-					this.zMail.id = row.id;
-					this.zMail.sendCc = row.send_cc;
-					this.zMail.state = row.state;
-					this.zMail.createDate = row.create_date;
-				}
-				this.zLoading = false;
-				this.zDialog = true;
-			},
-			//重新发送邮件
-			sendMail(row){
-				var that=this;
-				var id=row.id;
-				var apiPath = that.apiPath + 'SendMail';
-				delete row.state;
-				delete row.create_date;
-				that.$ajax
-					.post(apiPath,row)
-					.then(function(response) {
-						var res = response.data;
-						if(res.Code === 1000) {
-							that.$message({
-								message: '发送邮件成功',
-								type: 'success'
-							});
-						}
-						that.zLoading = false;
-					})
-					.catch(function(response) {})
-			}
-		},
-		created() {
-			this.getMail();
-		},
-		mounted() {
-			var that = this;
-			window.onresize = () => {
-				return(() => {
-					that.tHeight = document.documentElement.clientHeight - 50;
-				})()
-			}
-		}
-	}
+export default {
+  name: "MailStatus",
+  data() {
+    return {
+      tHeight: document.documentElement.clientHeight - 50,
+      zLoading: true,
+      zMailStatusData: [],
+      zPager: {
+        total: 0,
+        size: 30,
+        count: 11,
+        currentPage: 1
+      }
+    };
+  },
+  methods: {
+    typeIndex(index) {
+      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1;
+    },
+    getMail() {
+      var that = this;
+      that.zLoading = true;
+      var pageNum = that.zPager.currentPage;
+      var pageSize = that.zPager.size;
+      var apiPath = that.apiPath + "SendMail";
+      that.$ajax
+        .get(apiPath)
+        .then(function(response) {
+          var res = response.data;
+          if (res.Code === 1000) {
+            that.zMailStatusData = res.Result.Data;
+            that.zPager.total = res.Result.Total;
+          }
+          that.zLoading = false;
+        })
+        .catch(function(response) {});
+    },
+    pagerChange(val) {
+      this.getMail();
+    },
+    seeLawDialog(row) {
+      this.zLoading = true;
+      if (row) {
+        this.zMail.sendTo = row.send_to;
+        this.zMail.id = row.id;
+        this.zMail.sendCc = row.send_cc;
+        this.zMail.state = row.state;
+        this.zMail.createDate = row.create_date;
+      }
+      this.zLoading = false;
+      this.zDialog = true;
+    },
+    sendMail(row) {
+      var that = this;
+      var id = row.id;
+      var apiPath = that.apiPath + "SendMail";
+      delete row.state, row.create_date;
+      that.$ajax
+        .post(apiPath, row)
+        .then(function(response) {
+          var res = response.data;
+          if (res.Code === 1000) {
+            that.$message({
+              message: "发送邮件成功",
+              type: "success"
+            });
+          }
+          that.zLoading = false;
+        })
+        .catch(function(response) {});
+    }
+  },
+  created() {
+    this.getMail();
+  },
+  mounted() {
+    var that = this;
+    window.onresize = () => {
+      return (() => {
+        that.tHeight = document.documentElement.clientHeight - 50;
+      })();
+    };
+  }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-	[v-cloak] {
-		display: none;
-	}
-	html,
-	body {
-		padding: 0;
-		margin: 0;
-		font-size: 14px;
-	}
+[v-cloak] {
+  display: none;
+}
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
 </style>
