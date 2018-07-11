@@ -43,7 +43,6 @@
 					<el-button type="primary" @click="isValid('addMail.addMailTemplate')">确 定</el-button>
 				</el-form-item>
 			</el-form>
-
 		</el-dialog>
 		<!--对话框结束-->
 	</div>
@@ -139,6 +138,8 @@
 			},
 			//点击弹框中确定按钮，新增或者编辑模板
 			addMailTemplate(formName) {
+				var that=this;
+				var addEmailParam = this.addMail.addMailTemplate;
 				this.addMail.centerDialogVisible = false;
 				var apiPath = that.apiPath + 'MailTemplate';
 				if(this.isEditDialog == 1) { //新增
