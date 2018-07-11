@@ -32,8 +32,7 @@
 					BaseUrl: '',
 					UEDITOR_HOME_URL: '/static/js/ueditor/',
 					toolbars: [
-						['fullscreen', 'source', 'undo', 'redo'],
-						['bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall']
+						['source', 'undo', 'redo','bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall']
 					]
 				}
 			}
@@ -46,6 +45,7 @@
 			this.editor = UE.getEditor('editor', this.config); // 初始化UE
 			this.editor.addListener("ready", function() {
 				_this.editor.setContent(_this.defaultValue || ""); // 确保UE加载完成后，放入内容。
+				_this.editor.setHeight(150);
 			});
 		},
 		methods: {

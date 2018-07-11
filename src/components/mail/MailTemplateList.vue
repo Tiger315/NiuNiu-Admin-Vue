@@ -38,7 +38,7 @@
 				<el-form-item label="邮件内容" prop="body">
 					<li-ueditor ref="ueditor" :default-value='addMail.addMailTemplate.body'></li-ueditor>
 				</el-form-item>
-				<el-form-item>
+				<el-form-item class="form_btn">
 					<el-button @click="addMail.centerDialogVisible = false">取 消</el-button>
 					<el-button type="primary" @click="isValid('addMail.addMailTemplate')">确 定</el-button>
 				</el-form-item>
@@ -267,5 +267,9 @@
 	
 	.mail-textarea {
 		margin-top: 20px;
+	}
+	.form_btn{
+		margin-left: 0px !important;
+		text-align: center;
 	}
 </style>
