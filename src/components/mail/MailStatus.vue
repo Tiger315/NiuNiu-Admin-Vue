@@ -87,23 +87,24 @@
 				var that = this
 				that.clickedIdx = index
 				var apiPath = that.apiPath + "SendMail"
-				var sendEmailParam={
-					id:rows.id,
-					send_cc:rows.send_cc,
-					send_to:rows.send_to,
-					template_id:rows.template_id
+				var sendEmailParam = {
+					id: rows.id,
+					send_cc: rows.send_cc,
+					send_to: rows.send_to,
+					template_id: rows.template_id
 				}
 				that.$ajax
 					.post(apiPath, sendEmailParam)
 					.then(function(response) {
 						var res = response.data
-						var param={}
-						param.id=row.id
+						var param = {}
+						
 						if(res.Code === 1000) {
-							param.state="已发送"
+							param.state = "已发送"
 						} else {
-							param.state="发送失败"
+							param.state = "发送失败"
 						}
+						param['id'] = rows.id
 						that.getMailStatus(param)
 						that.zLoading = false
 					})
@@ -121,7 +122,7 @@
 								message: "发送邮件成功",
 								type: "success"
 							})
-						}else{
+						} else {
 							that.$message({
 								message: "发送邮件失败",
 								type: "success"
@@ -160,10 +161,12 @@
 		margin: 0;
 		font-size: 14px;
 	}
-	.el-icon-loading{
+	
+	.el-icon-loading {
 		display: none;
 	}
-	.active.el-icon-loading{
+	
+	.active.el-icon-loading {
 		display: inline-block;
 		font-size: 14px;
 		margin-left: 5px;
