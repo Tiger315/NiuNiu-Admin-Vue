@@ -114,7 +114,7 @@ export default {
     },
     getMailStatus(param) {
       var that = this;
-      var apiPath = that.apiPath + "SendMail";
+      var apiPath = that.apiPath + "SendMail/Send";
       that.$ajax
         .put(apiPath, param)
         .then(function(response) {

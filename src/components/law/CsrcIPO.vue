@@ -128,7 +128,7 @@ export default {
       let pageNum = that.zPager.currentPage;
       let pageSize = that.zPager.size;
       let apiPath =
-        that.apiPath + "CsrcIPO?page=" + pageNum + "&per_page=" + pageSize;
+        that.apiPath + "CsrcIPO/Pager/" + pageNum + "/" + pageSize;
 
       that.$ajax
         .get(apiPath)
