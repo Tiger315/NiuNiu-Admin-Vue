@@ -18,7 +18,7 @@
               </template>
               <el-menu-item index="1-1" @click="addTab('新增法律法规','./static/pages/Law/law_add.html')">新增法律法规</el-menu-item>
               <el-menu-item index="1-2" @click="addTab('法律法规列表','./#/Law/LawList')">法律法规列表</el-menu-item>
-              <el-menu-item index="1-3" @click="addTab('IPo','./#/Law/CsrcIPO')">IPo</el-menu-item>
+              <el-menu-item index="1-3" @click="addTab('IPO','./#/Law/CsrcIPO')">IPO</el-menu-item>
             </el-submenu>
             <el-submenu index="2">
               <template slot="title">
