@@ -88,7 +88,7 @@ export default {
     sendMail(rows, index) {
       var that = this;
       that.clickedIdx = index;
-      var apiPath = that.apiPath + "SendMail";
+      var apiPath = that.apiPath + "Send";
       var sendEmailParam = {
         id: rows.id,
         send_cc: rows.send_cc,
@@ -114,7 +114,7 @@ export default {
     },
     getMailStatus(param) {
       var that = this;
-      var apiPath = that.apiPath + "SendMail/Send";
+      var apiPath = that.apiPath + "SendMail";
       that.$ajax
         .put(apiPath, param)
         .then(function(response) {
