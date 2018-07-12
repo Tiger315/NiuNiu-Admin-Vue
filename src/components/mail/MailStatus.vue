@@ -1,34 +1,34 @@
 <template>
-	<div class="MailStatus-box" v-cloak>
-		<!--表格开始-->
-		<el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMailStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
-			<el-table-column type="index" fixed="left" width="70" :index="typeIndex"></el-table-column>
-			<el-table-column fixed="left" prop="send_to" label="发送给" fit></el-table-column>
-			<el-table-column prop="send_cc" label="抄送给" fit></el-table-column>
-			<el-table-column prop="state" label="状态">
-				<template slot-scope="scope">
-					<el-tag :type="scope.row.state === '待发送' ? 'danger' : 'primary'" close-transition>{{scope.row.state}}</el-tag>
-				</template>
-			</el-table-column>
-			<el-table-column prop="create_date" label="创建时间"></el-table-column>
-			<el-table-column fixed="right" label="操作" width="160" align="center">
-				<template slot-scope="scope">
-					<el-button type="text" size="small" @click.native.prevent="sendMail(scope.row,scope.$index)">{{clickedIdx==scope.$index?'发送中':'重新发送'}}
-						<i :class="clickedIdx==scope.$index?'active el-icon-loading':'el-icon-loading'"></i>
-					</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
-		<!--表格结束-->
+  <div class="MailStatus-box" v-cloak>
+    <!--表格开始-->
+    <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMailStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
+      <el-table-column type="index" fixed="left" width="70" :index="typeIndex"></el-table-column>
+      <el-table-column fixed="left" prop="send_to" label="发送给" fit></el-table-column>
+      <el-table-column prop="send_cc" label="抄送给" fit></el-table-column>
+      <el-table-column prop="state" label="状态">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.state === '待发送' ? 'danger' : 'primary'" close-transition>{{scope.row.state}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="create_date" label="创建时间"></el-table-column>
+      <el-table-column fixed="right" label="操作" width="160" align="center">
+        <template slot-scope="scope">
+          <el-button type="text" size="small" @click.native.prevent="sendMail(scope.row,scope.$index)">{{clickedIdx==scope.$index?'发送中':'重新发送'}}
+            <i :class="clickedIdx==scope.$index?'active el-icon-loading':'el-icon-loading'"></i>
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!--表格结束-->
 
-		<!--分页开始-->
-		<div style="margin-top: 10px; height: 32px; line-height: 32px; text-align: center;">
-			<span style="float: left; text-align: right; color: #606266; font-size: 14px; padding-top: 3px;">共 {{ zPager.total }} 条</span>
-			<el-pagination layout="prev, pager, next" :page-size="zPager.size" :pager-count="zPager.count" :current-page.sync="zPager.currentPage" :total="zPager.total" @current-change="pagerChange">
-			</el-pagination>
-		</div>
-		<!--分页结束-->
-	</div>
+    <!--分页开始-->
+    <div style="margin-top: 10px; height: 32px; line-height: 32px; text-align: center;">
+      <span style="float: left; text-align: right; color: #606266; font-size: 14px; padding-top: 3px;">共 {{ zPager.total }} 条</span>
+      <el-pagination layout="prev, pager, next" :page-size="zPager.size" :pager-count="zPager.count" :current-page.sync="zPager.currentPage" :total="zPager.total" @current-change="pagerChange">
+      </el-pagination>
+    </div>
+    <!--分页结束-->
+  </div>
 </template>
 
 <script>
