@@ -75,23 +75,23 @@
 
 <script>
 export default {
-  name: 'LawList',
+  name: "LawList",
   data() {
     return {
-      tHeight: document.documentElement.clientHeight - 135,
+      tHeight: document.documentElement.clientHeight - 50,
       isDefOrSearch: 0,
       zLoading: true,
       sBox: {
         zLawTypeProps: {
-          value: 'Name',
-          label: 'Name',
-          children: 'Child'
+          value: "Name",
+          label: "Name",
+          children: "Child"
         },
         zLawWjProps: {
-          value: 'Name',
-          label: 'Name',
-          children: 'Child'
-        },
+          value: "Name",
+          label: "Name",
+          children: "Child"
+        }
       },
       zLawData: [],
       zPager: {
@@ -101,100 +101,94 @@ export default {
         currentPage: 1
       },
       zCurLaw: {
-        id: '',
-        title: '',
-        Issue_Date: '',
-        organization:'',
-        sign:'',
-        topic_Word:'',
-        type:'',
-        content:'',
+        id: "",
+        title: "",
+        Issue_Date: "",
+        organization: "",
+        sign: "",
+        topic_Word: "",
+        type: "",
+        content: "",
         attchementTotal: 0,
         attachementData: []
       },
       zDialog: false,
       zEditDialog: false,
-      zEditUrl: '#'
-    }
+      zEditUrl: "#"
+    };
   },
   methods: {
     typeIndex(index) {
-      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
+      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1;
     },
 
     getLaw() {
-      const that = this
-      that.zLoading = true
-      let pageNum = that.zPager.currentPage
-      let pageSize = that.zPager.size
+      const that = this;
+      that.zLoading = true;
+      let pageNum = that.zPager.currentPage;
+      let pageSize = that.zPager.size;
       let apiPath =
-        that.apiPath +
-        'CsrcIPO?page=' +
-        pageNum +
-        '&per_page=' +
-        pageSize
+        that.apiPath + "CsrcIPO?page=" + pageNum + "&per_page=" + pageSize;
 
       that.$ajax
         .get(apiPath)
         .then(function(response) {
-          let res = response.data
+          let res = response.data;
           if (res.Code === 1000) {
-            that.zLawData = res.Result.Data
-            that.zPager.total = res.Result.Total
+            that.zLawData = res.Result.Data;
+            that.zPager.total = res.Result.Total;
           }
-          that.zLoading = false
+          that.zLoading = false;
         })
-        .catch(function(response) {
-        })
+        .catch(function(response) {});
     },
     pagerChange(val) {
-      this.getLaw()
+      this.getLaw();
     },
     seeLawDialog(row) {
-      this.zLoading = true
+      this.zLoading = true;
       if (row) {
-        this.zCurLaw.title = row.Title
-        this.zCurLaw.id = row.ID
-        this.zCurLaw.Issue_Date = row.Issue_Date
-        this.zCurLaw.sign = row.Sign
-        this.zCurLaw.content = row.Content
-        this.zCurLaw.organization = row.Organization
-        this.zCurLaw.topic_Word = row.Topic_Word
-        this.zCurLaw.type = row.Type
- 				this.getLawAttachement(row.ID)
+        this.zCurLaw.title = row.Title;
+        this.zCurLaw.id = row.ID;
+        this.zCurLaw.Issue_Date = row.Issue_Date;
+        this.zCurLaw.sign = row.Sign;
+        this.zCurLaw.content = row.Content;
+        this.zCurLaw.organization = row.Organization;
+        this.zCurLaw.topic_Word = row.Topic_Word;
+        this.zCurLaw.type = row.Type;
+        this.getLawAttachement(row.ID);
       }
-      this.zLoading = false
-      this.zDialog = true
+      this.zLoading = false;
+      this.zDialog = true;
     },
     getLawAttachement(id) {
-      const that = this
-      let apiPath = that.apiPath + 'CsrcIPOAttr/' + id
+      const that = this;
+      let apiPath = that.apiPath + "CsrcIPOAttr/" + id;
 
       that.$ajax
         .get(apiPath)
         .then(function(response) {
-          let res = response.data
-          that.zCurLaw.attchementTotal = res.Result.Total
-          that.zCurLaw.attachementData = res.Result.Data
+          let res = response.data;
+          that.zCurLaw.attchementTotal = res.Result.Total;
+          that.zCurLaw.attachementData = res.Result.Data;
         })
         .catch(function(response) {
-          console.log(response)
-        })
-    },
- 
+          console.log(response);
+        });
+    }
   },
   created() {
-    this.getLaw()
+    this.getLaw();
   },
   mounted() {
-    const that = this
+    const that = this;
     window.onresize = () => {
       return (() => {
-        that.tHeight = document.documentElement.clientHeight - 135
-      })()
-    }
+        that.tHeight = document.documentElement.clientHeight - 50;
+      })();
+    };
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
