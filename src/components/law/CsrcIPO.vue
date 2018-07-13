@@ -53,7 +53,7 @@
                 <el-col :span="8" v-for="att in zCurLaw.attachementData" :key="att.id">
                   <el-row>
                     <el-col style="text-align: left;">
-                      <a :href="'http://sign.niuniu.com:8814/'+att.att_url" style="color: #0d308c; font-size: 13px;" :title="att.old_name">{{att.name}}</a>
+                      <a :href="att.att_url" style="color: #0d308c; font-size: 13px;" :title="att.old_name">{{att.name}}</a>
                       <span class="nsm" style="margin-left: 3px;">({{att.size}})</span>
                     </el-col>
                   </el-row>
