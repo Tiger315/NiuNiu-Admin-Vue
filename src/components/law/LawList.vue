@@ -154,7 +154,7 @@
 <script>
 export default {
   name: 'LawList',
-  data() {
+  data () {
     return {
       tHeight: document.documentElement.clientHeight - 135,
       isDefOrSearch: 0,
@@ -210,72 +210,72 @@ export default {
     }
   },
   methods: {
-    typeIndex(index) {
+    typeIndex (index) {
       return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
     },
-    getLawType() {
+    getLawType () {
       const that = this
       let apiPath = that.apiPath + 'LawType'
 
       that.$ajax
         .get(apiPath)
-        .then(function(response) {
+        .then(function (response) {
           let res = response.data
           that.sBox.zLawTypeData = res.Result.Data
         })
-        .catch(function(response) {
+        .catch(function (response) {
           console.log(response)
         })
     },
-    lawTypeChange(value) {
+    lawTypeChange (value) {
       this.sBox.zLawTypeVal = value
     },
-    getLawWj() {
+    getLawWj () {
       const that = this
       let apiPath = that.apiPath + 'LawWj'
 
       that.$ajax
         .get(apiPath)
-        .then(function(response) {
+        .then(function (response) {
           let res = response.data
           that.sBox.zLawWjData = res.Result.Data
         })
-        .catch(function(response) {
+        .catch(function (response) {
           console.log(response)
         })
     },
-    lawWjChange(value) {
+    lawWjChange (value) {
       this.sBox.zLawWjVal = value
     },
-    getLawScope() {
+    getLawScope () {
       const that = this
       let apiPath = that.apiPath + 'LawScope'
 
       that.$ajax
         .get(apiPath)
-        .then(function(response) {
+        .then(function (response) {
           let res = response.data
           that.sBox.zLawScopeData = res.Result.Data
         })
-        .catch(function(response) {
+        .catch(function (response) {
           console.log(response)
         })
     },
-    getLawSource() {
+    getLawSource () {
       const that = this
       let apiPath = that.apiPath + 'LawSource'
 
       that.$ajax
         .get(apiPath)
-        .then(function(response) {
+        .then(function (response) {
           let res = response.data
           that.sBox.zLawSourceData = res.Result.Data
         })
-        .catch(function(response) {
+        .catch(function (response) {
           console.log(response)
         })
     },
-    getLaw() {
+    getLaw () {
       const that = this
       that.zLoading = true
       var t1 = that.sBox.zLawT1Val.trim() === '' ? '[]' : that.sBox.zLawT1Val
@@ -317,7 +317,7 @@ export default {
 
       that.$ajax
         .get(apiPath)
-        .then(function(response) {
+        .then(function (response) {
           let res = response.data
           if (res.Code === 1000) {
             that.zLawData = res.Result.Data
@@ -325,14 +325,14 @@ export default {
           }
           that.zLoading = false
         })
-        .catch(function(response) {
+        .catch(function (response) {
           console.log(response)
         })
     },
-    pagerChange(val) {
+    pagerChange (val) {
       this.getLaw()
     },
-    seeLawDialog(row) {
+    seeLawDialog (row) {
       this.zLoading = true
       if (row) {
         this.zCurLaw.title = row.title
@@ -350,39 +350,39 @@ export default {
       this.zLoading = false
       this.zDialog = true
     },
-    getLawDetail(id) {
+    getLawDetail (id) {
       const that = this
       let apiPath = that.apiPath + 'Law/Det/' + id
 
       that.$ajax
         .get(apiPath)
-        .then(function(response) {
+        .then(function (response) {
           let res = response.data
           that.zCurLaw.content =
             '<style>.nZ{font-size:18px;font-weight:bold}.nJ{font-size:16px;font-weight:bold;text-indent:20px;padding:10px 5px 5px 5px}.nT{font-weight:bold}.nT-content{font-weight:normal}.nt-box{text-indent:40px;padding:5px 5px 5px 5px}.nt-box:hover{cursor:pointer;background-color:#e7eaf4}table.gt {font-family:verdana,arial,sans-serif;font-size:11px;color:#333333;border-width:1px;border-color:#666666;border-collapse:collapse;} table.gt th {border-width:1px;padding:8px;border-style:solid;border-color:#666666;background-color:#dedede;} table.gt td {border-width:1px;padding:8px;border-style:solid;border-color:#666666;background-color:#ffffff;}</style>' +
             res.Result.Data[0].content
           that.zCurLaw.navigation = JSON.parse(res.Result.Data[0].navigation)
         })
-        .catch(function(response) {
+        .catch(function (response) {
           console.log(response)
         })
     },
-    getLawAttachement(id) {
+    getLawAttachement (id) {
       const that = this
       let apiPath = that.apiPath + 'LawAttachement/' + id
 
       that.$ajax
         .get(apiPath)
-        .then(function(response) {
+        .then(function (response) {
           let res = response.data
           that.zCurLaw.attchementTotal = res.Result.Total
           that.zCurLaw.attachementData = res.Result.Data
         })
-        .catch(function(response) {
+        .catch(function (response) {
           console.log(response)
         })
     },
-    delLaw(index, row) {
+    delLaw (index, row) {
       const that = this
       this.$confirm('此操作将永久删除此条数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -393,13 +393,13 @@ export default {
           let apiPath = that.apiPath + 'Law/' + row.id
           that.$ajax
             .delete(apiPath)
-            .then(function(response) {
+            .then(function (response) {
               let res = response.data
               if (res.Code === 1000) {
                 that.zLawData.splice(index, 1)
               }
             })
-            .catch(function(response) {
+            .catch(function (response) {
               console.log(response)
             })
         })
@@ -410,20 +410,20 @@ export default {
           })
         })
     },
-    ediLaw(row) {
+    ediLaw (row) {
       this.zEditUrl =
         './static/pages/Law/law_edit.html?row=' + encodeURI(JSON.stringify(row))
       this.zEditDialog = true
     }
   },
-  created() {
+  created () {
     this.getLawType()
     this.getLawWj()
     this.getLawScope()
     this.getLawSource()
     this.getLaw()
   },
-  mounted() {
+  mounted () {
     const that = this
     window.onresize = () => {
       return (() => {

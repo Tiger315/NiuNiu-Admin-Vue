@@ -304,7 +304,7 @@
                 node.setAttr('class', 'MsoListParagraph')
               }
               if (!node.firstChild()) {
-                node.innerHTML(um.browser.ie ? '&nbsp;' : '<br>')
+                node.innerHTML(um.browser && um.browser.ie ? '&nbsp;' : '<br>')
               }
             },
             div: function (node) {

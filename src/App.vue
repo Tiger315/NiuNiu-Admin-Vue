@@ -25,12 +25,12 @@ body {
   height: 100%;
 }
 .shareLawList.el-popover{
-	min-width: 0px;
+  min-width: 0px;
 }
 textarea{
-	resize:none
+  resize:none
 }
 .el-tooltip__popper.is-dark{
-	width: 50%;
+  width: 50%;
 }
 </style>

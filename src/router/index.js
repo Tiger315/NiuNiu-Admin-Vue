@@ -8,9 +8,10 @@ import PVDetail from '@/components/count/PVDetail'
 import CsrcIPO from '@/components/law/CsrcIPO'
 import MailTemplate from '@/components/mail/MailTemplateList'
 import MailStatus from '@/components/mail/MailStatus'
+import InfoDisclosure from '@/components/information/InfoDisclosure'
 Vue.use(Router)
 
-export default new Router({  
+export default new Router({
   routes: [{
     path: '/',
     name: 'Index',
@@ -43,5 +44,9 @@ export default new Router({
     path: '/Mail/MailStatus',
     name: 'MailStatus',
     component: MailStatus
+  }, {
+    path: '/Info/InfoDisclosure',
+    name: 'InfoDisclosure',
+    component: InfoDisclosure
   }]
 })

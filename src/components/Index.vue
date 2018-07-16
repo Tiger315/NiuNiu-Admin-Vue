@@ -54,7 +54,7 @@
 <script>
 export default {
   name: 'Index',
-  data() {
+  data () {
     return {
       ifrHeight: document.documentElement.clientHeight - 60,
       editableTabsValue: '1',
@@ -70,7 +70,7 @@ export default {
     }
   },
   methods: {
-    addTab(targetName, targetUrl) {
+    addTab (targetName, targetUrl) {
       let newTabName = ++this.tabIndex + ''
       this.editableTabs.push({
         title: targetName,
@@ -83,7 +83,7 @@ export default {
       })
       this.editableTabsValue = newTabName
     },
-    removeTab(targetName) {
+    removeTab (targetName) {
       let tabs = this.editableTabs
       let activeName = this.editableTabsValue
       if (activeName === targetName) {
@@ -101,7 +101,7 @@ export default {
       this.editableTabs = tabs.filter(tab => tab.name !== targetName)
     }
   },
-  mounted() {
+  mounted () {
     const that = this
     window.onresize = () => {
       return (() => {
