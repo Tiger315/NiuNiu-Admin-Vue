@@ -133,7 +133,11 @@ export default {
     // 点击弹框中确定按钮，新增或者编辑模板
     addMailTemplate (formName) {
       var that = this
-      var addEmailParam = this.addMail.addMailTemplate
+      var addEmailParam = {
+        title: this.addMail.addMailTemplate.title,
+        body: this.addMail.addMailTemplate.body,
+        id: this.addMail.addMailTemplate.id
+      }
       this.addMail.centerDialogVisible = false
       var apiPath = that.apiPath + 'MailTemplate'
       if (this.isEditDialog === 1) {
@@ -146,6 +150,7 @@ export default {
             if (res.Code === 1000) {
               addEmailParam.id = res.Result.Data
               // 向数组最前面插入新增的这条数据
+              console.log(that.mailData)
               that.mailData.unshift(addEmailParam)
               that.$message({
                 message: '添加邮件模板成功',
@@ -225,7 +230,7 @@ export default {
         })
     },
     pagerChange (val) {
-      this.getMail()
+      console.log(val)
     }
   },
   created () {
