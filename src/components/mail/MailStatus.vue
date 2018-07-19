@@ -69,7 +69,8 @@ export default {
         .catch(function (response) {})
     },
     pagerChange (val) {
-      this.getMail()
+      console.log(val)
+      // this.getMail()
     },
     seeLawDialog (row) {
       this.zLoading = true

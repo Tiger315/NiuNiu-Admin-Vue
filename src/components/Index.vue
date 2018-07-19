@@ -31,12 +31,19 @@
             <el-submenu index="3">
               <template slot="title">
                 <i class="el-icon-menu"></i>
+                <span>信披智库</span>
+              </template>
+              <el-menu-item index="3-1" @click="addTab('信披智库','./#Info/InfoDisclosure')">信披智库</el-menu-item>
+            </el-submenu>
+            <el-submenu index="4">
+              <template slot="title">
+                <i class="el-icon-menu"></i>
                 <span>报表中心</span>
               </template>
-              <el-menu-item index="3-1" @click="addTab('报表1','#')">报表1</el-menu-item>
-              <el-menu-item index="3-2" @click="addTab('报表2','#')">报表2</el-menu-item>
-              <el-menu-item index="3-3" @click="addTab('报表3','#')">报表3</el-menu-item>
-              <el-menu-item index="3-4" @click="addTab('报表4','#')">报表4</el-menu-item>
+              <el-menu-item index="4-1" @click="addTab('报表1','#')">报表1</el-menu-item>
+              <el-menu-item index="4-2" @click="addTab('报表2','#')">报表2</el-menu-item>
+              <el-menu-item index="4-3" @click="addTab('报表3','#')">报表3</el-menu-item>
+              <el-menu-item index="4-4" @click="addTab('报表4','#')">报表4</el-menu-item>
             </el-submenu>
           </el-menu>
         </el-aside>

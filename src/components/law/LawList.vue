@@ -18,7 +18,6 @@
       <el-button type="primary" icon="el-icon-search" size="small" style="margin-left: 20px;" @click="getLaw">搜索</el-button>
     </el-container>
     <!--搜索开始-->
-
     <!--表格开始-->
     <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zLawData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
       <el-table-column type="index" fixed="left" width="70" :index="typeIndex"></el-table-column>
