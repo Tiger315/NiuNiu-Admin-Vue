@@ -31,9 +31,10 @@
             <el-submenu index="3">
               <template slot="title">
                 <i class="el-icon-menu"></i>
-                <span>信披智库</span>
+                <span>爬虫数据</span>
               </template>
-              <el-menu-item index="3-1" @click="addTab('信披智库','./#Info/InfoDisclosure')">信披智库</el-menu-item>
+              <el-menu-item index="3-1" @click="addTab('信披智库','./#/Info/InfoDisclosure')">信披智库</el-menu-item>
+              <el-menu-item index="3-1" @click="addTab('慧博研究报告','./#/Info/HuiboPresentation')">慧博研究报告</el-menu-item>
             </el-submenu>
             <el-submenu index="4">
               <template slot="title">

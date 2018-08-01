@@ -11,7 +11,7 @@
         <el-table-column fixed="right" label="操作" width="160" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click.native.prevent="editMailTemplate(scope.row,scope.$index)">编辑</el-button>
-            <el-button type="text" size="small" @click.native.prevent="deleteMailTemplate(scope.row,scope.$index)">删除</el-button>
+            <el-button type="text" size="small" @click.native.prevent="deleteMailTemplate(scope.row,scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -194,7 +194,7 @@ export default {
       this.addMail.addMailTemplate.id = param.id
     },
     // 点击删除按钮
-    deleteMailTemplate (index, row) {
+    deleteMailTemplate (row, id) {
       const that = this
       this.$confirm('此操作将永久删除此条数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -203,16 +203,17 @@ export default {
       })
         .then(() => {
           var apiPath =
-            that.apiPath + 'MailTemplate/' + that.mailData[that.clickedIdx].id
+            that.apiPath + 'MailTemplate/' + id
           that.$ajax
             .delete(apiPath)
             .then(function (response) {
               let res = response.data
               if (res.Code === 1000) {
                 // 删除这条数据
-                that.mailData.splice(that.clickedIdx, 1)
+                that.mailData = that.mailData.filter(a => a['id'] !== id)
+                // 修改总数
+                that.zPager.total--
                 // 隐藏弹框
-                that.addMail.deleteDialogVisible = false
                 that.$message({
                   message: '删除邮件模板成功',
                   type: 'success'

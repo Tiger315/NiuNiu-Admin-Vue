@@ -6,9 +6,10 @@ import LawListForWpf from '@/components/law/LawListForWpf'
 import PVDays from '@/components/count/PVDays'
 import PVDetail from '@/components/count/PVDetail'
 import CsrcIPO from '@/components/law/CsrcIPO'
-import MailTemplate from '@/components/mail/MailTemplateList'
-import MailStatus from '@/components/mail/MailStatus'
-import InfoDisclosure from '@/components/information/InfoDisclosure'
+import MailTemplate from '@/components/mail/MailTemplateList' // 邮件模版列表
+import MailStatus from '@/components/mail/MailStatus' // 邮件状态
+import InfoDisclosure from '@/components/information/xinpi/InfoDisclosure' // 信批智库
+import HuiboReport from '@/components/information/huibo/HuiboPresentation' // 慧博研究报告
 Vue.use(Router)
 
 export default new Router({
@@ -49,5 +50,9 @@ export default new Router({
     path: '/Info/InfoDisclosure',
     name: 'InfoDisclosure',
     component: InfoDisclosure
+  }, {
+    path: '/Info/HuiboPresentation',
+    name: ' HuiboReport',
+    component: HuiboReport
   }]
 })

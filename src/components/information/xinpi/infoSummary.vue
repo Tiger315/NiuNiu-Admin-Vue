@@ -17,7 +17,7 @@
   </div>
 </template>
 <script>
-import ueditor from '../commen/Ueditor.vue'
+import ueditor from '../../commen/Ueditor.vue'
 export default {
   name: 'infoSummary',
   components: {
