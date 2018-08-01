@@ -35,7 +35,7 @@ export default {
   name: 'HuiboPresentation',
   data () {
     return {
-      tHeight: document.documentElement.clientHeight - 104,
+      tHeight: document.documentElement.clientHeight - 93,
       zLoading: true,
       zHuiboPresentationData: [],
       sBox: {
@@ -119,7 +119,7 @@ export default {
     const that = this
     window.onresize = () => {
       return (() => {
-        that.tHeight = document.documentElement.clientHeight - 104
+        that.tHeight = document.documentElement.clientHeight - 93
       })()
     }
   }
