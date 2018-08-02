@@ -39,7 +39,7 @@
     <!--分页结束-->
 
     <!--查看明细dialog开始-->
-    <el-dialog :title="zDetail.title" :visible.sync="zDialog" style="font-weight: bold;" :fullscreen="isFull">
+    <el-dialog :title="zDetail.title" :visible.sync="zDialog" style="font-weight: bold;" fullscreen>
       <div class="dialog-box" v-loading="zLoading">
         <el-row style="font-size: 14px; color: #717171;">
           <el-col :span="16">
@@ -90,7 +90,7 @@
     <!--查看明细dialog结束-->
 
     <!--编辑明细dialog开始-->
-    <el-dialog  :visible.sync="zEditDialog" style="font-weight: bold;" :fullscreen="isFull">
+    <el-dialog  :visible.sync="zEditDialog" style="font-weight: bold;" fullscreen>
        <el-form ref="zDetail" :model="zDetail" :rules="rules" label-width="120px" class="demo-ruleForm">
       <el-row>
         <el-col :span="8">
@@ -189,7 +189,6 @@ export default {
       zDialog: false,
       zEditDialog: false,
       prensentForm: {},
-      isFull: true,
       rules: {
         title: [{
           required: true,
