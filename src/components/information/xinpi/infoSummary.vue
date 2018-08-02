@@ -17,12 +17,8 @@
   </div>
 </template>
 <script>
-import ueditor from '../../commen/Ueditor.vue'
 export default {
   name: 'infoSummary',
-  components: {
-    'li-ueditor': ueditor
-  },
   data () {
     return {
       'centerDialogVisible': false,
@@ -35,7 +31,7 @@ export default {
 
 }
 </script>
-<style>
+<style scoped>
 .add-summary{
   width: 100%;
   text-align: center;

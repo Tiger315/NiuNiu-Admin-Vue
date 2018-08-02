@@ -16,7 +16,7 @@ export default {
   props: ['passTime']
 }
 </script>
-<style>
+<style scoped>
 .page-title{
   position: relative;
     font-size: 16px;

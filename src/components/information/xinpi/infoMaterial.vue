@@ -8,6 +8,6 @@ export default {
   name: 'infoMaterial'
 }
 </script>
-<style>
+<style scoped>
 
 </style>

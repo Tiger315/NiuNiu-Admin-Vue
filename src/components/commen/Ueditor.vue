@@ -25,7 +25,7 @@ export default {
   data () {
     return {
       editor: null,
-      defaultValues: '',
+      useType: '',
       config: {
         BaseUrl: '',
         UEDITOR_HOME_URL: '/static/js/ueditor/',
@@ -35,15 +35,13 @@ export default {
       }
     }
   },
-  props: {
-    'defaultValue': this.defaultValues
-  },
+  props: ['defaultValue', 'useTypes'],
   mounted () {
     var _this = this
     this.editor = window.UE.getEditor('editor', this.config) // 初始化UE
     this.editor.addListener('ready', function () {
       _this.editor.setContent(_this.defaultValue || '') // 确保UE加载完成后，放入内容。
-      _this.editor.setHeight(document.documentElement.clientHeight / 5)
+      _this.editor.setHeight(_this.useTypes === '1' ? 260 : document.documentElement.clientHeight / 5)
     })
   },
   methods: {

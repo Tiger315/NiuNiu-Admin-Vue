@@ -13,6 +13,6 @@ export default {
   props: ['passTime']
 }
 </script>
-<style>
+<style scoped>
 
 </style>

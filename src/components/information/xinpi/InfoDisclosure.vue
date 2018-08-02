@@ -4,7 +4,7 @@
         <el-cascader placeholder="请输入公告关键词"  size="small" style="width:50%;" filterable clearable></el-cascader>
     </div> -->
     <div class="data-show">
-    <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
+    <el-tabs v-model="activeName2" type="card"  @tab-click="handleClick">
       <el-tab-pane label="信息披露文件" name="infoFile">
         <info-file></info-file>
       </el-tab-pane>
@@ -59,8 +59,13 @@ export default {
   }
 }
 </script>
-
 <style>
+.Info-box .el-tabs__nav{
+  float: right;
+}
+</style>
+
+<style scoped>
 .el-collapse-item__header {
   font-size: 15px;
   font-weight: 700;
@@ -72,9 +77,6 @@ export default {
 }
 .search-box{
  margin-bottom: 20px;
-}
-.el-tabs__nav{
-  float: right;
 }
 
 </style>

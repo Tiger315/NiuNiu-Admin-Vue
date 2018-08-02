@@ -44,7 +44,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .blue{
   color: #409EFF;
   cursor: pointer;

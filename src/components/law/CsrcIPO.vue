@@ -65,7 +65,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button-group>
-          <el-button type="primary" @click="dialog = false" size="small" icon="el-icon-circle-close-outline">关 闭</el-button>
+          <el-button type="primary" @click="zDialog = false" size="small" icon="el-icon-circle-close-outline">关 闭</el-button>
         </el-button-group>
       </span>
     </el-dialog>
