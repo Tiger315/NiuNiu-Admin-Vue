@@ -10,6 +10,10 @@ import MailTemplate from '@/components/mail/MailTemplateList' // 邮件模版列
 import MailStatus from '@/components/mail/MailStatus' // 邮件状态
 import InfoDisclosure from '@/components/information/xinpi/InfoDisclosure' // 信批智库
 import HuiboReport from '@/components/information/huibo/HuiboPresentation' // 慧博研究报告
+import SupervisionType from '@/components/information/yuqing/SupervisionType' // 舆情监管类型
+import IrregularitiesType from '@/components/information/yuqing/IrregularitiesType' // 舆情违规类型
+import Feedback from '@/components/information/yuqing/Feedback' // 舆情监管反馈
+
 Vue.use(Router)
 
 export default new Router({
@@ -54,5 +58,17 @@ export default new Router({
     path: '/Info/HuiboPresentation',
     name: ' HuiboReport',
     component: HuiboReport
+  }, {
+    path: '/yuqing/supervisionType',
+    name: ' SupervisionType',
+    component: SupervisionType
+  }, {
+    path: '/yuqing/IrregularitiesType',
+    name: ' IrregularitiesType',
+    component: IrregularitiesType
+  }, {
+    path: '/yuqing/feedback',
+    name: ' Feedback',
+    component: Feedback
   }]
 })

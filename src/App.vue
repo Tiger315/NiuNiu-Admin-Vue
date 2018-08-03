@@ -33,4 +33,26 @@ textarea{
 .el-tooltip__popper.is-dark{
   width: 50%;
 }
+ul,li{
+  list-style: none;
+}
+.fr{
+  float: right;
+}
+.fl{
+  float: left;
+}
+.clearfix {
+    zoom: 1;
+}
+.clearfix:before, .clearfix:after {
+    content: " ";
+    display: table;
+}
+.clearfix:after {
+    clear: both;
+    visibility: hidden;
+    font-size: 0;
+    height: 0;
+}
 </style>

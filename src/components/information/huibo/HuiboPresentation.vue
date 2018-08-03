@@ -161,9 +161,8 @@ export default {
       zHuiboPresentationData: [],
       sBox: {
         zHuiboType: [
-          '并购重组', '晨会早刊', '港台研究', '公司调研', '股指期货',
-          '宏观经济', '机构资讯', '基金频道', '金融工程', '期货研究', '期权研究',
-          '融资融卷', '投资策略', '投资组合', '外汇研究', '新股研究', '行业分析', '债券研究'
+          '并购重组', '晨会早刊', '港台研究', '公司调研', '股指期货', '宏观经济', '机构资讯', '基金频道', '金融工程',
+          '期货研究', '期权研究', '融资融卷', '投资策略', '投资组合', '外汇研究', '新股研究', '行业分析', '债券研究'
         ],
         zHuiboVal: '',
         zHuiboTypeKeyWords: ''
@@ -226,6 +225,7 @@ export default {
   props: ['defaultValue', 'useTypes'],
   methods: {
     seePresentationDialog (row, flag) {
+      console.log(row)
       this.zLoading = true
       if (row) {
         this.zDetail.title = row.title
@@ -236,7 +236,6 @@ export default {
         this.zDetail.publish = row.publish
         this.zDetail.ztype = row.ztype
         this.zDetail.grade = row.grade
-        // this.getLawAttachement(row.ID)
       }
       this.zLoading = false
       if (flag) { // 标记是查看明细
