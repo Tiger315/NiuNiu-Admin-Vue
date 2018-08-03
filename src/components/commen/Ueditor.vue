@@ -3,7 +3,7 @@
 <script id="editor" type="text/plain"></script>
 </div>
 </template>
-<style>
+<style scoped>
 @import url("../../../static/js/ueditor/themes/default/css/ueditor.css");
 #editor {
 margin-top: 10px;
