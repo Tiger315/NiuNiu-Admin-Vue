@@ -10,12 +10,12 @@
     <!--表格开始-->
     <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zHuiboPresentationData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
       <el-table-column type="index" fixed="left" width="70"></el-table-column>
-      <el-table-column fixed="left" prop="title" label="标题" min-width="300" fit show-overflow-tooltip>
+      <el-table-column fixed="left" prop="title" label="标题" min-width="250" fit show-overflow-tooltip>
          <template slot-scope="scope">
           <span style="color: #0d308c; cursor: pointer; font" @click="seePresentationDialog(scope.row,1)">{{ scope.row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="publish" label="研报出处" fit></el-table-column>
+      <el-table-column prop="publish" label="研报出处" width="160" fit></el-table-column>
       <el-table-column prop="ztype" label="研报栏目" fit></el-table-column>
       <el-table-column prop="doc_pages" label="研报页数"  width="100" fit></el-table-column>
        <el-table-column prop="author" label="研报作者"  width="200" fit></el-table-column>
