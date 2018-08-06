@@ -38,9 +38,9 @@
               <el-menu-item index="3-1" @click="addTab('慧博研究报告','./#/Info/HuiboPresentation')">慧博研究报告</el-menu-item>
               <el-submenu index="1-4">
                 <template slot="title">金眼舆情系统</template>
-                <el-menu-item index="1-4-1"  @click="addTab('监管类型','./#/yuqing/supervisionType')">监管类型</el-menu-item>
-                <el-menu-item index="1-4-2"  @click="addTab('违规类型','./#/yuqing/IrregularitiesType')">违规类型</el-menu-item>
-                <el-menu-item index="1-4-3"  @click="addTab('监管反馈','./#/yuqing/feedback')">监管反馈</el-menu-item>
+                <el-menu-item index="1-4-1"  @click="addTab('监管函件','./#/yuqing/supervisionType')">监管函件</el-menu-item>
+                <el-menu-item index="1-4-2"  @click="addTab('违规类型','./#/yuqing/IrregularitiesType')">违规案例</el-menu-item>
+                <el-menu-item index="1-4-3"  @click="addTab('监管动态','./#/yuqing/feedback')">监管动态</el-menu-item>
               </el-submenu>
             </el-submenu>
             <el-submenu index="4">
