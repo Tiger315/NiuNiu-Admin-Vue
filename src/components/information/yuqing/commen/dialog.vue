@@ -1,5 +1,5 @@
 <template>
-    <el-dialog  :visible.sync="zDialog" :before-close="closeModel" style="font-weight: bold;" fullscreen>
+    <el-dialog  :visible.sync="zDialog" :before-close="closeModel" style="font-weight: bold;margin:0px;" fullscreen>
       <div class="dialog-box" v-loading="zLoading">
         <el-container :height="leftModelHeight">
           <el-aside width="33.3%" >
@@ -38,7 +38,7 @@
             </div>
           </el-aside>
           <el-container>
-            <el-header class="showPdf" height="750px">
+            <el-header class="showPdf" :height="leftModelHeight">
               <div v-html='zDetail.docContent' class="docTitle"></div>
             </el-header>
             <el-main class="table2" >
@@ -124,12 +124,21 @@ export default {
 .table2 .el-table  th,.table2 .el-table  td{
   text-align: center;
 }
+.SupervisionType .el-dialog__body{
+  padding-top:0px;
+}
+.SupervisionType .el-dialog__headerbtn{
+    top: 0px;
+}
 </style>
 <style scoped>
 .detail-card{
     border: 1px solid #d4dbe3;
     font-size: 16px;
     margin-bottom: 10px;
+}
+.showPdf{
+  margin-bottom:20px;
 }
 .card-head{
     padding: 0 20px;
@@ -147,10 +156,9 @@ export default {
 }
 .card-body p {
   margin:0px;
-    padding: 6px 0;
+    padding: 3px 0;
     text-indent: 2em;
     font-size: 14px;
-    line-height: 2em;
     color: rgba(0, 0, 0, 0.65);
     font-weight:300;
     cursor: pointer;
