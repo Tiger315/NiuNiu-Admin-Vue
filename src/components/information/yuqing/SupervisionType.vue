@@ -12,7 +12,7 @@
         <el-select collapse-tags clearable size="small" placeholder="来源" v-model="searchParam.companyMarketId" filterable>
             <el-option  v-for='item in resourceArr' :value="item.Source_Name" :key="item.Source_ID"></el-option>
         </el-select>
-        <el-date-picker type="daterange" v-model="searchParam.processDateStart" range-separator="至" start-placeholder="起始日期" end-placeholder="结束日期"></el-date-picker>
+        <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" start-placeholder="起始日期" end-placeholder="结束日期"></el-date-picker>
         <div>
           <el-button type="primary" icon="el-icon-search" size="small"  @click="loadTableDetail(1)">查询</el-button>
          <el-button type="warning"  size="small"  @click="clearParam" >清空查询</el-button>
@@ -60,9 +60,11 @@ export default {
         titleCan: '', // 可含关键词
         titleNot: '', // 不含关键词
         companyMarketId: '', // 来源
+        time: '',
         processDateStart: '', // 起始时间
         processDateEnd: '' // 结束时间
       },
+      searchSourceNu: '',
       zPager: {
         total: 0,
         size: 30,
@@ -90,14 +92,13 @@ export default {
     },
     loadTableDetail (param) {
       var that = this
-      var api = that.apiPath + 'DynamicNews'
+      var api = that.apiPath + 'DynamicNews/Pager'
       if (param) {
         this.getSearchParam()
-        api = api + '/' + (this.searchParam.titleMust || 'def') + '/' + (this.searchParam.titleCan || 'def') + '/' + (this.searchParam.titleNot || 'def') + '/' + (this.searchParam.processDateStart || 'def') + '/' + (this.searchParam.processDateEnd || 'def') + '/' + (this.searchParam.companyMarketId || 'def') + '/' + this.zPager.currentPage + '/' + this.zPager.size
+        api = api + '/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + (this.searchSourceNu || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
       } else {
         api = api + '/' + this.zPager.currentPage + '/' + this.zPager.size
       }
-      console.log(api)
       that.$ajax
         .get(api)
         .then(function (response) {
@@ -111,11 +112,11 @@ export default {
     },
     getSearchParam () {
       // 获取查询的参数
-      this.searchParam.processDateStart = this.searchParam.processDateStart && this.dealDate(this.searchParam.processDateStart[0]) // 开始时间
-      this.searchParam.processDateEnd = this.searchParam.processDateStart && this.dealDate(this.searchParam.processDateStart[1]) // 结束时间
+      this.searchParam.processDateStart = this.searchParam.time && this.dealDate(this.searchParam.time[0]) // 开始时间
+      this.searchParam.processDateEnd = this.searchParam.time && this.dealDate(this.searchParam.time[1]) // 结束时间
       this.resourceArr.map(item => {
         if (item.Source_Name === this.searchParam.companyMarketId) {
-          this.searchParam.companyMarketId = item.Source_ID
+          this.searchSourceNu = item.Source_ID
         }
       })
     },
