@@ -9,12 +9,12 @@
         <el-input placeholder="不包含任意关键词(以空格区分)" v-model="searchParam.titleNot"  size="small"  clearable></el-input>
       </el-container>
       <el-container style="margin-top: 10px;">
-        <el-select multiple collapse-tags clearable size="small" placeholder="监管机构" v-model="searchParam.companyMarketId" filterable>
-            <el-option value=""></el-option>
+        <el-select collapse-tags clearable size="small" placeholder="来源" v-model="searchParam.companyMarketId" filterable>
+            <el-option  v-for='item in resourceArr' :value="item.Source_Name" :key="item.Source_ID"></el-option>
         </el-select>
         <el-date-picker type="daterange" v-model="searchParam.processDateStart" range-separator="至" start-placeholder="起始日期" end-placeholder="结束日期"></el-date-picker>
         <div>
-          <el-button type="primary" icon="el-icon-search" size="small" >查询</el-button>
+          <el-button type="primary" icon="el-icon-search" size="small"  @click="loadTableDetail(1)">查询</el-button>
          <el-button type="warning"  size="small"  @click="clearParam" >清空查询</el-button>
         </div>
       </el-container>
@@ -59,15 +59,9 @@ export default {
         titleMust: '', // 必含关键词
         titleCan: '', // 可含关键词
         titleNot: '', // 不含关键词
-        companyCode: '', // 公司代码简称
-        involveObjectId: '', // 处罚对象身份
-        avermentId: '', // 申辩情况
+        companyMarketId: '', // 来源
         processDateStart: '', // 起始时间
-        processDateEnd: '', // 结束时间
-        companyMarketId: '', // 所属板块
-        industryInfo: '', // 所属行业
-        companyArea: '', // 所属地区
-        supervisionOrganId: ''// 监管机构
+        processDateEnd: '' // 结束时间
       },
       zPager: {
         total: 0,
@@ -75,7 +69,8 @@ export default {
         count: 11,
         currentPage: 1
       },
-      violationCase: []
+      violationCase: [],
+      resourceArr: []
     }
   },
   methods: {
@@ -84,14 +79,25 @@ export default {
         this.searchParam[key] = ''
       }
     },
+    loadSources () {
+      var that = this
+      var api = that.apiPath + 'DynamicNews_Source'
+      that.$ajax
+        .get(api)
+        .then(function (response) {
+          that.resourceArr = response.data.Result.Data
+        })
+    },
     loadTableDetail (param) {
       var that = this
-      var api = that.apiPath + 'DynamicNews/Pager'
+      var api = that.apiPath + 'DynamicNews'
       if (param) {
-
+        this.getSearchParam()
+        api = api + '/' + (this.searchParam.titleMust || 'def') + '/' + (this.searchParam.titleCan || 'def') + '/' + (this.searchParam.titleNot || 'def') + '/' + (this.searchParam.processDateStart || 'def') + '/' + (this.searchParam.processDateEnd || 'def') + '/' + (this.searchParam.companyMarketId || 'def') + '/' + this.zPager.currentPage + '/' + this.zPager.size
       } else {
         api = api + '/' + this.zPager.currentPage + '/' + this.zPager.size
       }
+      console.log(api)
       that.$ajax
         .get(api)
         .then(function (response) {
@@ -105,15 +111,21 @@ export default {
     },
     getSearchParam () {
       // 获取查询的参数
-      this.processDateStart = this.searchParam.processDateStart && this.dealDate(this.searchParam.processDateStart[0]) // 开始时间
-      this.processDateEnd = this.searchParam.processDateStart && this.dealDate(this.searchParam.processDateStart[1]) // 结束时间
+      this.searchParam.processDateStart = this.searchParam.processDateStart && this.dealDate(this.searchParam.processDateStart[0]) // 开始时间
+      this.searchParam.processDateEnd = this.searchParam.processDateStart && this.dealDate(this.searchParam.processDateStart[1]) // 结束时间
+      this.resourceArr.map(item => {
+        if (item.Source_Name === this.searchParam.companyMarketId) {
+          this.searchParam.companyMarketId = item.Source_ID
+        }
+      })
     },
     pagerChange () {
-      this.loadTableDetail()
+      this.loadTableDetail(1)
     }
 
   },
   created () {
+    this.loadSources()
     this.loadTableDetail()
   },
   mounted () {
