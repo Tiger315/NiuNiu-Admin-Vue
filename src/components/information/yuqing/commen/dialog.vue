@@ -56,7 +56,7 @@
 </template>
 <script>
 export default {
-  name: 'dialog',
+  name: 'dialogs',
   data () {
     return {
       zDialog: false,

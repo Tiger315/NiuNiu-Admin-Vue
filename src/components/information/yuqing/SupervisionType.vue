@@ -1,75 +1,39 @@
 <template>
   <div class="SupervisionType">
-    <el-container :height="leftHeight">
-      <el-aside width="15%" height="100%" class="left">
-        <div class="title">监管类型</div>
-        <el-tree :data="treeData"></el-tree>
-      </el-aside>
     <el-container>
       <el-header height="240">
         <!-- 搜索条件开始 -->
        <el-container style="margin-top: 10px;">
-        <el-input placeholder="必含关键词（以空格区分）" v-model="searchParam.titleMust"  size="small"  clearable></el-input>
-        <el-input placeholder="可含关键词（以空格区分）" v-model="searchParam.titleCan"  size="small" clearable></el-input>
-        <el-input placeholder="不含关键词（以空格区分）" v-model="searchParam.titleNot"  size="small"  clearable></el-input>
+        <el-input placeholder="包含所有关键词(以空格区分)" v-model="searchParam.titleMust"  size="small"  clearable></el-input>
+        <el-input placeholder="包含任意关键词(以空格区分)" v-model="searchParam.titleCan"  size="small" clearable></el-input>
+        <el-input placeholder="不包含任意关键词(以空格区分)" v-model="searchParam.titleNot"  size="small"  clearable></el-input>
       </el-container>
       <el-container style="margin-top: 10px;">
-        <el-select multiple collapse-tags size="small" v-model="searchParam.companyCode"  placeholder="请输入公司代码、简称" filterable>
-          <el-option ></el-option>
+        <el-select multiple collapse-tags clearable size="small" placeholder="监管机构" v-model="searchParam.companyMarketId" filterable>
+            <el-option value=""></el-option>
         </el-select>
-        <el-select  multiple collapse-tags size="small" v-model="searchParam.involveObjectId"  placeholder="处罚对象身份" filterable>
-          <el-option ></el-option>
-        </el-select>
-        <el-select multiple collapse-tags size="small" v-model="searchParam.avermentId" placeholder="申辩情况" filterable>
-          <el-option></el-option>
-        </el-select>
-      </el-container>
-      <el-container style="margin-top: 10px;">
-        <el-date-picker  type="date"  placeholder="起始日期" v-model="searchParam.processDateStart"></el-date-picker>
-        <el-date-picker  type="date"  placeholder="结束日期" v-model="searchParam.processDateEnd"></el-date-picker>
-        <el-select multiple collapse-tags size="small" placeholder="所属板块" v-model="searchParam.companyMarketId" filterable>
-          <el-option></el-option>
-        </el-select>
-      </el-container>
-      <el-container style="margin-top: 10px;">
-        <el-select multiple collapse-tags size="small"  placeholder="所属行业" v-model="searchParam.industryInfo" filterable>
-          <el-option ></el-option>
-        </el-select>
-        <el-select  multiple collapse-tags size="small" placeholder="所属地区" v-model="searchParam.companyArea" filterable>
-          <el-option ></el-option>
-        </el-select>
-        <el-select multiple collapse-tags size="small" placeholder="监管机构" v-model="searchParam.supervisionOrganId" filterable>
-          <el-option></el-option>
-        </el-select>
-      </el-container>
-       <el-container style="margin-top: 10px;">
-         <el-button type="primary" icon="el-icon-search" size="small" style="margin-top: 20px;">查询</el-button>
-         <el-button type="warning"  size="small" style="margin-top: 20px;" @click="clearParam" >清空查询</el-button>
+        <el-date-picker type="daterange" v-model="searchParam.processDateStart" range-separator="至" start-placeholder="起始日期" end-placeholder="结束日期"></el-date-picker>
+        <div>
+          <el-button type="primary" icon="el-icon-search" size="small" >查询</el-button>
+         <el-button type="warning"  size="small"  @click="clearParam" >清空查询</el-button>
+        </div>
       </el-container>
       <!-- 搜索条件结束 -->
       </el-header>
       <el-main :height="dataHeight">
-          <!-- 展示数据开始 -->
-          <ul id="detail_list">
-            <li class="showData" v-for="item in searchList" :key="item.id">
-              <div class="clearfix">
-                <a class="detail_title fl" href="javascript:void(0)">{{item.docTitle}}</a>
-                <span class="detail_date fr">{{item.processDate}}</span>
-              </div>
-              <p class="detail_msg">
-                <span >证券代码：{{item.companyCode}}</span>
-                <span>监管机构：{{item.supervisionOrganName}}</span>
-                <span>监管类型：{{item.supervisionTypeName}}</span>
-                <span>所属板块：{{item.companyMarketName}}</span>
-                <span >违规类型：{{item.violationTypeName}}</span>
-                <span>所属地区：{{item.companyArea}}</span>
-              </p>
-              <p class="detail_content">
-                  {{item.abdocContent}}
-              </p>
-            </li>
-          </ul>
-          <!-- 展示数据结束 -->
+          <!--表格开始-->
+            <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="violationCase"  stripe style="width: 100%;" empty-text=" " row-key="id">
+              <el-table-column type="index" fixed="left" width="70" ></el-table-column>
+              <el-table-column fixed="left" prop="News_Title" label="标题"  min-width="250"  fit show-overflow-tooltip>
+                <template slot-scope="scope">
+                  <span><a :href="scope.row.News_Url" target="_blank" style="color: #0d308c; cursor: pointer; text-decoration:none;">{{ scope.row.News_Title }}</a></span>
+                </template>
+              </el-table-column>
+              <el-table-column fixed="left" prop="News_Source" label="来源" width="250"></el-table-column>
+              <el-table-column fixed="left" prop="News_Date" label="发布日期"  width="200"></el-table-column>
+              <el-table-column fixed="left" prop="processDate"  label="分享"></el-table-column>
+            </el-table>
+          <!--表格结束-->
       </el-main>
        <!--分页开始-->
        <el-footer height="45">
@@ -79,28 +43,16 @@
           </el-pagination>
         </div>
        </el-footer>
-
         <!--分页结束-->
     </el-container>
-  </el-container>
-
-  <!--查看明细dialog开始-->
- <li-dialogo></li-dialogo>
-    <!--查看明细dialog结束-->
   </div>
 </template>
 <script>
-import dialogo from './commen/dialog.vue'
 export default {
   name: 'SupervisionType',
-  components: {
-    'li-dialogo': dialogo
-  },
   data () {
     return {
-      leftHeight: document.documentElement.clientHeight - 35,
       dataHeight: document.documentElement.clientHeight - 300,
-      leftModelHeight: document.documentElement.clientHeight - 30,
       zDialog: true,
       zLoading: true,
       searchParam: {
@@ -117,67 +69,13 @@ export default {
         companyArea: '', // 所属地区
         supervisionOrganId: ''// 监管机构
       },
-      treeData: [{
-        label: '监管措施',
-        children: [{
-          label: '监管关注'
-        }, {
-          label: '监管函'
-        }, {
-          label: '监管工作函'
-        }]
-      }],
       zPager: {
         total: 0,
         size: 30,
         count: 11,
         currentPage: 1
       },
-      searchList: [{
-        'abdocContent': '上海证券交易所 纪律处分决定书 〔2018〕36号 ─────────────── 关于对安阳钢铁股份有限公司、控股股东 安阳钢铁集团有限责任公司及有关 责任人予以通报批评的决定 当事人： 安阳钢铁股份有限公司，A 股证券简称：安阳钢铁，A 股证 券代码：600569； 安阳钢铁集团有限责任公司，安阳钢铁股份有限公司控股股 东； 刘润生，时任安阳钢铁集团有限责任公司总经理； 李志锋，时任安阳钢铁股份有限公司董事会秘书。 －1－ 经查明，安阳钢铁股份有限公司（以下简称安阳钢铁或公 司）、控股股东安阳钢铁集团有限责任公司（以下简称安钢集团） 在信息披露方面，有关责任人在职责履行方面存在如下违规行 为。 一、控股股东以媒体报道代替信息披露 根据公司披露的 2017 年半年度报告，报告期内公司实现归 母净利润 2776万元，同比大幅下降 70.59%。2017年 9月 7日， 有媒体报道称，公司控股股东安钢集团在其官方网站、微信公众 号及地方媒体等公开场合多次披露与上市公司相关的 2017 年 ',
-        'companyArea': '河南',
-        'companyCode': '600569',
-        'companyMarketName': '沪市主板',
-        'companyName': '安阳钢铁',
-        'docContent': '<p>上海证券交易所 纪律处分决定书 〔2018〕36号 ─────────────── 关于对安阳钢铁股份有限公司、控股股东 安阳钢铁集团有限责任公司及有关 责任人予以通报批评的决定 当事人： 安阳钢铁股份有限公司，A 股证券简称：安阳钢铁，A 股证 券代码：600569； 安阳钢铁集团有限责任公司，安阳钢铁股份有限公司控股股 东； 刘润生，时任安阳钢铁集团有限责任公司总经理； 李志锋，时任安阳钢铁股份有限公司董事会秘书。 －1－ 经查明，安阳钢铁股份有限公司（以下简称安阳钢铁或公 司）、控股股东安阳钢铁集团有限责任公司（以下简称安钢集团） 在信息披露方面，有关责任人在职责履行方面存在如下违规行 为。 一、控股股东以媒体报道代替信息披露 根据公司披露的 2017 年半年度报告，报告期内公司实现归 母净利润 2776万元，同比大幅下降 70.59%。2017年 9月 7日， 有媒体报道称，公司控股股东安钢集团在其官方网站、微信公众 号及地方媒体等公开场合多次披露与上市公司相关的 2017 年 7 月、8月盈利大增等经营信息。 经核实，2017年 7月、8月，公司控股股东安钢集团召开的 生产经营调度会议分别对整个集团当期业绩进行了预测，并在安 钢集团官方网站和微信公众号上进行了报道。2017年 7月 29日， 安钢集团官方网站发布召开 7月份大型调度会信息，提及安钢集 团 7月份单月盈利预计实现 3亿元。8 月 5日，安钢集团微信公 众号推送《7 月份实现 3 亿元，安钢是怎么做到的》消息。8 月 31日，安钢集团官方网站登载了《集团公司生产经营再创佳绩》 的消息，提及安钢集团 8月份利润有望突破 4亿元。上述信息发 布后，被多家媒体转载报道。 作为安钢集团体内主要资产和经营利润的主要来源，公司占 安钢集团2017年总资产的74.54%和经营利润的79.16%。公司的生 －2－ 产经营状况与安钢集团的业绩关联度较高，安钢集团业绩信息属 于对公司股票交易价格可能产生较大影响的股价敏感信息，尤其 是在公司半年度业绩大幅下滑的情况下，前述安钢集团2017年7、 8月盈利大增信息更容易引起市场和投资者关注。根据相关规则 要求，安钢集团应当告知公司，并及时在中国证监会指定媒体上 披露相关信息，但其未按规定通过指定媒体披露，而是以微信公 众号和官方网站等其他形式予以发布，不符合信息披露的基本要 求。 二、公司在股票交易异常波动后未充分核查并披露重大信息 2017年 8-9月期间，公司股价涨幅较大，从 3.25元涨到 5.33 元，区间涨幅达到 61%。其中，2017年 7月底安钢集团发布 7月 份盈利预测信息后，8 月 3-9 日的 5 个交易日中，公司股价有 4 个交易日涨停；8月底安钢集团发布 8月盈利预测信息后，公司 股价于 9月 1日再次涨停。安钢集团有关业绩大增的信息发布时 点与上市公司股价走势基本契合。 2017 年 8 月 30日-9 月 1日，公司股价连续 3个交易日涨幅 偏离值累计超过 20%，股票交易出现异常波动。在此情况下，公 司理应认真核查并如实披露可能对公司股票交易价格产生较大 影响的信息。但公司于 9月 2日发布的股票交易异常波动公告中， 仍未向控股股东积极核查对外披露 7、8月业绩大幅增长的事实， 并明确表示不存在应披露而未披露的重大信息，与前述控股股东 发布的 7、8 月盈利大增的事实明显不符。公司对股票交易异常 －3－ 波动的原因核查不充分，相关公告披露不完整，存在重大遗漏， 可能对投资者决策造成误导。 综上，安钢集团的业绩与公司的生产经营状况高度关联，安 钢集团的月度经营数据能够在较大程度上反映公司的经营业绩， 属于对公司股票交易价格可能产生较大影响的重大信息。而安钢 集团以媒体报道代替信息披露，违规发布了上述信息。时任安钢 集团总经理刘润生分别在 2017年 7、8 月的大型调度会上通报了 安钢集团利润预计情况，随后安排宣传部门将业绩预计大幅提升 的信息在安钢集团官方网站等处进行报道。上述宣传引起了其他 媒体的跟进报道。时任安钢集团总经理刘润生直接主导并推动了 安钢集团对外发布业绩预增的重大敏感信息，对安钢集团信息披 露违规行为负有主要责任。安钢集团和刘润生的行为违反了《上 海证券交易所股票上市规则》（以下简称《股票上市规则》）第 2.1条、第 2.14条、第 2.22条等有关规定。 公司在股票交易价格已经出现异常波动的情况下，未审慎核 查并如实披露控股股东业绩大幅增长的事实，信息披露存在重大 遗漏，对投资者的决策行为可能产生重大影响，其行为违反了《股 票上市规则》第 2.1 条、第 2.7 条和第 11.5.3 条等有关规定。 时任公司董事会秘书李志锋作为信息披露事务的直接负责人，具 体负责股价异动核查工作，未能勤勉尽责地认真对待并审慎处理 上述股票交易异常波动披露事项，对公司违规行为负有直接主要 责任，其行为违反了《股票上市规则》第 2.2条、第 3.1.4条、 －4－ 第 3.2.2条的规定及其在《董事（监事、高级管理人员）声明及 承诺书》中做出的承诺。 公司及有关责任人提出如下异议：一是安钢集团公布经营业 绩预测信息旨在提振士气，安阳钢铁及其董事、监事和高级管理 人员对此并不知情，安钢集团应对该违规行为负主要责任；二是 公司获悉有关事项后向安钢集团进行了问询，并及时披露了相关 信息。 上海证券交易所（以下简称本所）经审核认为，上述异议理 由不成立。安阳钢铁在股票交易异常波动后，未积极主动核查控 股股东在公开场合多次披露相关业绩信息的事实情况，其股票交 易异常波动公告的内容与实际情况明显不符，构成信息披露违 规。公司此前不知情及事后发布澄清公告，不影响对上述违规事 实的认定，不能作为免除或减轻责任的理由。 鉴于前述违规事实和情节，经本所纪律处分委员会审核通 过，根据《股票上市规则》第 17.2 条、第 17.3 条、第 17.4 条 和《上海证券交易所纪律处分和监管措施实施办法》的有关规定， 本所做出如下纪律处分决定：对安阳钢铁集团有限责任公司及其 时任总经理刘润生、安阳钢铁股份有限公司及其时任董事会秘书 李志锋予以通报批评。 对于上述纪律处分，本所将通报中国证监会，并记入上市公 司诚信档案。 公司应当引以为戒，严格按照法律、法规和《股票上市规则》 －5－ 的规定，规范运作，认真履行信息披露义务；控股股东应当勤勉 尽责，按照有关规定履行信息披露义务，及时告知公司已发生或 者拟发生的重大事件，积极配合公司做好信息披露工作；董事、 监事、高级管理人员应当履行忠实勤勉义务，促使公司规范运作， 并保证公司及时、公平、真实、准确和完整地披露所有重大信息。 上海证券交易所 二○一八年六月二十日 －6－</p>',
-        'docTitle': '关于对安阳钢铁股份有限公司、控股股东安阳钢铁集团有限责任公司及有关责任人予以通报批评的决定',
-        'id': '4590150_28_10008',
-        'processDate': '2018-07-05',
-        'processDetails': [{'involveObjectName': '安阳钢铁集团有限责任公司'}, {'involveObjectName': '安阳钢铁股份有限公司'}, {'involveObjectName': '刘润生'}, {'involveObjectName': '李志锋'}],
-        'showUrl': 'https://gdpage.cfbond.com/pdf/xiaoan/2018/4590150_28_10008.pdf',
-        'supervisionOrganName': '上海证券交易所',
-        'supervisionTypeName': '通报批评',
-        'violationTypeName': '股票交易异常波动,传闻澄清,与其他规范运作事项有关的其他违规'},
-      {
-        'abdocContent': '上海证券交易所 纪律处分决定书 〔2018〕36号 ─────────────── 关于对安阳钢铁股份有限公司、控股股东 安阳钢铁集团有限责任公司及有关 责任人予以通报批评的决定 当事人： 安阳钢铁股份有限公司，A 股证券简称：安阳钢铁，A 股证 券代码：600569； 安阳钢铁集团有限责任公司，安阳钢铁股份有限公司控股股 东； 刘润生，时任安阳钢铁集团有限责任公司总经理； 李志锋，时任安阳钢铁股份有限公司董事会秘书。 －1－ 经查明，安阳钢铁股份有限公司（以下简称安阳钢铁或公 司）、控股股东安阳钢铁集团有限责任公司（以下简称安钢集团） 在信息披露方面，有关责任人在职责履行方面存在如下违规行 为。 一、控股股东以媒体报道代替信息披露 根据公司披露的 2017 年半年度报告，报告期内公司实现归 母净利润 2776万元，同比大幅下降 70.59%。2017年 9月 7日， 有媒体报道称，公司控股股东安钢集团在其官方网站、微信公众 号及地方媒体等公开场合多次披露与上市公司相关的 2017 年 ',
-        'companyArea': '河南',
-        'companyCode': '600569',
-        'companyMarketName': '沪市主板',
-        'companyName': '安阳钢铁',
-        'docContent': '<p>上海证券交易所 纪律处分决定书 〔2018〕36号 ─────────────── 关于对安阳钢铁股份有限公司、控股股东 安阳钢铁集团有限责任公司及有关 责任人予以通报批评的决定 当事人： 安阳钢铁股份有限公司，A 股证券简称：安阳钢铁，A 股证 券代码：600569； 安阳钢铁集团有限责任公司，安阳钢铁股份有限公司控股股 东； 刘润生，时任安阳钢铁集团有限责任公司总经理； 李志锋，时任安阳钢铁股份有限公司董事会秘书。 －1－ 经查明，安阳钢铁股份有限公司（以下简称安阳钢铁或公 司）、控股股东安阳钢铁集团有限责任公司（以下简称安钢集团） 在信息披露方面，有关责任人在职责履行方面存在如下违规行 为。 一、控股股东以媒体报道代替信息披露 根据公司披露的 2017 年半年度报告，报告期内公司实现归 母净利润 2776万元，同比大幅下降 70.59%。2017年 9月 7日， 有媒体报道称，公司控股股东安钢集团在其官方网站、微信公众 号及地方媒体等公开场合多次披露与上市公司相关的 2017 年 7 月、8月盈利大增等经营信息。 经核实，2017年 7月、8月，公司控股股东安钢集团召开的 生产经营调度会议分别对整个集团当期业绩进行了预测，并在安 钢集团官方网站和微信公众号上进行了报道。2017年 7月 29日， 安钢集团官方网站发布召开 7月份大型调度会信息，提及安钢集 团 7月份单月盈利预计实现 3亿元。8 月 5日，安钢集团微信公 众号推送《7 月份实现 3 亿元，安钢是怎么做到的》消息。8 月 31日，安钢集团官方网站登载了《集团公司生产经营再创佳绩》 的消息，提及安钢集团 8月份利润有望突破 4亿元。上述信息发 布后，被多家媒体转载报道。 作为安钢集团体内主要资产和经营利润的主要来源，公司占 安钢集团2017年总资产的74.54%和经营利润的79.16%。公司的生 －2－ 产经营状况与安钢集团的业绩关联度较高，安钢集团业绩信息属 于对公司股票交易价格可能产生较大影响的股价敏感信息，尤其 是在公司半年度业绩大幅下滑的情况下，前述安钢集团2017年7、 8月盈利大增信息更容易引起市场和投资者关注。根据相关规则 要求，安钢集团应当告知公司，并及时在中国证监会指定媒体上 披露相关信息，但其未按规定通过指定媒体披露，而是以微信公 众号和官方网站等其他形式予以发布，不符合信息披露的基本要 求。 二、公司在股票交易异常波动后未充分核查并披露重大信息 2017年 8-9月期间，公司股价涨幅较大，从 3.25元涨到 5.33 元，区间涨幅达到 61%。其中，2017年 7月底安钢集团发布 7月 份盈利预测信息后，8 月 3-9 日的 5 个交易日中，公司股价有 4 个交易日涨停；8月底安钢集团发布 8月盈利预测信息后，公司 股价于 9月 1日再次涨停。安钢集团有关业绩大增的信息发布时 点与上市公司股价走势基本契合。 2017 年 8 月 30日-9 月 1日，公司股价连续 3个交易日涨幅 偏离值累计超过 20%，股票交易出现异常波动。在此情况下，公 司理应认真核查并如实披露可能对公司股票交易价格产生较大 影响的信息。但公司于 9月 2日发布的股票交易异常波动公告中， 仍未向控股股东积极核查对外披露 7、8月业绩大幅增长的事实， 并明确表示不存在应披露而未披露的重大信息，与前述控股股东 发布的 7、8 月盈利大增的事实明显不符。公司对股票交易异常 －3－ 波动的原因核查不充分，相关公告披露不完整，存在重大遗漏， 可能对投资者决策造成误导。 综上，安钢集团的业绩与公司的生产经营状况高度关联，安 钢集团的月度经营数据能够在较大程度上反映公司的经营业绩， 属于对公司股票交易价格可能产生较大影响的重大信息。而安钢 集团以媒体报道代替信息披露，违规发布了上述信息。时任安钢 集团总经理刘润生分别在 2017年 7、8 月的大型调度会上通报了 安钢集团利润预计情况，随后安排宣传部门将业绩预计大幅提升 的信息在安钢集团官方网站等处进行报道。上述宣传引起了其他 媒体的跟进报道。时任安钢集团总经理刘润生直接主导并推动了 安钢集团对外发布业绩预增的重大敏感信息，对安钢集团信息披 露违规行为负有主要责任。安钢集团和刘润生的行为违反了《上 海证券交易所股票上市规则》（以下简称《股票上市规则》）第 2.1条、第 2.14条、第 2.22条等有关规定。 公司在股票交易价格已经出现异常波动的情况下，未审慎核 查并如实披露控股股东业绩大幅增长的事实，信息披露存在重大 遗漏，对投资者的决策行为可能产生重大影响，其行为违反了《股 票上市规则》第 2.1 条、第 2.7 条和第 11.5.3 条等有关规定。 时任公司董事会秘书李志锋作为信息披露事务的直接负责人，具 体负责股价异动核查工作，未能勤勉尽责地认真对待并审慎处理 上述股票交易异常波动披露事项，对公司违规行为负有直接主要 责任，其行为违反了《股票上市规则》第 2.2条、第 3.1.4条、 －4－ 第 3.2.2条的规定及其在《董事（监事、高级管理人员）声明及 承诺书》中做出的承诺。 公司及有关责任人提出如下异议：一是安钢集团公布经营业 绩预测信息旨在提振士气，安阳钢铁及其董事、监事和高级管理 人员对此并不知情，安钢集团应对该违规行为负主要责任；二是 公司获悉有关事项后向安钢集团进行了问询，并及时披露了相关 信息。 上海证券交易所（以下简称本所）经审核认为，上述异议理 由不成立。安阳钢铁在股票交易异常波动后，未积极主动核查控 股股东在公开场合多次披露相关业绩信息的事实情况，其股票交 易异常波动公告的内容与实际情况明显不符，构成信息披露违 规。公司此前不知情及事后发布澄清公告，不影响对上述违规事 实的认定，不能作为免除或减轻责任的理由。 鉴于前述违规事实和情节，经本所纪律处分委员会审核通 过，根据《股票上市规则》第 17.2 条、第 17.3 条、第 17.4 条 和《上海证券交易所纪律处分和监管措施实施办法》的有关规定， 本所做出如下纪律处分决定：对安阳钢铁集团有限责任公司及其 时任总经理刘润生、安阳钢铁股份有限公司及其时任董事会秘书 李志锋予以通报批评。 对于上述纪律处分，本所将通报中国证监会，并记入上市公 司诚信档案。 公司应当引以为戒，严格按照法律、法规和《股票上市规则》 －5－ 的规定，规范运作，认真履行信息披露义务；控股股东应当勤勉 尽责，按照有关规定履行信息披露义务，及时告知公司已发生或 者拟发生的重大事件，积极配合公司做好信息披露工作；董事、 监事、高级管理人员应当履行忠实勤勉义务，促使公司规范运作， 并保证公司及时、公平、真实、准确和完整地披露所有重大信息。 上海证券交易所 二○一八年六月二十日 －6－</p>',
-        'docTitle': '关于对安阳钢铁股份有限公司、控股股东安阳钢铁集团有限责任公司及有关责任人予以通报批评的决定',
-        'id': '4590150_28_10008',
-        'processDate': '2018-07-05',
-        'processDetails': [{'involveObjectName': '安阳钢铁集团有限责任公司'}, {'involveObjectName': '安阳钢铁股份有限公司'}, {'involveObjectName': '刘润生'}, {'involveObjectName': '李志锋'}],
-        'showUrl': 'https://gdpage.cfbond.com/pdf/xiaoan/2018/4590150_28_10008.pdf',
-        'supervisionOrganName': '上海证券交易所',
-        'supervisionTypeName': '通报批评',
-        'violationTypeName': '股票交易异常波动,传闻澄清,与其他规范运作事项有关的其他违规'},
-      {
-        'abdocContent': '上海证券交易所 纪律处分决定书 〔2018〕36号 ─────────────── 关于对安阳钢铁股份有限公司、控股股东 安阳钢铁集团有限责任公司及有关 责任人予以通报批评的决定 当事人： 安阳钢铁股份有限公司，A 股证券简称：安阳钢铁，A 股证 券代码：600569； 安阳钢铁集团有限责任公司，安阳钢铁股份有限公司控股股 东； 刘润生，时任安阳钢铁集团有限责任公司总经理； 李志锋，时任安阳钢铁股份有限公司董事会秘书。 －1－ 经查明，安阳钢铁股份有限公司（以下简称安阳钢铁或公 司）、控股股东安阳钢铁集团有限责任公司（以下简称安钢集团） 在信息披露方面，有关责任人在职责履行方面存在如下违规行 为。 一、控股股东以媒体报道代替信息披露 根据公司披露的 2017 年半年度报告，报告期内公司实现归 母净利润 2776万元，同比大幅下降 70.59%。2017年 9月 7日， 有媒体报道称，公司控股股东安钢集团在其官方网站、微信公众 号及地方媒体等公开场合多次披露与上市公司相关的 2017 年 ',
-        'companyArea': '河南',
-        'companyCode': '600569',
-        'companyMarketName': '沪市主板',
-        'companyName': '安阳钢铁',
-        'docContent': '<p>上海证券交易所 纪律处分决定书 〔2018〕36号 ─────────────── 关于对安阳钢铁股份有限公司、控股股东 安阳钢铁集团有限责任公司及有关 责任人予以通报批评的决定 当事人： 安阳钢铁股份有限公司，A 股证券简称：安阳钢铁，A 股证 券代码：600569； 安阳钢铁集团有限责任公司，安阳钢铁股份有限公司控股股 东； 刘润生，时任安阳钢铁集团有限责任公司总经理； 李志锋，时任安阳钢铁股份有限公司董事会秘书。 －1－ 经查明，安阳钢铁股份有限公司（以下简称安阳钢铁或公 司）、控股股东安阳钢铁集团有限责任公司（以下简称安钢集团） 在信息披露方面，有关责任人在职责履行方面存在如下违规行 为。 一、控股股东以媒体报道代替信息披露 根据公司披露的 2017 年半年度报告，报告期内公司实现归 母净利润 2776万元，同比大幅下降 70.59%。2017年 9月 7日， 有媒体报道称，公司控股股东安钢集团在其官方网站、微信公众 号及地方媒体等公开场合多次披露与上市公司相关的 2017 年 7 月、8月盈利大增等经营信息。 经核实，2017年 7月、8月，公司控股股东安钢集团召开的 生产经营调度会议分别对整个集团当期业绩进行了预测，并在安 钢集团官方网站和微信公众号上进行了报道。2017年 7月 29日， 安钢集团官方网站发布召开 7月份大型调度会信息，提及安钢集 团 7月份单月盈利预计实现 3亿元。8 月 5日，安钢集团微信公 众号推送《7 月份实现 3 亿元，安钢是怎么做到的》消息。8 月 31日，安钢集团官方网站登载了《集团公司生产经营再创佳绩》 的消息，提及安钢集团 8月份利润有望突破 4亿元。上述信息发 布后，被多家媒体转载报道。 作为安钢集团体内主要资产和经营利润的主要来源，公司占 安钢集团2017年总资产的74.54%和经营利润的79.16%。公司的生 －2－ 产经营状况与安钢集团的业绩关联度较高，安钢集团业绩信息属 于对公司股票交易价格可能产生较大影响的股价敏感信息，尤其 是在公司半年度业绩大幅下滑的情况下，前述安钢集团2017年7、 8月盈利大增信息更容易引起市场和投资者关注。根据相关规则 要求，安钢集团应当告知公司，并及时在中国证监会指定媒体上 披露相关信息，但其未按规定通过指定媒体披露，而是以微信公 众号和官方网站等其他形式予以发布，不符合信息披露的基本要 求。 二、公司在股票交易异常波动后未充分核查并披露重大信息 2017年 8-9月期间，公司股价涨幅较大，从 3.25元涨到 5.33 元，区间涨幅达到 61%。其中，2017年 7月底安钢集团发布 7月 份盈利预测信息后，8 月 3-9 日的 5 个交易日中，公司股价有 4 个交易日涨停；8月底安钢集团发布 8月盈利预测信息后，公司 股价于 9月 1日再次涨停。安钢集团有关业绩大增的信息发布时 点与上市公司股价走势基本契合。 2017 年 8 月 30日-9 月 1日，公司股价连续 3个交易日涨幅 偏离值累计超过 20%，股票交易出现异常波动。在此情况下，公 司理应认真核查并如实披露可能对公司股票交易价格产生较大 影响的信息。但公司于 9月 2日发布的股票交易异常波动公告中， 仍未向控股股东积极核查对外披露 7、8月业绩大幅增长的事实， 并明确表示不存在应披露而未披露的重大信息，与前述控股股东 发布的 7、8 月盈利大增的事实明显不符。公司对股票交易异常 －3－ 波动的原因核查不充分，相关公告披露不完整，存在重大遗漏， 可能对投资者决策造成误导。 综上，安钢集团的业绩与公司的生产经营状况高度关联，安 钢集团的月度经营数据能够在较大程度上反映公司的经营业绩， 属于对公司股票交易价格可能产生较大影响的重大信息。而安钢 集团以媒体报道代替信息披露，违规发布了上述信息。时任安钢 集团总经理刘润生分别在 2017年 7、8 月的大型调度会上通报了 安钢集团利润预计情况，随后安排宣传部门将业绩预计大幅提升 的信息在安钢集团官方网站等处进行报道。上述宣传引起了其他 媒体的跟进报道。时任安钢集团总经理刘润生直接主导并推动了 安钢集团对外发布业绩预增的重大敏感信息，对安钢集团信息披 露违规行为负有主要责任。安钢集团和刘润生的行为违反了《上 海证券交易所股票上市规则》（以下简称《股票上市规则》）第 2.1条、第 2.14条、第 2.22条等有关规定。 公司在股票交易价格已经出现异常波动的情况下，未审慎核 查并如实披露控股股东业绩大幅增长的事实，信息披露存在重大 遗漏，对投资者的决策行为可能产生重大影响，其行为违反了《股 票上市规则》第 2.1 条、第 2.7 条和第 11.5.3 条等有关规定。 时任公司董事会秘书李志锋作为信息披露事务的直接负责人，具 体负责股价异动核查工作，未能勤勉尽责地认真对待并审慎处理 上述股票交易异常波动披露事项，对公司违规行为负有直接主要 责任，其行为违反了《股票上市规则》第 2.2条、第 3.1.4条、 －4－ 第 3.2.2条的规定及其在《董事（监事、高级管理人员）声明及 承诺书》中做出的承诺。 公司及有关责任人提出如下异议：一是安钢集团公布经营业 绩预测信息旨在提振士气，安阳钢铁及其董事、监事和高级管理 人员对此并不知情，安钢集团应对该违规行为负主要责任；二是 公司获悉有关事项后向安钢集团进行了问询，并及时披露了相关 信息。 上海证券交易所（以下简称本所）经审核认为，上述异议理 由不成立。安阳钢铁在股票交易异常波动后，未积极主动核查控 股股东在公开场合多次披露相关业绩信息的事实情况，其股票交 易异常波动公告的内容与实际情况明显不符，构成信息披露违 规。公司此前不知情及事后发布澄清公告，不影响对上述违规事 实的认定，不能作为免除或减轻责任的理由。 鉴于前述违规事实和情节，经本所纪律处分委员会审核通 过，根据《股票上市规则》第 17.2 条、第 17.3 条、第 17.4 条 和《上海证券交易所纪律处分和监管措施实施办法》的有关规定， 本所做出如下纪律处分决定：对安阳钢铁集团有限责任公司及其 时任总经理刘润生、安阳钢铁股份有限公司及其时任董事会秘书 李志锋予以通报批评。 对于上述纪律处分，本所将通报中国证监会，并记入上市公 司诚信档案。 公司应当引以为戒，严格按照法律、法规和《股票上市规则》 －5－ 的规定，规范运作，认真履行信息披露义务；控股股东应当勤勉 尽责，按照有关规定履行信息披露义务，及时告知公司已发生或 者拟发生的重大事件，积极配合公司做好信息披露工作；董事、 监事、高级管理人员应当履行忠实勤勉义务，促使公司规范运作， 并保证公司及时、公平、真实、准确和完整地披露所有重大信息。 上海证券交易所 二○一八年六月二十日 －6－</p>',
-        'docTitle': '关于对安阳钢铁股份有限公司、控股股东安阳钢铁集团有限责任公司及有关责任人予以通报批评的决定',
-        'id': '4590150_28_10008',
-        'processDate': '2018-07-05',
-        'processDetails': [{'involveObjectName': '安阳钢铁集团有限责任公司'}, {'involveObjectName': '安阳钢铁股份有限公司'}, {'involveObjectName': '刘润生'}, {'involveObjectName': '李志锋'}],
-        'showUrl': 'https://gdpage.cfbond.com/pdf/xiaoan/2018/4590150_28_10008.pdf',
-        'supervisionOrganName': '上海证券交易所',
-        'supervisionTypeName': '通报批评',
-        'violationTypeName': '股票交易异常波动,传闻澄清,与其他规范运作事项有关的其他违规'}]
+      violationCase: []
     }
   },
   methods: {
@@ -185,14 +83,44 @@ export default {
       for (var key in this.searchParam) {
         this.searchParam[key] = ''
       }
+    },
+    loadTableDetail (param) {
+      var that = this
+      var api = that.apiPath + 'DynamicNews/Pager'
+      if (param) {
+
+      } else {
+        api = api + '/' + this.zPager.currentPage + '/' + this.zPager.size
+      }
+      that.$ajax
+        .get(api)
+        .then(function (response) {
+          that.zLoading = false
+          that.violationCase = response.data.Result.Data
+          that.zPager.total = response.data.Result.Total
+        })
+        .catch(function () {
+          that.zLoading = false
+        })
+    },
+    getSearchParam () {
+      // 获取查询的参数
+      this.processDateStart = this.searchParam.processDateStart && this.dealDate(this.searchParam.processDateStart[0]) // 开始时间
+      this.processDateEnd = this.searchParam.processDateStart && this.dealDate(this.searchParam.processDateStart[1]) // 结束时间
+    },
+    pagerChange () {
+      this.loadTableDetail()
     }
+
+  },
+  created () {
+    this.loadTableDetail()
   },
   mounted () {
     const that = this
     window.onresize = () => {
       return (() => {
         that.dataHeight = document.documentElement.clientHeight - 300
-        that.leftHeight = document.documentElement.clientHeight - 35
       })()
     }
   }
@@ -211,7 +139,12 @@ export default {
     border-right: 1px solid #f2f4f7;
     box-sizing: border-box
 }
-
+.SupervisionType .el-range__icon.el-icon-date{
+    line-height: 0px ;
+}
+.SupervisionType .el-range-separator{
+  line-height:25px !important;
+}
 </style>
 
 <style scoped>

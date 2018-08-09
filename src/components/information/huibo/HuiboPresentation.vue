@@ -1,7 +1,7 @@
 <template>
     <div class="Huibo-box" v-cloak>
       <el-container style="margin-bottom: 10px;">
-        <el-select v-model="sBox.zHuiboVal" collapse-tags size="small" style="width: 350px; margin-left: 20px;" placeholder="请选择研报栏目" filterable>
+        <el-select v-model="sBox.zHuiboVal" collapse-tags size="small" style="width: 350px; margin-left: 20px;" clearable  placeholder="请选择研报栏目" filterable>
           <el-option v-for="item in sBox.zHuiboType" :key="item" :label="item" :value="item"></el-option>
         </el-select>
         <el-input placeholder="请输入标题, 包含以下关键词（以空格区分）" v-model="sBox.zHuiboTypeKeyWords" size="small" style="width: 350px; margin-left: 20px;" clearable></el-input>

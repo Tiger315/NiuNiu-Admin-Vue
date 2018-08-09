@@ -1,5 +1,5 @@
 <template>
-  <div class="SupervisionType">
+  <div class="IrregularitiesType">
     <el-container :height="leftHeight">
       <el-aside width="15%" height="100%" class="left">
         <div class="title">违规类型</div>
@@ -14,37 +14,36 @@
         <el-input placeholder="不含关键词（以空格区分）" v-model="searchParam.titleNot"  size="small"  clearable></el-input>
       </el-container>
       <el-container style="margin-top: 10px;">
-        <el-select multiple collapse-tags size="small" v-model="searchParam.companyCode"  placeholder="请输入公司代码、简称" filterable>
-          <el-option ></el-option>
+        <el-select multiple collapse-tags clearable size="small" v-model="searchParam.companyCode"  placeholder="请输入公司代码、简称" filterable>
+          <el-option value=""></el-option>
         </el-select>
-        <el-select  multiple collapse-tags size="small" v-model="searchParam.involveObjectId"  placeholder="处罚对象身份" filterable>
-          <el-option ></el-option>
+        <el-select  multiple collapse-tags clearable size="small" v-model="searchParam.involveObjectId"  placeholder="处罚对象身份" filterable>
+          <el-option value=""></el-option>
         </el-select>
-        <el-select multiple collapse-tags size="small" v-model="searchParam.avermentId" placeholder="申辩情况" filterable>
-          <el-option></el-option>
-        </el-select>
-      </el-container>
-      <el-container style="margin-top: 10px;">
-        <el-date-picker  type="date" value=""  placeholder="起始日期" v-model="searchParam.processDateStart"></el-date-picker>
-        <el-date-picker  type="date" value=""  placeholder="结束日期" v-model="searchParam.processDateEnd"></el-date-picker>
-        <el-select multiple collapse-tags size="small" placeholder="所属板块" v-model="searchParam.companyMarketId" filterable>
-          <el-option></el-option>
+        <el-select multiple collapse-tags clearable size="small" v-model="searchParam.avermentId" placeholder="申辩情况" filterable>
+          <el-option value=""></el-option>
         </el-select>
       </el-container>
       <el-container style="margin-top: 10px;">
-        <el-select multiple collapse-tags size="small"  placeholder="所属行业" v-model="searchParam.industryInfo" filterable>
-          <el-option ></el-option>
+        <el-date-picker type="daterange" v-model="searchParam.processDateStart" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+        <el-select multiple collapse-tags clearable size="small" placeholder="所属板块" v-model="searchParam.companyMarketId" filterable>
+          <el-option value=""></el-option>
         </el-select>
-        <el-select  multiple collapse-tags size="small" placeholder="所属地区" v-model="searchParam.companyArea" filterable>
-          <el-option ></el-option>
-        </el-select>
-        <el-select multiple collapse-tags size="small" placeholder="处罚机构" v-model="searchParam.supervisionOrganId" filterable>
-          <el-option></el-option>
+         <el-select multiple collapse-tags clearable size="small" placeholder="处罚机构" v-model="searchParam.supervisionOrganId" filterable>
+          <el-option value=""></el-option>
         </el-select>
       </el-container>
-       <el-container style="margin-top: 10px;">
-         <el-button type="primary" icon="el-icon-search" size="small" style="margin-top: 20px;" @click="searchList">查询</el-button>
-         <el-button type="warning"  size="small" style="margin-top: 20px;" @click="clearParam" >清空查询</el-button>
+      <el-container style="margin-top: 10px;">
+        <el-select multiple collapse-tags clearable size="small"  placeholder="所属行业" v-model="searchParam.industryInfo" filterable>
+          <el-option value=""></el-option>
+        </el-select>
+        <el-select  multiple collapse-tags clearable size="small" placeholder="所属地区" v-model="searchParam.companyArea" filterable>
+          <el-option value=""></el-option>
+        </el-select>
+        <div>
+          <el-button type="primary" icon="el-icon-search" size="small" @click="searchList">查询</el-button>
+         <el-button type="warning"  size="small" @click="clearParam" >清空查询</el-button>
+        </div>
       </el-container>
       </el-header>
       <!-- 搜索条件结束 -->
@@ -89,11 +88,11 @@
   </div>
 </template>
 <script>
-import dialogo from './commen/dialog.vue'
+import dialogos from './commen/dialog.vue'
 export default {
   name: 'SupervisionType',
   components: {
-    'li-dialogos': dialogo
+    'li-dialogos': dialogos
   },
   data () {
     return {
@@ -109,8 +108,8 @@ export default {
         companyCode: '', // 公司代码简称
         involveObjectId: '', // 处罚对象身份
         avermentId: '', // 申辩情况
-        processDateStart: '', // 起始时间
-        processDateEnd: '', // 结束时间
+        processDateStart: '', // 起始结束时间
+        // processDateEnd: '', // 结束时间
         companyMarketId: '', // 所属板块
         industryInfo: '', // 所属行业
         companyArea: '', // 所属地区
@@ -141,7 +140,6 @@ export default {
       }
     },
     showDetail (id) {
-      console.log(this.msgId)
       this.msgId = ''
       this.msgId = id
     },
@@ -149,10 +147,16 @@ export default {
       var that = this
       var searchParam = 'https://goldeye.cfbond.com/cattle/es_jgh_list?'
       for (var key in this.searchParam) {
-        if (key === 'titleMust') {
-          searchParam += key + '=' + this.searchParam[key]
+        if (key === 'processDateStart') {
+          var processDateStart = this.searchParam[key] && that.dealDate(this.searchParam[key][0])
+          var processDateEnd = this.searchParam[key] && that.dealDate(this.searchParam[key][1])
+          searchParam += '&processDateStart=' + processDateStart + '&processDateEnd=' + processDateEnd
         } else {
-          searchParam += '&' + key + '=' + this.searchParam[key]
+          if (key === 'titleMust') {
+            searchParam += key + '=' + this.searchParam[key]
+          } else {
+            searchParam += '&' + key + '=' + this.searchParam[key]
+          }
         }
       }
       that.$ajax.get(searchParam)
@@ -190,7 +194,12 @@ export default {
     border-right: 1px solid #f2f4f7;
     box-sizing: border-box
 }
-
+.IrregularitiesType .el-range__icon.el-icon-date{
+    line-height: 0px ;
+}
+.IrregularitiesType .el-range-separator{
+  line-height:25px !important;
+}
 </style>
 
 <style scoped>

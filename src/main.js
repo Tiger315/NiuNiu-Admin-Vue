@@ -11,6 +11,15 @@ import 'babel-polyfill'
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.prototype.apiPath = 'http://sign.niuniu.com:8814/api/v1/'
+Vue.prototype.dealDate = function (date) {
+  var d = new Date(date)
+  var m = ''
+  var day = ''
+  d.getMonth() + 1 < 10 ? m = '0' + (d.getMonth() + 1) : m = d.getMonth() + 1
+  d.getDate() < 10 ? day = '0' + d.getDate() : day = d.getDate()
+  var datetime = d.getFullYear() + '-' + m + '-' + day
+  return datetime
+}
 axios.interceptors.request.use(
   config => {
     if (config.method === 'get') {
