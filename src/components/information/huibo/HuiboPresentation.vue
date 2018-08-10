@@ -225,7 +225,6 @@ export default {
   props: ['defaultValue', 'useTypes'],
   methods: {
     seePresentationDialog (row, flag) {
-      console.log(row)
       this.zLoading = true
       if (row) {
         this.zDetail.title = row.title

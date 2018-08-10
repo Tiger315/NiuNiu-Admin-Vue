@@ -29,8 +29,8 @@
                   <span><a :href="scope.row.News_Url" target="_blank" style="color: #0d308c; cursor: pointer; text-decoration:none;">{{ scope.row.News_Title }}</a></span>
                 </template>
               </el-table-column>
-              <el-table-column fixed="left" prop="News_Source" label="来源" width="250"></el-table-column>
-              <el-table-column fixed="left" prop="News_Date" label="发布日期"  width="200"></el-table-column>
+              <el-table-column fixed="left" prop="Source_name" label="来源" width="250"></el-table-column>
+              <el-table-column fixed="left" label="发布日期" :formatter="getDate" width="200"></el-table-column>
               <el-table-column fixed="left" prop="processDate"  label="分享"></el-table-column>
             </el-table>
           <!--表格结束-->
@@ -81,6 +81,10 @@ export default {
         this.searchParam[key] = ''
       }
     },
+    getDate (row) {
+      var str = row.News_Date.replace(/T/, ' ')
+      return str
+    },
     loadSources () {
       var that = this
       var api = that.apiPath + 'DynamicNews_Source'
@@ -95,7 +99,7 @@ export default {
       var api = that.apiPath + 'DynamicNews/Pager'
       if (param) {
         this.getSearchParam()
-        api = api + '/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + (this.searchSourceNu || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
+        api = api + '/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + (this.searchSourceNu || 0) + '/' + this.zPager.currentPage + '/' + this.zPager.size
       } else {
         api = api + '/' + this.zPager.currentPage + '/' + this.zPager.size
       }
