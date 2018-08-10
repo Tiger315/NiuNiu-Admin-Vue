@@ -82,15 +82,14 @@ export default {
         })
     },
     closeModel () {
-      this.msgId = ''
       this.zDialog = false
+      this.msgId = ''
       this.searchId = ''
     }
 
   },
   watch: {
     msgId: function (newVal, oldVal) {
-      console.log(newVal)
       if (newVal) {
         this.zDialog = true // newVal即是新的id值
         this.searchId = newVal

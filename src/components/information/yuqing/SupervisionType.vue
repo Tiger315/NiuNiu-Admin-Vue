@@ -22,7 +22,7 @@
       </el-header>
       <el-main :height="dataHeight">
           <!--表格开始-->
-            <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="violationCase"  stripe style="width: 100%;" empty-text=" " row-key="id">
+            <el-table v-loading="zLoading"  element-loading-text="拼命加载中" :data="violationCase"  stripe style="width: 100%;" empty-text=" " row-key="id">
               <el-table-column type="index" fixed="left" width="70" ></el-table-column>
               <el-table-column fixed="left" prop="News_Title" label="标题"  min-width="250"  fit show-overflow-tooltip>
                 <template slot-scope="scope">
