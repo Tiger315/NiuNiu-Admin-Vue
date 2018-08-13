@@ -123,11 +123,7 @@ export default {
           this.searchSourceNu = item.Source_ID
         }
       })
-    },
-    pagerChange () {
-      this.loadTableDetail(1)
     }
-
   },
   created () {
     this.loadSources()

@@ -122,25 +122,7 @@ export default {
         shenbian: ['申辩', '听证', '全部采纳', '部分采纳', '全未采纳'],
         area: ['沪市主板', '深市主板', '深市中小板', '深市创业板', '新三板', '其他']
       },
-      treeData: [{
-        label: '监管措施1',
-        children: [{
-          label: '监管关注'
-        }, {
-          label: '监管函'
-        }, {
-          label: '监管工作函'
-        }]
-      }, {
-        label: '监管措施2',
-        children: [{
-          label: '监管关注'
-        }, {
-          label: '监管函'
-        }, {
-          label: '监管工作函'
-        }]
-      }],
+      treeData: [],
       violationCase: []
     }
   },
@@ -169,9 +151,33 @@ export default {
     },
     pagerChange () {
       this.searchList()
+    },
+    loadLeftMenu () { // 侧边栏
+      var that = this
+      that.$ajax.get(that.apiPath + 'ViolationType')
+        .then(function (response) {
+          var datas = response.data
+          var treeData = datas.Result.Data
+          if (datas.Code === 1000) {
+            for (var i = 0; i < treeData.length; i++) {
+              var treeObj = {}
+              treeObj.label = treeData[i].Name
+              treeObj.children = []
+              var treeDetail = treeData[i].Child
+              for (var j = 0; j < treeDetail.length; j++) {
+                treeObj.children.push({'label': treeDetail[j].Name})
+              }
+              that.treeData.push(treeObj)
+            }
+          }
+        })
+        .catch(function (response) {
+          console.log(response)
+        })
     }
   },
   created () {
+    this.loadLeftMenu()
     this.searchList()
   },
   mounted () {
