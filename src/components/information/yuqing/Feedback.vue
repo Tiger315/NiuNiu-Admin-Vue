@@ -113,6 +113,9 @@ export default {
       for (var key in this.searchParam) {
         this.searchParam[key] = ''
       }
+    },
+    pagerChange () {
+
     }
   },
   mounted () {
