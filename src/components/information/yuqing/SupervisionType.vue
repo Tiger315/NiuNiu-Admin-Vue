@@ -29,7 +29,7 @@
                   <span><a :href="scope.row.News_Url" target="_blank" style="color: #0d308c; cursor: pointer; text-decoration:none;">{{ scope.row.News_Title }}</a></span>
                 </template>
               </el-table-column>
-              <el-table-column fixed="left" prop="Source_name" label="来源" width="250"></el-table-column>
+              <el-table-column fixed="left" prop="Source_Name" label="来源" width="250"></el-table-column>
               <el-table-column fixed="left" label="发布日期" :formatter="getDate" width="200"></el-table-column>
               <el-table-column fixed="left" prop="processDate"  label="分享"></el-table-column>
             </el-table>
@@ -109,6 +109,7 @@ export default {
           that.zLoading = false
           that.violationCase = response.data.Result.Data
           that.zPager.total = response.data.Result.Total
+          console.log(that.violationCase)
         })
         .catch(function () {
           that.zLoading = false
