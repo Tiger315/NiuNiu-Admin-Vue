@@ -1,7 +1,7 @@
 <template>
   <div class="IrregularitiesType">
     <el-container :height="leftHeight">
-      <el-aside width="15%" :height="leftHeight" class="left">
+      <el-aside width="20%" :height="leftHeight" class="left">
         <div class="title">违规类型</div>
         <el-tree :data="treeData"></el-tree>
       </el-aside>
@@ -51,10 +51,9 @@
             <!--表格开始-->
               <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="violationCase"  stripe style="width: 100%;"  row-key="id">
                 <el-table-column type="index" fixed="left" width="70" ></el-table-column>
-                <el-table-column fixed="left" label="公司" width="100" show-overflow-tooltip>
+                <el-table-column fixed="left" label="公司" width="200" show-overflow-tooltip>
                   <template slot-scope="scope">
-                      <p>{{scope.row.companyCode}}</p>
-                      <p>{{scope.row.companyName}}</p>
+                      {{scope.row.companyName}}{{scope.row.companyCode?"("+scope.row.companyCode+")":""}}
                   </template>
                 </el-table-column>
                 <el-table-column fixed="left" prop="title" label="标题"    fit show-overflow-tooltip>
@@ -62,7 +61,7 @@
                     <span style="color: #0d308c; cursor: pointer; font" @click="showDetail(scope.row.id)" >{{ scope.row.title}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column fixed="left" prop="violationTypeName" label="违规类型" ></el-table-column>
+                <el-table-column fixed="left" prop="violationTypeName" label="违规类型"  show-overflow-tooltip></el-table-column>
                 <el-table-column fixed="left" prop="supervisionOrganName" label="处理人" ></el-table-column>
 
                 <el-table-column fixed="left" :formatter="processDate"  label="更新时间"></el-table-column>
