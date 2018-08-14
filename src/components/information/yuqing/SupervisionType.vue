@@ -30,8 +30,7 @@
                 </template>
               </el-table-column>
               <el-table-column  fixed="left" prop="Source_Name" label="来源" width="250"></el-table-column>
-              <el-table-column fixed="left" label="发布日期" :formatter="getDate" width="200"></el-table-column>
-              <!-- <el-table-column fixed="left" prop="processDate"  label="分享"></el-table-column> -->
+              <el-table-column fixed="left" label="发布日期" prop="News_Date" width="200"></el-table-column>
             </el-table>
           <!--表格结束-->
       </el-main>
@@ -83,10 +82,6 @@ export default {
       this.searchParam.companyMarketId = []
       this.loadTableDetail(1)
     },
-    getDate (row) {
-      var str = row.News_Date.replace(/T/, ' ')
-      return str
-    },
     loadSources () {
       var that = this
       var api = that.apiPath + 'DynamicNews_Source'
@@ -133,7 +128,7 @@ export default {
       tempArr.length > 1 ? this.searchSourceNu = tempArr.join(',') : this.searchSourceNu = tempArr[0]
     },
     pagerChange () {
-      this.loadTableDetail()
+      this.loadTableDetail(1)
     }
   },
   created () {

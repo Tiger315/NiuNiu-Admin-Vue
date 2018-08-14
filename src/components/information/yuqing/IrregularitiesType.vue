@@ -141,6 +141,7 @@ export default {
   data () {
     return {
       leftHeight: document.documentElement.clientHeight - 35,
+      leftModelHeight: document.documentElement.clientHeight - 30 + '',
       dataHeight: document.documentElement.clientHeight - 305,
       zDialog: false,
       zLoading: false,
@@ -165,7 +166,6 @@ export default {
         currentPage: 1
       },
       searchId: '',
-      leftModelHeight: document.documentElement.clientHeight - 30 + '',
       zDetail: {},
       relationCaseLawList: [],
       tableData: [],
@@ -194,6 +194,7 @@ export default {
     showDetail (id) {
       this.zDialog = true
       this.searchId = id
+      this.getDetail(this.searchId)
     },
     searchList () {
       var that = this
@@ -409,7 +410,7 @@ span.detail_date {
     line-height: 1.8em;
 }
 .card-body p {
-  margin:0px;
+    margin:0px;
     padding: 3px 0;
     text-indent: 2em;
     font-size: 14px;
