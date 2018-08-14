@@ -80,6 +80,7 @@ export default {
       for (var key in this.searchParam) {
         this.searchParam[key] = ''
       }
+      this.searchParam.companyMarketId = []
       this.loadTableDetail(1)
     },
     getDate (row) {
