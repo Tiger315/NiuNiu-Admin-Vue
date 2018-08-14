@@ -24,8 +24,8 @@
         </el-select>
         <el-date-picker type="daterange" v-model="value4" range-separator="至" start-placeholder="发函开始时间" end-placeholder="回函日期"></el-date-picker>
         <div>
-          <el-button type="primary" icon="el-icon-search" size="small" >查询</el-button>
-         <el-button type="warning"  size="small"  @click="clearParam" >清空查询</el-button>
+          <el-button type="primary" icon="el-icon-search" size="small" >搜索</el-button>
+         <el-button type="warning"  size="small"  @click="clearParam" >清空搜索</el-button>
         </div>
       </el-container>
       <!-- 搜索条件结束 -->

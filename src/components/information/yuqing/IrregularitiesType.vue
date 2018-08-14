@@ -15,10 +15,10 @@
           </el-container>
           <el-container style="margin-top: 10px;">
             <el-select collapse-tags clearable size="small" v-model="searchParam.companyCode"  placeholder="请输入公司代码、简称" filterable>
-              <el-option value=""></el-option>
+              <el-option :value="item.Name+'('+item.Code+')'" :key="item.Code" v-for='item in topData.StockInfo' ></el-option>
             </el-select>
-            <el-select collapse-tags clearable size="small" v-model="searchParam.involveObjectId"  placeholder="处罚对象身份" filterable>
-              <el-option value=""></el-option>
+            <el-select collapse-tags multiple clearable size="small" v-model="searchParam.involveObjectId"  placeholder="处罚对象身份" filterable>
+              <el-option :value="item" :key="item"  v-for='item in condition.chufaRole'></el-option>
             </el-select>
             <el-select collapse-tags clearable size="small" v-model="searchParam.avermentId" placeholder="申辩情况" filterable>
               <el-option :value="item" :key="item" v-for='item in condition.shenbian'></el-option>
@@ -41,8 +41,8 @@
               <el-option :value="item" :key="item" v-for='item in condition.procvince'></el-option>
             </el-select>
             <div>
-              <el-button type="primary" icon="el-icon-search" size="small" @click="searchList">查询</el-button>
-              <el-button type="warning"  size="small" @click="clearParam" >清空查询</el-button>
+              <el-button type="primary" icon="el-icon-search" size="small" @click="searchList">搜索</el-button>
+              <el-button type="warning"  size="small" @click="clearParam" >清空搜索</el-button>
             </div>
           </el-container>
         </el-header>
@@ -174,11 +174,13 @@ export default {
         procvince: ['上海', '云南', '内蒙古', '北京', '吉林', '四川', '天津', '宁夏', '安徽', '山东', '山西', '广东', '广西', '新疆',
           '江苏', '江西', '河北', '河南', '浙江', '海南', '湖北', '湖南', '甘肃', '福建', '西藏', '贵州', '辽宁', '重庆', '陕西', '青海', '黑龙江'],
         shenbian: ['申辩', '听证', '全部采纳', '部分采纳', '全未采纳'],
-        area: ['沪市主板', '深市主板', '深市中小板', '深市创业板', '新三板', '其他']
+        area: ['沪市主板', '深市主板', '深市中小板', '深市创业板', '新三板', '其他'],
+        chufaRole: ['上市公司', '上市公司实际控制人、控股股东', '上市公司5%以上股东', '上市公司其他股东', '上市公司董事', '上市公司监事', '上市公司高级管理人员', '上市公司子公司', '中介机构', '其他']
       },
       topData: {
         industry: [],
-        jys: []
+        jys: [],
+        StockInfo: []
       },
       treeData: [],
       violationCase: []
@@ -238,6 +240,11 @@ export default {
         .then(function (response) {
           var data = response.data.Result.Data
           that.topData.jys = data
+        })
+      that.$ajax.get(that.apiPath + 'StockInfo')
+        .then(function (response) {
+          var data = response.data.Result.Data
+          that.topData.StockInfo = data
         })
     },
     getDetail (id) {

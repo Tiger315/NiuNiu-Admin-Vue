@@ -141,6 +141,7 @@ export default {
   line-height: 60px;
   color: #fff;
 }
+
 .el-menu {
   height: 100%;
 }

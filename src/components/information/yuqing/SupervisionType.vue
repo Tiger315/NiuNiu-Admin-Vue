@@ -9,13 +9,13 @@
         <el-input placeholder="不包含任意关键词(以空格区分)" v-model="searchParam.titleNot"  size="small"  clearable></el-input>
       </el-container>
       <el-container style="margin-top: 10px;">
-        <el-select collapse-tags clearable size="small" placeholder="来源" v-model="searchParam.companyMarketId" filterable>
+        <el-select multiple collapse-tags clearable size="small" placeholder="来源" v-model="searchParam.companyMarketId" filterable>
             <el-option  v-for='item in resourceArr' :value="item.Source_Name" :key="item.Source_ID"></el-option>
         </el-select>
         <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" start-placeholder="起始日期" end-placeholder="结束日期"></el-date-picker>
         <div>
-          <el-button type="primary" icon="el-icon-search" size="small"  @click="loadTableDetail(1)">查询</el-button>
-         <el-button type="warning"  size="small"  @click="clearParam" >清空查询</el-button>
+          <el-button type="primary" icon="el-icon-search" size="small"  @click="loadTableDetail(1)">搜索</el-button>
+         <el-button type="warning"  size="small"  @click="clearParam" >清空搜索</el-button>
         </div>
       </el-container>
       <!-- 搜索条件结束 -->
@@ -29,9 +29,9 @@
                   <span><a :href="scope.row.News_Url" target="_blank" style="color: #0d308c; cursor: pointer; text-decoration:none;">{{ scope.row.News_Title }}</a></span>
                 </template>
               </el-table-column>
-              <el-table-column fixed="left" prop="Source_Name" label="来源" width="250"></el-table-column>
+              <el-table-column  fixed="left" prop="Source_Name" label="来源" width="250"></el-table-column>
               <el-table-column fixed="left" label="发布日期" :formatter="getDate" width="200"></el-table-column>
-              <el-table-column fixed="left" prop="processDate"  label="分享"></el-table-column>
+              <!-- <el-table-column fixed="left" prop="processDate"  label="分享"></el-table-column> -->
             </el-table>
           <!--表格结束-->
       </el-main>
@@ -80,6 +80,7 @@ export default {
       for (var key in this.searchParam) {
         this.searchParam[key] = ''
       }
+      this.loadTableDetail(1)
     },
     getDate (row) {
       var str = row.News_Date.replace(/T/, ' ')
@@ -99,7 +100,7 @@ export default {
       var api = that.apiPath + 'DynamicNews/Pager'
       if (param) {
         this.getSearchParam()
-        api = api + '/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + (this.searchSourceNu || 0) + '/' + this.zPager.currentPage + '/' + this.zPager.size
+        api = api + '/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + (this.searchSourceNu || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
       } else {
         api = api + '/' + this.zPager.currentPage + '/' + this.zPager.size
       }
@@ -109,7 +110,6 @@ export default {
           that.zLoading = false
           that.violationCase = response.data.Result.Data
           that.zPager.total = response.data.Result.Total
-          console.log(that.violationCase)
         })
         .catch(function () {
           that.zLoading = false
@@ -119,11 +119,17 @@ export default {
       // 获取查询的参数
       this.searchParam.processDateStart = this.searchParam.time && this.dealDate(this.searchParam.time[0]) // 开始时间
       this.searchParam.processDateEnd = this.searchParam.time && this.dealDate(this.searchParam.time[1]) // 结束时间
+      var tempArr = []
       this.resourceArr.map(item => {
-        if (item.Source_Name === this.searchParam.companyMarketId) {
-          this.searchSourceNu = item.Source_ID
-        }
+        this.searchParam.companyMarketId && this.searchParam.companyMarketId.map(item1 => {
+          if (item.Source_Name === item1) {
+            tempArr.push(item.Source_ID)
+          } else if (!item1) {
+            this.searchSourceNu = '[]'
+          }
+        })
       })
+      tempArr.length > 1 ? this.searchSourceNu = tempArr.join(',') : this.searchSourceNu = tempArr[0]
     },
     pagerChange () {
       this.loadTableDetail()
