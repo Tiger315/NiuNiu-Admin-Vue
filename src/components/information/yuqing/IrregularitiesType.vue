@@ -30,19 +30,19 @@
               <el-option :value="item" :key="item" v-for='item in condition.area'></el-option>
             </el-select>
             <el-select collapse-tags clearable size="small" placeholder="处罚机构" v-model="searchParam.supervisionOrganId" filterable>
-              <el-option value=""></el-option>
+              <el-option :value="item.name" :key="item.id" v-for='item in topData.jys'></el-option>
             </el-select>
           </el-container>
           <el-container style="margin-top: 10px;">
             <el-select collapse-tags clearable size="small"  placeholder="所属行业" v-model="searchParam.industryInfo" filterable>
-              <el-option value=""></el-option>
+              <el-option :value="item.name" :key="item.id" v-for='item in topData.industry'></el-option>
             </el-select>
             <el-select  collapse-tags clearable size="small" placeholder="所属地区" v-model="searchParam.companyArea" filterable>
               <el-option :value="item" :key="item" v-for='item in condition.procvince'></el-option>
             </el-select>
             <div>
               <el-button type="primary" icon="el-icon-search" size="small" @click="searchList">查询</el-button>
-            <el-button type="warning"  size="small" @click="clearParam" >清空查询</el-button>
+              <el-button type="warning"  size="small" @click="clearParam" >清空查询</el-button>
             </div>
           </el-container>
         </el-header>
@@ -80,21 +80,70 @@
           <!--分页结束-->
       </el-container>
   </el-container>
-  <li-dialogos :msg-id="msgId" msg-type="1" ></li-dialogos>
+      <el-dialog  :visible.sync="zDialog" :before-close="closeModel" style="font-weight: bold;margin:0px;" fullscreen>
+      <div class="dialog-box" v-loading="zLoading">
+        <el-container :height="leftModelHeight">
+          <el-aside width="33.3%" >
+            <div>
+              <div class="detail-card">
+              <div class="card-head">基本信息</div>
+                  <div class="card-body">
+                    <p>证券代码：{{zDetail.companyCode}}</p>
+                    <p>证券简称：{{zDetail.companyName}}</p>
+                    <p>所属板块：{{zDetail.companyMarketName}}</p>
+                    <p>所属地区：{{zDetail.companyArea}}</p>
+                    <p>所属行业：{{zDetail.SecondIndustryName}}</p>
+                    <p>申辩情况：{{zDetail.avermentName}}</p>
+                  </div>
+              </div>
+            </div>
+             <div>
+              <div class="detail-card">
+              <div class="card-head">违规信息</div>
+                  <div class="card-body">
+                    <p>监管机构：{{zDetail.supervisionOrganName}}</p>
+                    <p>文号：{{zDetail.lssuedNumber}}</p>
+                    <p>监管类型：{{zDetail.supervisionTypeName}}</p>
+                    <p>违规类型：{{zDetail.violationTypeName}}</p>
+                    <p>处理日期：{{zDetail.processDate}}</p>
+                  </div>
+              </div>
+            </div>
+             <div>
+              <div class="detail-card">
+              <div class="card-head">相关案例</div>
+                  <div class="card-body">
+                    <p v-for="val in relationCaseLawList"  :key="val" @click="getDetail (val.id)">{{val.title}}</p>
+                  </div>
+              </div>
+            </div>
+          </el-aside>
+          <el-container>
+            <el-header class="showPdf" :height="leftModelHeight">
+              <div v-html='zDetail.docContent' class="docTitle"></div>
+            </el-header>
+            <el-main class="table2" >
+              <el-table align="center" header-align="center"  :data="tableData" border style="width: 100%">
+                <el-table-column fixed prop="involveObjectName" label="涉及当事人" width="350"> </el-table-column>
+                <el-table-column fixed prop="objectPositionName" label="涉及对象"></el-table-column>
+                <el-table-column fixed prop="supervisionTypeName" label="监管类型"></el-table-column>
+                <el-table-column fixed prop="violationTypeName" label="违规类型"></el-table-column>
+              </el-table>
+            </el-main>
+          </el-container>
+        </el-container>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
-import dialogos from './commen/dialog.vue'
 export default {
   name: 'SupervisionType',
-  components: {
-    'li-dialogos': dialogos
-  },
   data () {
     return {
       leftHeight: document.documentElement.clientHeight - 35,
       dataHeight: document.documentElement.clientHeight - 305,
-      zDialog: true,
+      zDialog: false,
       zLoading: false,
       msgId: '',
       searchParam: {
@@ -116,11 +165,20 @@ export default {
         sortType: 'desc',
         currentPage: 1
       },
+      searchId: '',
+      leftModelHeight: document.documentElement.clientHeight - 30 + '',
+      zDetail: {},
+      relationCaseLawList: [],
+      tableData: [],
       condition: {
         procvince: ['上海', '云南', '内蒙古', '北京', '吉林', '四川', '天津', '宁夏', '安徽', '山东', '山西', '广东', '广西', '新疆',
           '江苏', '江西', '河北', '河南', '浙江', '海南', '湖北', '湖南', '甘肃', '福建', '西藏', '贵州', '辽宁', '重庆', '陕西', '青海', '黑龙江'],
         shenbian: ['申辩', '听证', '全部采纳', '部分采纳', '全未采纳'],
         area: ['沪市主板', '深市主板', '深市中小板', '深市创业板', '新三板', '其他']
+      },
+      topData: {
+        industry: [],
+        jys: []
       },
       treeData: [],
       violationCase: []
@@ -133,8 +191,8 @@ export default {
       }
     },
     showDetail (id) {
-      this.msgId = ''
-      this.msgId = id
+      this.zDialog = true
+      this.searchId = id
     },
     searchList () {
       var that = this
@@ -159,24 +217,49 @@ export default {
           var datas = response.data
           var treeData = datas.Result.Data
           if (datas.Code === 1000) {
-            for (var i = 0; i < treeData.length; i++) {
-              var treeObj = {}
-              treeObj.label = treeData[i].Name
-              treeObj.children = []
-              var treeDetail = treeData[i].Child
-              for (var j = 0; j < treeDetail.length; j++) {
-                treeObj.children.push({'label': treeDetail[j].Name})
-              }
-              that.treeData.push(treeObj)
-            }
+            var str = JSON.stringify(treeData).replace(/Name/g, 'label')
+            str = str.replace(/Child/g, 'children')
+            that.treeData = JSON.parse(str)
           }
         })
         .catch(function (response) {
           console.log(response)
         })
+    },
+    loadTopMenu () {
+      var that = this
+      that.$ajax.get(that.apiPath + 'Industry')
+        .then(function (response) {
+          var data = response.data.Result.Data
+          that.topData.industry = data
+        })
+
+      that.$ajax.get(that.apiPath + 'Jys')
+        .then(function (response) {
+          var data = response.data.Result.Data
+          that.topData.jys = data
+        })
+    },
+    getDetail (id) {
+      var that = this
+      that.$ajax
+        .get('https://goldeye.cfbond.com/cattle/es_jgh_detail?id=' + id)
+        .then(function (response) {
+          that.zLoading = false
+          that.zDetail = response.data.data
+          that.relationCaseLawList = response.data.data.relationCaseLawList
+          that.tableData = response.data.data.processDetails
+        })
+    },
+    closeModel () {
+      this.zDialog = false
+      this.msgId = ''
+      this.searchId = ''
     }
+
   },
   created () {
+    this.loadTopMenu()
     this.loadLeftMenu()
     this.searchList()
   },
@@ -209,6 +292,35 @@ export default {
 }
 .IrregularitiesType .el-range-separator{
   line-height:25px !important;
+}
+.docTitle p{
+    text-indent: 2em;
+    font-size: 14px;
+    line-height: 2em;
+    color: rgba(0, 0, 0, 0.65);
+    font-weight: 300;
+}
+.table2 .el-table--border{
+  border: 1px solid #d4dbe3 !important;
+}
+.table2 .el-table th {
+  background-color:#f3f4f8 !important;
+  border:none;
+  border-right: 1px solid #d4dbe3 !important;
+  border-bottom: 1px solid #d4dbe3 !important;
+}
+.table2 .el-table td{
+    color: rgba(0, 0, 0, 0.65);
+    font-weight: 300;
+}
+.table2 .el-table  th,.table2 .el-table  td{
+  text-align: center;
+}
+.SupervisionType .el-dialog__body{
+  padding-top:0px;
+}
+.SupervisionType .el-dialog__headerbtn{
+    top: 0px;
 }
 </style>
 
@@ -268,5 +380,35 @@ span.detail_date {
 .showData{
   border-bottom:1px solid #f2f4f7;
 }
-
+.detail-card{
+    border: 1px solid #d4dbe3;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+.showPdf{
+  margin-bottom:20px;
+}
+.card-head{
+    padding: 0 20px;
+    height: 40px;
+    line-height: 40px;
+    color: #333;
+    background: #f3f4f8;
+    border-bottom: 1px solid #d4dbe3;
+}
+ .card-body{
+    padding: 12px 20px 8px;
+    background: #fff;
+    font-size: 14px;
+    line-height: 1.8em;
+}
+.card-body p {
+  margin:0px;
+    padding: 3px 0;
+    text-indent: 2em;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.65);
+    font-weight:300;
+    cursor: pointer;
+}
 </style>

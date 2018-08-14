@@ -22,7 +22,7 @@
         <el-select multiple collapse-tags clearable size="small" placeholder="所属板块" v-model="searchParam.companyMarketId" filterable>
             <el-option></el-option>
         </el-select>
-        <el-date-picker type="daterange" v-model="value4" range-separator="至" start-placeholder="发函日期" end-placeholder="回函日期"></el-date-picker>
+        <el-date-picker type="daterange" v-model="value4" range-separator="至" start-placeholder="发函开始时间" end-placeholder="回函日期"></el-date-picker>
         <div>
           <el-button type="primary" icon="el-icon-search" size="small" >查询</el-button>
          <el-button type="warning"  size="small"  @click="clearParam" >清空查询</el-button>
@@ -67,12 +67,8 @@
   </div>
 </template>
 <script>
-import dialogo from './commen/dialog.vue'
 export default {
   name: 'SupervisionType',
-  components: {
-    'li-dialogo': dialogo
-  },
   data () {
     return {
       leftHeight: document.documentElement.clientHeight - 35,
