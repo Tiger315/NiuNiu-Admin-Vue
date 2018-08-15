@@ -187,7 +187,7 @@ export default {
   },
   methods: {
     typeIndex (index) {
-      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
+      return index + (this.searchParam.currentPage - 1) * this.searchParam.size + 1
     },
     clearParam () {
       for (var key in this.searchParam) {
