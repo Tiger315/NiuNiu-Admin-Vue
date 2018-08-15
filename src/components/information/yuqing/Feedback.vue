@@ -18,7 +18,7 @@
         </el-select>
       </el-container>
       <el-container style="margin-top: 10px;">
-        <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" start-placeholder="发函开始时间" end-placeholder="回函日期"></el-date-picker>
+        <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" start-placeholder="发函开始时间" end-placeholder="发函结束时间"></el-date-picker>
         <div>
           <el-button type="primary" icon="el-icon-search" size="small" @click="getList(1)">搜索</el-button>
          <el-button type="warning"  size="small"  @click="clearParam" >清空搜索</el-button>
