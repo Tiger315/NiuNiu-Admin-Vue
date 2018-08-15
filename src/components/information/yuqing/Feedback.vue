@@ -66,6 +66,7 @@
     <!--查看明细dialog结束-->
   </div>
 </template>
+
 <script>
 import PDFJS from '../../../../static/js/pdfjs-1.10.88-dist/build/pdf.js'
 export default {
@@ -160,6 +161,16 @@ export default {
         that.zLoading = false
       })
       that.pdfUrl = urls
+    },
+    loadPdfBase (urls) {
+      this.showPDF('MzM0MDI0ODQtY2FjNS00NjI3LWJlMDgtMTY0MDMxMjRkNmY2')
+      this.$ajax.get(urls)
+        .then(function (res) {
+          console.log(res)
+        })
+        .catch(function (res) {
+          console.log(res)
+        })
     },
     showall (url, page, id) {
       PDFJS.getDocument(url).then(function getPdfHelloWorld (pdf) {
