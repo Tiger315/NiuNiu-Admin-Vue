@@ -57,9 +57,9 @@
       </div>
     <el-dialog  :visible.sync="zDialog" :before-close="closeModel" style="font-weight: bold;margin:0px;" fullscreen>
       <div class="dialog-box" v-loading="zLoading">
-        <el-container :height="dataHeight" class="showPDF">
-          <canvas id="the-canvas"></canvas>
-        </el-container>
+        <div class="showPDF" id="pop">
+          <!-- <canvas id="the-canvas"></canvas> -->
+        </div>
       </div>
     </el-dialog>
       <!--分页结束-->
@@ -150,13 +150,24 @@ export default {
       this.zLoading = true
       this.zDialog = true
       PDFJS.workerSrc = '../../../../static/js/pdfjs-1.10.88-dist/build/pdf.worker.js' // 加载核心库
+      $('#pop').empty()
       PDFJS.getDocument(urls).then(function getPdfHelloWorld (pdf) {
-        // 获取第一页数据
-        pdf.getPage(1).then(function getPageHelloWorld (page) {
-          that.zLoading = false
-          var scale = 1.5
+        for (var i = 1; i < pdf.numPages; i++) {
+          var id = 'page-id-' + i
+          $('#pop').append('<div style="text-align:center"><canvas id="' + id + '"></canvas><div>')
+          that.showall(urls, i, id)
+        }
+        that.zLoading = false
+      })
+      that.pdfUrl = urls
+    },
+    showall (url, page, id) {
+      PDFJS.getDocument(url).then(function getPdfHelloWorld (pdf) {
+        pdf.getPage(page).then(function getPageHelloWorld (page) {
+          var scale = 1.0
           var viewport = page.getViewport(scale)
-          var canvas = document.getElementById('the-canvas')
+          console.log(viewport)
+          var canvas = document.getElementById(id)
           var context = canvas.getContext('2d')
           canvas.height = viewport.height
           canvas.width = viewport.width
@@ -167,7 +178,6 @@ export default {
           page.render(renderContext)
         })
       })
-      this.pdfUrl = urls
     },
     getTopData () {
       var that = this
@@ -234,7 +244,16 @@ export default {
 
 <style scoped>
 .showPDF{
-justify-content: center !important;
+  justify-content: center !important;
+  width:100%;
+  display: flex;
+  flex-direction:column;
+  justify-content:center;
+}
+#pop canvas{
+  width:100%;
+  float: left;
+
 }
 .SupervisionType{
   width:100%;
