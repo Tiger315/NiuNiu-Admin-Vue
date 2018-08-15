@@ -9,7 +9,7 @@
 margin-top: 10px;
 }
 .el-dialog--center {
-width: 50% !important;
+/* width: 50% !important; */
 }
 .el-form-item__content {
 line-height: 20px;

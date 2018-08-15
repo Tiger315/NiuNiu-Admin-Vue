@@ -50,7 +50,7 @@
         <el-main :height="dataHeight">
             <!--表格开始-->
               <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="violationCase"  stripe style="width: 100%;"  row-key="id">
-                <el-table-column type="index" fixed="left" width="70" ></el-table-column>
+                <el-table-column type="index" fixed="left" width="70"  label="序号" :index="typeIndex"></el-table-column>
                 <el-table-column fixed="left" label="公司" width="200" show-overflow-tooltip>
                   <template slot-scope="scope">
                       {{scope.row.companyName}}{{scope.row.companyCode?"("+scope.row.companyCode+")":""}}
@@ -186,6 +186,9 @@ export default {
     }
   },
   methods: {
+    typeIndex (index) {
+      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
+    },
     clearParam () {
       for (var key in this.searchParam) {
         this.searchParam[key] = ''

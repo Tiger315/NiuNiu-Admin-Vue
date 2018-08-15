@@ -2,9 +2,10 @@
   <div class="MailTemplateList-box" v-cloak>
     <!--表格开始-->
     <div class="add_btn">
-      <el-button type="primary" @click="initModal" size="small">新增邮件模板</el-button>
+      <div class="buttons"> <el-button type="primary" @click="initModal" size="small">新增邮件模板</el-button></div>
+
       <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="mailData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
-        <el-table-column type="index" fixed="left" width="70" :index="typeIndex"></el-table-column>
+        <el-table-column type="index" fixed="left" width="70" label="序号" :index="typeIndex"></el-table-column>
         <el-table-column fixed="left" prop="title" label="标题" width="500" show-overflow-tooltip></el-table-column>
         <el-table-column prop="body"  fit show-overflow-tooltip label="内容">
         </el-table-column>
@@ -22,7 +23,7 @@
         </el-pagination>
       </div>
       <div>
-        <el-dialog :title="isEditDialog == 1? '新增邮件模板' : '编辑邮件模板'" :visible.sync="addMail.centerDialogVisible" width="30%" center>
+        <el-dialog :title="isEditDialog == 1? '新增邮件模板' : '编辑邮件模板'" :visible.sync="addMail.centerDialogVisible"  center>
           <el-form :model="addMail.addMailTemplate" :rules="addMail.rules" ref="addMail.addMailTemplate" label-width="100px" class="demo-ruleForm">
             <el-form-item label="邮件标题" prop="title">
               <el-input v-model="addMail.addMailTemplate.title"></el-input>
@@ -262,9 +263,12 @@ body {
 }
 .add_btn {
   margin: 0 10px 20px;
-  text-align: right;
-}
 
+}
+.add_btn>.buttons{
+  width: 100%;
+text-align: right;
+}
 .mail-textarea {
   margin-top: 20px;
 }

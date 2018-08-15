@@ -3,7 +3,7 @@
     <el-container>
       <el-header>
         <el-row>
-          <el-col :span="24" style="font-size: 20px;">
+          <el-col :span="24" style="font-size: 20px;padding-left:20px;">
             牛牛数据后台管理系统
           </el-col>
         </el-row>
@@ -33,7 +33,7 @@
                 <i class="el-icon-menu"></i>
                 <span>爬虫数据</span>
               </template>
-              <el-menu-item index="1-3" @click="addTab('IPO实时列表','./#/Law/CsrcIPO')">IPO实时列表</el-menu-item>
+              <el-menu-item index="1-3" @click="addTab('IPO实时列表','./#/Info/CsrcIPO')">IPO实时列表</el-menu-item>
               <el-menu-item index="3-1" @click="addTab('信披智库','./#/Info/InfoDisclosure')">信披智库</el-menu-item>
               <el-menu-item index="3-1" @click="addTab('慧博研究报告','./#/Info/HuiboPresentation')">慧博研究报告</el-menu-item>
               <el-submenu index="1-4">

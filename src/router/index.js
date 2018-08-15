@@ -5,7 +5,7 @@ import LawList from '@/components/law/LawList'
 import LawListForWpf from '@/components/law/LawListForWpf'
 import PVDays from '@/components/count/PVDays'
 import PVDetail from '@/components/count/PVDetail'
-import CsrcIPO from '@/components/law/CsrcIPO'
+import CsrcIPO from '@/components/information/IPO/CsrcIPO'
 import MailTemplate from '@/components/mail/MailTemplateList' // 邮件模版列表
 import MailStatus from '@/components/mail/MailStatus' // 邮件状态
 import InfoDisclosure from '@/components/information/xinpi/InfoDisclosure' // 信批智库
@@ -39,7 +39,7 @@ export default new Router({
     name: 'PVDetail',
     component: PVDetail
   }, {
-    path: '/Law/CsrcIPO',
+    path: '/Info/CsrcIPO',
     name: 'CsrcIPO',
     component: CsrcIPO
   }, {

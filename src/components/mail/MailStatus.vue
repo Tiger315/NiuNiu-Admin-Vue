@@ -2,7 +2,7 @@
   <div class="MailStatus-box" v-cloak>
     <!--表格开始-->
     <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMailStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
-      <el-table-column type="index" fixed="left" width="70" :index="typeIndex"></el-table-column>
+      <el-table-column type="index" fixed="left" width="70" label="序号" :index="typeIndex"></el-table-column>
       <el-table-column fixed="left" prop="send_to" label="发送给" fit></el-table-column>
       <el-table-column prop="send_cc" label="抄送给" fit></el-table-column>
       <el-table-column prop="state" label="状态">

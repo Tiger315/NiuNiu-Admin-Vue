@@ -9,7 +9,7 @@
       </el-container>
     <!--表格开始-->
     <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zHuiboPresentationData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
-      <el-table-column type="index" fixed="left" width="70"></el-table-column>
+      <el-table-column type="index" fixed="left" label="序号" width="70" :index="typeIndex"></el-table-column>
       <el-table-column fixed="left" prop="title" label="标题" min-width="250" fit show-overflow-tooltip>
          <template slot-scope="scope">
           <span style="color: #0d308c; cursor: pointer; font" @click="seePresentationDialog(scope.row,1)">{{ scope.row.title }}</span>
@@ -224,6 +224,9 @@ export default {
   },
   props: ['defaultValue', 'useTypes'],
   methods: {
+    typeIndex (index) {
+      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
+    },
     seePresentationDialog (row, flag) {
       this.zLoading = true
       if (row) {

@@ -55,7 +55,4 @@ ul,li{
     font-size: 0;
     height: 0;
 }
-.el-main,.el-footer,.el-header{
- padding:0px !important;
-}
 </style>

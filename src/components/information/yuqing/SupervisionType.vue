@@ -10,7 +10,7 @@
       </el-container>
       <el-container style="margin-top: 10px;">
         <el-select multiple collapse-tags clearable size="small" placeholder="来源" v-model="searchParam.companyMarketId" filterable>
-            <el-option  v-for='item in resourceArr' :value="item.Source_Name" :key="item.Source_ID"></el-option>
+            <el-option  v-for='item in resourceArr' :value="item.Source_ID" :label="item.Source_Name" :key="item.Source_ID"></el-option>
         </el-select>
         <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" start-placeholder="起始日期" end-placeholder="结束日期"></el-date-picker>
         <div>
@@ -23,7 +23,7 @@
       <el-main :height="dataHeight">
           <!--表格开始-->
             <el-table v-loading="zLoading"  element-loading-text="拼命加载中" :data="violationCase"  stripe style="width: 100%;" empty-text=" " row-key="id">
-              <el-table-column type="index" fixed="left" width="70" ></el-table-column>
+              <el-table-column type="index" label="序号" fixed="left" width="70" :index="typeIndex"></el-table-column>
               <el-table-column fixed="left" prop="News_Title" label="标题"  min-width="250"  fit show-overflow-tooltip>
                 <template slot-scope="scope">
                   <span><a :href="scope.row.News_Url" target="_blank" style="color: #0d308c; cursor: pointer; text-decoration:none;">{{ scope.row.News_Title }}</a></span>
@@ -75,6 +75,9 @@ export default {
     }
   },
   methods: {
+    typeIndex (index) {
+      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
+    },
     clearParam () {
       for (var key in this.searchParam) {
         this.searchParam[key] = ''
@@ -115,17 +118,10 @@ export default {
       // 获取查询的参数
       this.searchParam.processDateStart = this.searchParam.time && this.dealDate(this.searchParam.time[0]) // 开始时间
       this.searchParam.processDateEnd = this.searchParam.time && this.dealDate(this.searchParam.time[1]) // 结束时间
-      var tempArr = []
-      this.resourceArr.map(item => {
-        this.searchParam.companyMarketId && this.searchParam.companyMarketId.map(item1 => {
-          if (item.Source_Name === item1) {
-            tempArr.push(item.Source_ID)
-          } else if (!item1) {
-            this.searchSourceNu = '[]'
-          }
-        })
-      })
-      tempArr.length > 1 ? this.searchSourceNu = tempArr.join(',') : this.searchSourceNu = tempArr[0]
+      //
+      if (this.searchParam && this.searchParam.companyMarketId) {
+        this.searchParam.companyMarketId.length > 1 ? this.searchSourceNu = this.searchParam.companyMarketId.join(',') : this.searchSourceNu = this.searchParam.companyMarketId[0]
+      }
     },
     pagerChange () {
       this.loadTableDetail(1)
