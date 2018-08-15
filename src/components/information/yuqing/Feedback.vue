@@ -11,7 +11,7 @@
           <el-option v-for='item in topData.companyCode' :key="item.Company_Name+'('+item.Company_Code+')'" :label="item.Company_Name+'('+item.Company_Code+')'" :value="item.Company_Code"></el-option>
         </el-select>
         <el-select collapse-tags clearable size="small" placeholder="所属板块" v-model="searchParam.template" filterable>
-            <el-option v-for='item in topData.bankuai' :key="item.Value" :value="item.Text"></el-option>
+            <el-option v-for='item in topData.bankuai' :key="item.Value" :label="item.Text" :value="item.Value"></el-option>
         </el-select>
         <el-select collapse-tags clearable size="small" v-model="searchParam.reply_status" placeholder="回复状态" filterable>
           <el-option v-for='item in topData.replyStatus' :key="item.code" :label="item.status" :value="item.code"></el-option>
@@ -120,17 +120,18 @@ export default {
       this.getList()
     },
     getList (flag) {
+      this.zLoading = true
       var that = this
       var apiPath = ''
       if (flag) {
         that.getSearchParam()
-
-        apiPath = 'http://192.168.0.118:8022/api/v1/' + 'Regulatory_Letters/Pager/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.stock_code || '[]') + '/' + (this.searchParam.send_unit || '[]') + '/' + (this.searchParam.reply_status || '[]') + '/' + (this.searchParam.template || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
+        apiPath = 'http://192.168.0.118:8022/api/v1/' + 'Regulatory_Letters/Pager/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.spliteStockCode || '[]') + '/' + (this.searchParam.send_unit || '[]') + '/' + (this.searchParam.reply_status || 0) + '/' + (this.searchParam.template || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
       } else {
         apiPath = that.apiPath + 'Regulatory_Letters/Pager/' + that.zPager.currentPage + '/30'
       }
       that.$ajax.get(apiPath)
         .then(function (response) {
+          that.zLoading = false
           var data = response.data.Result
           that.tableData = data.Data
           that.zPager.total = data.Total
@@ -144,6 +145,8 @@ export default {
       // 处理公司代码
       if (this.searchParam && this.searchParam.stock_code) {
         this.searchParam.stock_code.length > 1 ? this.searchParam.spliteStockCode = this.searchParam.stock_code.join(',') : this.searchParam.spliteStockCode = this.searchParam.stock_code[0]
+      } else {
+        this.searchParam.spliteStockCode = ''
       }
     },
     showPDF (urls) {
@@ -167,7 +170,6 @@ export default {
         pdf.getPage(page).then(function getPageHelloWorld (page) {
           var scale = 1.0
           var viewport = page.getViewport(scale)
-          console.log(viewport)
           var canvas = document.getElementById(id)
           var context = canvas.getContext('2d')
           canvas.height = viewport.height
@@ -182,7 +184,7 @@ export default {
     },
     getTopData () {
       var that = this
-      that.$ajax.get(that.apiPath + 'StockPlate')
+      that.$ajax.get('http://192.168.0.118:8022/api/v1/' + 'StockPlate')
         .then(function (response) {
           var data = response.data.Result.Data
           that.topData.bankuai = data
