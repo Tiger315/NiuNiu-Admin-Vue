@@ -162,16 +162,6 @@ export default {
       })
       that.pdfUrl = urls
     },
-    loadPdfBase (urls) {
-      this.showPDF('MzM0MDI0ODQtY2FjNS00NjI3LWJlMDgtMTY0MDMxMjRkNmY2')
-      this.$ajax.get(urls)
-        .then(function (res) {
-          console.log(res)
-        })
-        .catch(function (res) {
-          console.log(res)
-        })
-    },
     showall (url, page, id) {
       PDFJS.getDocument(url).then(function getPdfHelloWorld (pdf) {
         pdf.getPage(page).then(function getPageHelloWorld (page) {
