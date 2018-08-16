@@ -30,10 +30,10 @@
       </el-table>
           <!--表格结束-->
        <!--分页开始-->
-      <div style="margin-top: 10px; text-align: center;width:100%;margin:0px;">
-          <span style="float: left; text-align: right; color: #606266; font-size: 14px; padding-top: 3px;">共 {{ zPager.total }} 条</span>
-          <el-pagination layout="prev, pager, next" :page-size="zPager.size" :pager-count="zPager.count" :current-page.sync="zPager.currentPage" :total="zPager.total" @current-change="pagerChange">
-          </el-pagination>
+      <div style="margin-top: 10px;height: 32px; line-height: 32px; text-align: center;">
+        <span style="float: left; text-align: right; color: #606266; font-size: 14px; padding-top: 3px;">共 {{ zPager.total }} 条</span>
+        <el-pagination layout="prev, pager, next" :page-size="zPager.size" :pager-count="zPager.count" :current-page.sync="zPager.currentPage" :total="zPager.total" @current-change="pagerChange">
+        </el-pagination>
       </div>
         <!--分页结束-->
   </div>

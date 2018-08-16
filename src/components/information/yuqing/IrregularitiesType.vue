@@ -68,7 +68,7 @@
         </el-main>
         <!--分页开始-->
         <el-footer height="45">
-          <div style="padding: 15px 0;  text-align: center;width:100%;margin:0px;">
+          <div style="text-align: center;width:100%;margin-top: 10px; ">
             <span style="float: left; text-align: right; color: #606266; font-size: 14px; padding-top: 3px;">共 {{ searchParam.total }} 条</span>
             <el-pagination layout="prev, pager, next" :page-size="searchParam.size" :pager-count="searchParam.count" :current-page.sync="searchParam.currentPage" :total="searchParam.total" @current-change="pagerChange">
             </el-pagination>
