@@ -1,28 +1,24 @@
 <template>
   <div class="SupervisionType">
-    <el-container>
-      <el-header height="240">
         <!-- 搜索条件开始 -->
-       <el-container style="margin-top: 10px;">
-        <el-input placeholder="包含所有关键词(以空格区分)" v-model="searchParam.titleMust"  size="small"  clearable></el-input>
-        <el-input placeholder="包含任意关键词(以空格区分)" v-model="searchParam.titleCan"  size="small" clearable></el-input>
-        <el-input placeholder="不包含任意关键词(以空格区分)" v-model="searchParam.titleNot"  size="small"  clearable></el-input>
-      </el-container>
-      <el-container style="margin-top: 10px;">
-        <el-select multiple collapse-tags clearable size="small" placeholder="来源" v-model="searchParam.companyMarketId" filterable>
+      <el-container style="margin-bottom: 10px;">
+        <el-input placeholder="包含所有关键词(以空格区分)" v-model="searchParam.titleMust"  size="small"  clearable class="ml20 noMl"></el-input>
+        <el-input placeholder="包含任意关键词(以空格区分)" v-model="searchParam.titleCan"  size="small" clearable class="ml20"></el-input>
+        <el-input placeholder="不包含任意关键词(以空格区分)" v-model="searchParam.titleNot"  size="small"  clearable class="ml20"></el-input>
+        <el-select multiple collapse-tags clearable size="small" placeholder="来源" v-model="searchParam.companyMarketId" filterable class="ml20">
             <el-option  v-for='item in resourceArr' :value="item.Source_ID" :label="item.Source_Name" :key="item.Source_ID"></el-option>
         </el-select>
-        <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" start-placeholder="起始日期" end-placeholder="结束日期"></el-date-picker>
-        <div>
+      </el-container>
+      <el-container style="margin-bottom: 10px;">
+        <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" start-placeholder="起始日期" end-placeholder="结束日期" class="ml20 noMl"></el-date-picker>
+        <div class="ml20">
           <el-button type="primary" icon="el-icon-search" size="small"  @click="loadTableDetail(1)">搜索</el-button>
          <el-button type="warning"  size="small"  @click="clearParam" >清空搜索</el-button>
         </div>
       </el-container>
       <!-- 搜索条件结束 -->
-      </el-header>
-      <el-main :height="dataHeight">
-          <!--表格开始-->
-            <el-table v-loading="zLoading"  element-loading-text="拼命加载中" :data="violationCase"  stripe style="width: 100%;" empty-text=" " row-key="id">
+      <!--表格开始-->
+     <el-table v-loading="zLoading" :height="dataHeight"  element-loading-text="拼命加载中" :data="violationCase"  stripe style="width: 100%;" empty-text=" " row-key="id">
               <el-table-column type="index" label="序号" fixed="left" width="70" :index="typeIndex"></el-table-column>
               <el-table-column fixed="left" prop="News_Title" label="标题"  min-width="250"  fit show-overflow-tooltip>
                 <template slot-scope="scope">
@@ -31,19 +27,15 @@
               </el-table-column>
               <el-table-column  fixed="left" prop="Source_Name" label="来源" width="250"></el-table-column>
               <el-table-column fixed="left" label="发布日期" prop="News_Date" width="200"></el-table-column>
-            </el-table>
+      </el-table>
           <!--表格结束-->
-      </el-main>
        <!--分页开始-->
-       <el-footer height="45">
-         <div style="padding: 10px 15px 0px;  text-align: center;width:100%;margin:0px;">
+      <div style="margin-top: 10px; text-align: center;width:100%;margin:0px;">
           <span style="float: left; text-align: right; color: #606266; font-size: 14px; padding-top: 3px;">共 {{ zPager.total }} 条</span>
           <el-pagination layout="prev, pager, next" :page-size="zPager.size" :pager-count="zPager.count" :current-page.sync="zPager.currentPage" :total="zPager.total" @current-change="pagerChange">
           </el-pagination>
-        </div>
-       </el-footer>
+      </div>
         <!--分页结束-->
-    </el-container>
   </div>
 </template>
 <script>
@@ -51,7 +43,7 @@ export default {
   name: 'SupervisionType',
   data () {
     return {
-      dataHeight: document.documentElement.clientHeight - 300,
+      dataHeight: document.documentElement.clientHeight - 135,
       zDialog: true,
       zLoading: true,
       searchParam: {
@@ -135,7 +127,7 @@ export default {
     const that = this
     window.onresize = () => {
       return (() => {
-        that.dataHeight = document.documentElement.clientHeight - 300
+        that.dataHeight = document.documentElement.clientHeight - 135
       })()
     }
   }
@@ -163,15 +155,14 @@ export default {
 </style>
 
 <style scoped>
-.SupervisionType{
-  width:100%;
-  padding:0px;
-  margin:0px;
-  overflow-x: hidden;
+.noMl.ml20{
+ margin-left:0px;
 }
-.SupervisionType,.SupervisionType>section{
-  height: 100%;
+.ml20{
+  margin-left:20px;
+  width:350px;
 }
+
 .title{
     margin-left:8px;
     cursor: pointer;
@@ -179,14 +170,6 @@ export default {
     font-size: 14px;
     line-height: 36px;
     font-weight: 700;
-}
-.el-container{
-    justify-content: center
-}
-.el-container>div{
-  width: 33.3%;
-  margin:0 15px;
-  box-sizing: border-box
 }
 .el-main{
   padding:0px 20px;

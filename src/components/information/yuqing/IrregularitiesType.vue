@@ -12,6 +12,7 @@
             <el-input placeholder="必含关键词（以空格区分）" v-model="searchParam.titleMust"  size="small"  clearable></el-input>
             <el-input placeholder="可含关键词（以空格区分）" v-model="searchParam.titleCan"  size="small" clearable></el-input>
             <el-input placeholder="不含关键词（以空格区分）" v-model="searchParam.titleNot"  size="small"  clearable></el-input>
+            <el-date-picker type="daterange" v-model="searchParam.processDateStart" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
           </el-container>
           <el-container style="margin-top: 10px;">
             <el-select collapse-tags clearable size="small" v-model="searchParam.companyCode"  placeholder="请输入公司代码、简称" filterable>
@@ -23,17 +24,14 @@
             <el-select collapse-tags clearable size="small" v-model="searchParam.avermentId" placeholder="申辩情况" filterable>
               <el-option :value="item" :key="item" v-for='item in condition.shenbian'></el-option>
             </el-select>
-          </el-container>
-          <el-container style="margin-top: 10px;">
-            <el-date-picker type="daterange" v-model="searchParam.processDateStart" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-            <el-select collapse-tags clearable size="small" placeholder="所属板块" v-model="searchParam.companyMarketId" filterable>
-              <el-option :value="item" :key="item" v-for='item in condition.area'></el-option>
-            </el-select>
             <el-select collapse-tags clearable size="small" placeholder="处罚机构" v-model="searchParam.supervisionOrganId" filterable>
               <el-option :value="item.name" :key="item.id" v-for='item in topData.jys'></el-option>
             </el-select>
           </el-container>
-          <el-container style="margin-top: 10px;">
+          <el-container style="margin-top: 10px;margin-bottom:10px;">
+            <el-select collapse-tags clearable size="small" placeholder="所属板块" v-model="searchParam.companyMarketId" filterable>
+              <el-option :value="item" :key="item" v-for='item in condition.area'></el-option>
+            </el-select>
             <el-select collapse-tags clearable size="small"  placeholder="所属行业" v-model="searchParam.industryInfo" filterable>
               <el-option :value="item.name" :key="item.id" v-for='item in topData.industry'></el-option>
             </el-select>
@@ -64,7 +62,7 @@
                 <el-table-column fixed="left" prop="violationTypeName" label="违规类型"  show-overflow-tooltip></el-table-column>
                 <el-table-column fixed="left" prop="supervisionOrganName" label="处理人" ></el-table-column>
 
-                <el-table-column fixed="left" :formatter="processDate"  label="更新时间"></el-table-column>
+                <el-table-column fixed="left" :formatter="processDate"  width="150"  label="更新时间"></el-table-column>
               </el-table>
             <!--表格结束-->
         </el-main>
@@ -356,7 +354,7 @@ export default {
     justify-content: center
 }
 .el-container>div{
-  width: 33.3%;
+  width: 25%;
   margin:0 15px;
   box-sizing: border-box
 }
