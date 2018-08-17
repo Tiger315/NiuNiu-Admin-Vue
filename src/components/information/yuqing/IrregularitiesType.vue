@@ -47,28 +47,27 @@
         <!-- 搜索条件结束 -->
         <el-main :height="dataHeight">
             <!--表格开始-->
-              <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="violationCase"  stripe style="width: 100%;"  row-key="id">
+              <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="violationCase" stripe style="width: 100%;" row-key="id">
                 <el-table-column type="index" fixed="left" width="70"  label="序号" :index="typeIndex"></el-table-column>
-                <el-table-column fixed="left" label="公司" width="200" show-overflow-tooltip>
+                <el-table-column fixed="left" prop="title" label="标题" min-width="280" fit show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    <span style="color: #0d308c; cursor: pointer; font" @click="showDetail(scope.row.id)" >{{scope.row.title}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="公司" width="200">
                   <template slot-scope="scope">
                       {{scope.row.companyName}}{{scope.row.companyCode?"("+scope.row.companyCode+")":""}}
                   </template>
                 </el-table-column>
-                <el-table-column fixed="left" prop="title" label="标题"    fit show-overflow-tooltip>
-                  <template slot-scope="scope">
-                    <span style="color: #0d308c; cursor: pointer; font" @click="showDetail(scope.row.id)" >{{ scope.row.title}}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column fixed="left" prop="violationTypeName" label="违规类型"  show-overflow-tooltip></el-table-column>
-                <el-table-column fixed="left" prop="supervisionOrganName" label="处理人"  width="200"></el-table-column>
-
-                <el-table-column fixed="left" :formatter="processDate"  width="150"  label="更新时间"></el-table-column>
+                <el-table-column prop="violationTypeName" label="违规类型" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="supervisionOrganName" label="处理人" width="200"></el-table-column>
+                <el-table-column :formatter="processDate"  width="150" label="更新时间"></el-table-column>
               </el-table>
             <!--表格结束-->
         </el-main>
         <!--分页开始-->
         <el-footer height="45">
-          <div style="text-align: center;width:100%;margin-top: 10px; ">
+          <div style="text-align: center;width:100%; margin-top: 10px; ">
             <span style="float: left; text-align: right; color: #606266; font-size: 14px; padding-top: 3px;">共 {{ searchParam.total }} 条</span>
             <el-pagination layout="prev, pager, next" :page-size="searchParam.size" :pager-count="searchParam.count" :current-page.sync="searchParam.currentPage" :total="searchParam.total" @current-change="pagerChange">
             </el-pagination>
