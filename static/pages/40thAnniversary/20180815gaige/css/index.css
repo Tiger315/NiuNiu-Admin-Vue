@@ -319,7 +319,7 @@ body {
 	line-height: 1.5;
 }
 .experience .item-block .intro-content p{
-	text-indent: 2;
+	text-indent: 2em;
 }
 
 .experience .item-block .intro-content .detail-box {
@@ -437,7 +437,13 @@ body {
 .footer>img{
 	width: 100%;
 }
-
+.item-block.jinzheng{
+	background-color: #f1f2f7;
+	border: none;
+	width:100%;
+	margin:0px;
+	 margin-top: 0.625rem;
+}
 /*.header-img.header-img2>img{
 	margin-top:.5rem;
 }
