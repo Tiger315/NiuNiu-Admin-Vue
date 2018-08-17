@@ -436,6 +436,7 @@ body {
 }
 .footer>img{
 	width: 100%;
+	vertical-align: top;
 }
 .item-block.jinzheng{
 	background-color: #f1f2f7;
