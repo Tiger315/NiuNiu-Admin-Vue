@@ -1,7 +1,7 @@
 <template>
   <div class="IrregularitiesType">
     <el-container :height="leftHeight">
-      <el-aside width="20%" :height="leftHeight" class="left">
+      <el-aside width="20%" :height="leftHeight" class="left" >
         <div class="title">违规类型</div>
         <el-tree :data="treeData"></el-tree>
       </el-aside>
@@ -60,7 +60,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column fixed="left" prop="violationTypeName" label="违规类型"  show-overflow-tooltip></el-table-column>
-                <el-table-column fixed="left" prop="supervisionOrganName" label="处理人" ></el-table-column>
+                <el-table-column fixed="left" prop="supervisionOrganName" label="处理人"  width="200"></el-table-column>
 
                 <el-table-column fixed="left" :formatter="processDate"  width="150"  label="更新时间"></el-table-column>
               </el-table>
@@ -187,7 +187,7 @@ export default {
     typeIndex (index) {
       return index + (this.searchParam.currentPage - 1) * this.searchParam.size + 1
     },
-    clearParam () {
+    clearParam () { // 清除搜索条件
       for (var key in this.searchParam) {
         this.searchParam[key] = ''
       }
@@ -229,7 +229,7 @@ export default {
           console.log(response)
         })
     },
-    loadTopMenu () {
+    loadTopMenu () { // 顶部搜索条件
       var that = this
       that.$ajax.get(that.apiPath + 'Industry')
         .then(function (response) {
@@ -301,6 +301,9 @@ export default {
 .IrregularitiesType .el-range-separator{
   line-height:25px !important;
 }
+.SupervisionType .el-tree-node>.el-tree-node__children{
+  overflow: initial;
+}
 .docTitle p{
     text-indent: 2em;
     font-size: 14px;
@@ -359,8 +362,8 @@ export default {
   box-sizing: border-box
 }
 .el-main{
-  padding:0px 20px;
-  margin-top:20px;
+  padding:0px 10px;
+  margin-top:10px;
 }
 a.detail_title{
     font-size: 16px;
