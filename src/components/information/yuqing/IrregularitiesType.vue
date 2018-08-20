@@ -39,7 +39,7 @@
               <el-option :value="item" :key="item" v-for='item in condition.procvince'></el-option>
             </el-select>
             <div>
-              <el-button type="primary" icon="el-icon-search" size="small" @click="searchList(1)">搜索</el-button>
+              <el-button type="primary" icon="el-icon-search" size="small" @click="searchList">搜索</el-button>
               <el-button type="warning"  size="small" @click="clearParam" >清空搜索</el-button>
             </div>
           </el-container>
@@ -192,22 +192,23 @@ export default {
       for (var key in this.searchParam) {
         this.searchParam[key] = ''
       }
+      this.searchParam.total = 0
+      this.searchParam.size = 30
+      this.searchParam.count = 11
+      this.searchParam.sortType = 'desc'
+      this.searchParam.currentPage = 1
+      this.searchList()
     },
     showDetail (id) {
       this.zDialog = true
       this.searchId = id
       this.getDetail(this.searchId)
     },
-    searchList (flag) {
-      var searchParams = ''
+    searchList () {
       var that = this
-      if (flag) {
-        that.getSearchParam()
-        console.log(that.searchParam.companyCode)
-        searchParams = that.apiPath + 'XA_Wgal/Pager/' + (that.searchParam.titleMust || '[]') + '/' + (that.searchParam.titleCan || '[]') + '/' + (that.searchParam.titleNot || '[]') + '/' + (that.searchParam.processDateStart || '[]') + '/' + (that.searchParam.processDateEnd || '[]') + '/' + (that.searchParam.spliteStockCode || '[]') + '/' + that.searchParam.currentPage + '/30'
-      } else {
-        searchParams = that.apiPath + 'XA_Wgal/Pager/' + that.searchParam.currentPage + '/30'
-      }
+      that.getSearchParam()
+      var searchParams = that.apiPath + 'XA_Wgal/Pager/' + (that.searchParam.titleMust || '[]') + '/' + (that.searchParam.titleCan || '[]') + '/' + (that.searchParam.titleNot || '[]') + '/' + (that.searchParam.processDateStart || '[]') + '/' + (that.searchParam.processDateEnd || '[]') + '/' + (that.searchParam.spliteStockCode || '[]') + '/' + that.searchParam.currentPage + '/30'
+
       that.$ajax.get(searchParams)
         .then(function (response) {
           that.violationCase = response.data.Result.Data
@@ -219,8 +220,7 @@ export default {
       return date
     },
     pagerChange () {
-      this.getSearchParam()
-      this.searchList(1)
+      this.searchList()
     },
     getSearchParam () {
       // 获取查询的参数
