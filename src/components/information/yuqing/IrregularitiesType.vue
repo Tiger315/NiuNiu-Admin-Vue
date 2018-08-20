@@ -12,7 +12,7 @@
             <el-input placeholder="必含关键词（以空格区分）" v-model="searchParam.titleMust"  size="small"  clearable></el-input>
             <el-input placeholder="可含关键词（以空格区分）" v-model="searchParam.titleCan"  size="small" clearable></el-input>
             <el-input placeholder="不含关键词（以空格区分）" v-model="searchParam.titleNot"  size="small"  clearable></el-input>
-            <el-date-picker type="daterange" v-model="searchParam.processDateStart" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+            <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
           </el-container>
           <el-container style="margin-top: 10px;">
             <el-select collapse-tags clearable size="small" v-model="searchParam.companyCode"  placeholder="请输入公司代码、简称" filterable>
@@ -39,7 +39,7 @@
               <el-option :value="item" :key="item" v-for='item in condition.procvince'></el-option>
             </el-select>
             <div>
-              <el-button type="primary" icon="el-icon-search" size="small" @click="searchList">搜索</el-button>
+              <el-button type="primary" icon="el-icon-search" size="small" @click="searchList(1)">搜索</el-button>
               <el-button type="warning"  size="small" @click="clearParam" >清空搜索</el-button>
             </div>
           </el-container>
@@ -160,7 +160,8 @@ export default {
         size: 30,
         count: 11,
         sortType: 'desc',
-        currentPage: 1
+        currentPage: 1,
+        time: ''
       },
       searchId: '',
       zDetail: {},
@@ -196,10 +197,16 @@ export default {
       this.searchId = id
       this.getDetail(this.searchId)
     },
-    searchList () {
+    searchList (flag) {
+      var searchParams = ''
       var that = this
-      var searchParam = that.apiPath + 'XA_Wgal/Pager/' + that.searchParam.currentPage + '/30'
-      that.$ajax.get(searchParam)
+      if (flag) {
+        that.getSearchParam()
+        searchParams = that.apiPath + 'XA_Wgal/Pager/' + (that.searchParam.titleMust || '[]') + '/' + (that.searchParam.titleCan || '[]') + '/' + (that.searchParam.titleNot || '[]') + '/' + (that.searchParam.processDateStart || '[]') + '/' + (that.searchParam.processDateEnd || '[]') + '/' + that.searchParam.currentPage + '/30'
+      } else {
+        searchParams = that.apiPath + 'XA_Wgal/Pager/' + that.searchParam.currentPage + '/30'
+      }
+      that.$ajax.get(searchParams)
         .then(function (response) {
           that.violationCase = response.data.Result.Data
           that.searchParam.total = response.data.Result.Total
@@ -210,7 +217,14 @@ export default {
       return date
     },
     pagerChange () {
-      this.searchList()
+      this.getSearchParam()
+      this.searchList(1)
+    },
+    getSearchParam () {
+      // 获取查询的参数
+      // 处理开始结束时间
+      this.searchParam.processDateStart = this.searchParam.time && this.dealDate(this.searchParam.time[0]) // 开始时间
+      this.searchParam.processDateEnd = this.searchParam.time && this.dealDate(this.searchParam.time[1]) // 结束时间
     },
     loadLeftMenu () { // 侧边栏
       var that = this
