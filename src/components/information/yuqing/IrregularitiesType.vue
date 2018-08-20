@@ -15,8 +15,8 @@
             <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
           </el-container>
           <el-container style="margin-top: 10px;">
-            <el-select collapse-tags clearable size="small" v-model="searchParam.companyCode"  placeholder="请输入公司代码、简称" filterable>
-              <el-option :value="item.Name+'('+item.Code+')'" :key="item.Code" v-for='item in topData.StockInfo' ></el-option>
+            <el-select multiple collapse-tags clearable size="small" v-model="searchParam.companyCode"  placeholder="请输入公司代码、简称" filterable>
+              <el-option :label="item.Name+'('+item.Code+')'" :key="item.Name+'('+item.Code+')'" v-for='item in topData.StockInfo' :value="item.Code" ></el-option>
             </el-select>
             <el-select collapse-tags multiple clearable size="small" v-model="searchParam.involveObjectId"  placeholder="处罚对象身份" filterable>
               <el-option :value="item" :key="item"  v-for='item in condition.chufaRole'></el-option>
@@ -151,7 +151,7 @@ export default {
         involveObjectId: '', // 处罚对象身份
         avermentId: '', // 申辩情况
         processDateStart: '', // 起始结束时间
-        // processDateEnd: '', // 结束时间
+        processDateEnd: '', // 结束时间
         companyMarketId: '', // 所属板块
         industryInfo: '', // 所属行业
         companyArea: '', // 所属地区
@@ -161,7 +161,8 @@ export default {
         count: 11,
         sortType: 'desc',
         currentPage: 1,
-        time: ''
+        time: '',
+        spliteStockCode: ''
       },
       searchId: '',
       zDetail: {},
@@ -202,7 +203,8 @@ export default {
       var that = this
       if (flag) {
         that.getSearchParam()
-        searchParams = that.apiPath + 'XA_Wgal/Pager/' + (that.searchParam.titleMust || '[]') + '/' + (that.searchParam.titleCan || '[]') + '/' + (that.searchParam.titleNot || '[]') + '/' + (that.searchParam.processDateStart || '[]') + '/' + (that.searchParam.processDateEnd || '[]') + '/' + that.searchParam.currentPage + '/30'
+        console.log(that.searchParam.companyCode)
+        searchParams = that.apiPath + 'XA_Wgal/Pager/' + (that.searchParam.titleMust || '[]') + '/' + (that.searchParam.titleCan || '[]') + '/' + (that.searchParam.titleNot || '[]') + '/' + (that.searchParam.processDateStart || '[]') + '/' + (that.searchParam.processDateEnd || '[]') + '/' + (that.searchParam.spliteStockCode || '[]') + '/' + that.searchParam.currentPage + '/30'
       } else {
         searchParams = that.apiPath + 'XA_Wgal/Pager/' + that.searchParam.currentPage + '/30'
       }
@@ -225,6 +227,12 @@ export default {
       // 处理开始结束时间
       this.searchParam.processDateStart = this.searchParam.time && this.dealDate(this.searchParam.time[0]) // 开始时间
       this.searchParam.processDateEnd = this.searchParam.time && this.dealDate(this.searchParam.time[1]) // 结束时间
+      // 处理公司代码
+      if (this.searchParam && this.searchParam.companyCode) {
+        this.searchParam.companyCode.length > 1 ? this.searchParam.spliteStockCode = this.searchParam.companyCode.join(',') : this.searchParam.spliteStockCode = this.searchParam.companyCode[0]
+      } else {
+        this.searchParam.spliteStockCode = ''
+      }
     },
     loadLeftMenu () { // 侧边栏
       var that = this
