@@ -151,7 +151,6 @@ export default {
             if (res.Code === 1000) {
               addEmailParam.id = res.Result.Data
               // 向数组最前面插入新增的这条数据
-              console.log(that.mailData)
               that.mailData.unshift(addEmailParam)
               that.$message({
                 message: '添加邮件模板成功',

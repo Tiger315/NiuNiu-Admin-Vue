@@ -30,9 +30,9 @@ body {
 textarea{
   resize:none
 }
-/* .el-tooltip__popper.is-dark{
-  width: 50%;
-} */
+.el-tooltip__popper.is-dark{
+  max-width: 60%;
+}
 ul,li{
   list-style: none;
 }
