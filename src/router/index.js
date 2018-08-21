@@ -14,6 +14,7 @@ import SupervisionType from '@/components/information/yuqing/SupervisionType' //
 import IrregularitiesType from '@/components/information/yuqing/IrregularitiesType' // 舆情违规案例
 import Feedback from '@/components/information/yuqing/Feedback' // 舆情监管函件
 import Message from '@/components/Message/MsgStatus' // 短信发送状态
+import MsgTemplateList from '@/components/Message/MsgTemplateList' // 新增短信模版
 
 Vue.use(Router)
 
@@ -75,5 +76,9 @@ export default new Router({
     path: '/Message/MsgStatus',
     name: ' Message',
     component: Message
+  }, {
+    path: '/Message/MsgTemplateList',
+    name: ' MsgTemplateList',
+    component: MsgTemplateList
   }]
 })

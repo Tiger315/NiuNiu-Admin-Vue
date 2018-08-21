@@ -1,18 +1,17 @@
 <template>
-  <div class="MailTemplateList-box" v-cloak>
+  <div class="MsgTemplateList-box" v-cloak>
     <!--表格开始-->
     <div class="add_btn">
-      <div class="buttons"> <el-button type="primary" @click="initModal" size="small">新增邮件模板</el-button></div>
+      <div class="buttons"> <el-button type="primary" @click="initModal" size="small">新增短信模板</el-button></div>
 
       <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="mailData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
         <el-table-column type="index" fixed="left" width="70" label="序号" :index="typeIndex"></el-table-column>
-        <el-table-column fixed="left" prop="title" label="标题" width="500" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="body"  fit show-overflow-tooltip label="内容">
+        <el-table-column prop="content"  fit show-overflow-tooltip label="内容">
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="160" align="center">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click.native.prevent="editMailTemplate(scope.row,scope.$index)">编辑</el-button>
-            <el-button type="text" size="small" @click.native.prevent="deleteMailTemplate(scope.row,scope.row.id)">删除</el-button>
+            <el-button type="text" size="small" @click.native.prevent="editMsgTemplate(scope.row,scope.$index)">编辑</el-button>
+            <el-button type="text" size="small" @click.native.prevent="deleteMsgTemplate(scope.row,scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -23,17 +22,14 @@
         </el-pagination>
       </div>
       <div>
-        <el-dialog :title="isEditDialog == 1? '新增邮件模板' : '编辑邮件模板'" :visible.sync="addMail.centerDialogVisible"  center>
-          <el-form :model="addMail.addMailTemplate" :rules="addMail.rules" ref="addMail.addMailTemplate" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="邮件标题" prop="title">
-              <el-input v-model="addMail.addMailTemplate.title"></el-input>
-            </el-form-item>
-              <el-form-item label="邮件内容" prop="body">
-              <li-ueditor ref="ueditor" :default-value='addMail.addMailTemplate.body'></li-ueditor>
+        <el-dialog :title="isEditDialog == 1? '新增短信模板' : '编辑短信模板'" :visible.sync="addMail.centerDialogVisible"  center>
+          <el-form :model="addMail.msg_model" :rules="addMail.rules" ref="addMail.msg_model" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="短信内容" prop="Content">
+              <textarea name="Content" id="Content" cols="30" rows="10" v-model="addMail.msg_model.Content"></textarea>
             </el-form-item>
             <el-form-item class="form_btn">
               <el-button @click="addMail.centerDialogVisible = false"  size="small">取 消</el-button>
-              <el-button type="primary" @click="isValid('addMail.addMailTemplate')"  size="small">确 定</el-button>
+              <el-button type="primary" @click="isValid('addMail.msg_model')"  size="small">确 定</el-button>
             </el-form-item>
           </el-form>
         </el-dialog>
@@ -45,7 +41,7 @@
 <script>
 import ueditor from '../commen/Ueditor.vue'
 export default {
-  name: 'MailTemplateList',
+  name: 'MsgTemplateList',
   data () {
     return {
       tHeight: document.documentElement.clientHeight - 82,
@@ -59,22 +55,15 @@ export default {
       },
       addMail: {
         centerDialogVisible: false,
-        addMailTemplate: {
-          title: '',
-          body: '',
-          id: ''
+        msg_model: {
+          Content: '',
+          ID: ''
         },
         rules: {
-          title: [
+          msg_moDel: [
             {
               required: true,
-              message: '请输入邮件标题'
-            }
-          ],
-          body: [
-            {
-              required: true,
-              message: '请输入邮件内容'
+              message: '请输入短信内容'
             }
           ]
         }
@@ -95,7 +84,7 @@ export default {
     getMail () {
       var that = this
       that.zLoading = true
-      var apiPath = that.apiPath + 'MailTemplate'
+      var apiPath = that.apiPath + '/MessageTemplate'
       that.$ajax
         .get(apiPath)
         .then(function (response) {
@@ -108,26 +97,17 @@ export default {
         })
         .catch(function (response) {})
     },
-    // 点击新增邮件模板按钮打开弹框并且初始化弹框中内容
+    // 点击新增短信模板按钮打开弹框并且初始化弹框中内容
     initModal () {
       this.addMail.centerDialogVisible = true
       this.isEditDialog = 1
-      this.addMail.addMailTemplate.title = ''
-      this.addMail.addMailTemplate.body = ''
-      if (this.$refs.ueditor) {
-        this.$refs.ueditor.setUEContent('')
-      }
+      this.addMail.msg_model.Content = ''
     },
     // 验证是否可以提交
     isValid (formName) {
-      var addEmailParam = this.addMail.addMailTemplate
-      // 获取ueditor的值
-      addEmailParam.body = this.$refs.ueditor.getUEContent()
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.addMailTemplate()
-        } else {
-
         }
       })
     },
@@ -135,43 +115,39 @@ export default {
     addMailTemplate (formName) {
       var that = this
       var addEmailParam = {
-        title: this.addMail.addMailTemplate.title,
-        body: this.addMail.addMailTemplate.body,
-        id: this.addMail.addMailTemplate.id
+        Content: this.addMail.msg_model.Content,
+        ID: this.addMail.msg_model.ID
       }
       this.addMail.centerDialogVisible = false
-      var apiPath = that.apiPath + 'MailTemplate'
-      if (this.isEditDialog === 1) {
-        // 新增
-        delete addEmailParam.id
+      var apiPath = that.apiPath + 'MessageTemplate'
+      if (this.isEditDialog === 1) { // 新增
+        delete addEmailParam.ID
         that.$ajax
-          .post(apiPath, addEmailParam)
+          .post(apiPath, that.addMail.msg_model)
           .then(function (response) {
             let res = response.data
             if (res.Code === 1000) {
-              addEmailParam.id = res.Result.Data
+              addEmailParam.Id = res.Result.Data
               // 向数组最前面插入新增的这条数据
-              console.log(that.mailData)
-              that.mailData.unshift(addEmailParam)
+              that.mailData.unshift({'content': that.addMail.msg_model.Content, 'id': addEmailParam.Id})
               that.$message({
-                message: '添加邮件模板成功',
+                message: '添加短信模板成功',
                 type: 'success'
               })
             }
             that.zLoading = false
           })
           .catch(function (response) {})
-      } else if (this.isEditDialog === 2) {
+      } else if (this.isEditDialog === 2) { // 编辑
         that.$ajax
-          .put(apiPath, addEmailParam)
+          .put(apiPath, that.addMail.msg_model)
           .then(function (response) {
             let res = response.data
             if (res.Code === 1000) {
               // 更改本条记录
-              that.mailData[that.clickedIdx].title = addEmailParam.title
-              that.mailData[that.clickedIdx].body = addEmailParam.body
+              that.mailData[that.clickedIdx].content = addEmailParam.Content
               that.$message({
-                message: '修改邮件模板成功',
+                message: '修改短信模板成功',
                 type: 'success'
               })
             }
@@ -181,21 +157,15 @@ export default {
       }
     },
     // 点击编辑按钮
-    editMailTemplate (param, index) {
+    editMsgTemplate (param, index) {
       this.clickedIdx = index
       this.isEditDialog = 2
       this.addMail.centerDialogVisible = true
-      this.addMail.addMailTemplate.title = param.title
-      if (this.$refs.ueditor) {
-        this.$refs.ueditor.setUEContent(param.body)
-      } else {
-        this.addMail.addMailTemplate.body = param.body // 没有初始化组件时通过传值设置默认值
-      }
-
-      this.addMail.addMailTemplate.id = param.id
+      this.addMail.msg_model.Content = param.content
+      this.addMail.msg_model.ID = param.id
     },
     // 点击删除按钮
-    deleteMailTemplate (row, id) {
+    deleteMsgTemplate (row, id) {
       const that = this
       this.$confirm('此操作将永久删除此条数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -204,7 +174,7 @@ export default {
       })
         .then(() => {
           var apiPath =
-            that.apiPath + 'MailTemplate/' + id
+            that.apiPath + 'MessageTemplate/' + id
           that.$ajax
             .delete(apiPath)
             .then(function (response) {
@@ -216,7 +186,7 @@ export default {
                 that.zPager.total--
                 // 隐藏弹框
                 that.$message({
-                  message: '删除邮件模板成功',
+                  message: '删除短信模板成功',
                   type: 'success'
                 })
               }
@@ -232,7 +202,7 @@ export default {
         })
     },
     pagerChange (val) {
-      console.log(val)
+      this.getMail()
     }
   },
   created () {
@@ -254,7 +224,10 @@ export default {
 [v-cloak] {
   display: none;
 }
-
+textarea{
+  width: 100%;
+  border: 1px solid #ccc;
+}
 html,
 body {
   padding: 0;
