@@ -8,6 +8,8 @@
         <el-table-column type="index" fixed="left" width="70" label="序号" :index="typeIndex"></el-table-column>
         <el-table-column prop="content"  fit show-overflow-tooltip label="内容">
         </el-table-column>
+         <el-table-column prop="id"  fit show-overflow-tooltip label="ID">
+        </el-table-column>
         <el-table-column fixed="right" label="操作" width="160" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click.native.prevent="editMsgTemplate(scope.row,scope.$index)">编辑</el-button>
