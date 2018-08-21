@@ -33,8 +33,7 @@
                 <i class="el-icon-menu"></i>
                 <span>短信管理</span>
               </template>
-              <el-menu-item index="5-1" @click="addTab('邮件模版','./#/Mail/MailTemplateList')">邮件模版</el-menu-item>
-              <el-menu-item index="5-2" @click="addTab('邮件发送状态','./#/Mail/MailStatus')">邮件发送状态</el-menu-item>
+              <el-menu-item index="5-1" @click="addTab('短信发送状态','./#/Message/MsgStatus')">短信发送状态</el-menu-item>
             </el-submenu>
             <el-submenu index="3">
               <template slot="title">

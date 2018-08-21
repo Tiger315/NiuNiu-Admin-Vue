@@ -13,6 +13,7 @@ import HuiboReport from '@/components/information/huibo/HuiboPresentation' // �
 import SupervisionType from '@/components/information/yuqing/SupervisionType' // 舆情监管动态
 import IrregularitiesType from '@/components/information/yuqing/IrregularitiesType' // 舆情违规案例
 import Feedback from '@/components/information/yuqing/Feedback' // 舆情监管函件
+import Message from '@/components/Message/MsgStatus' // 短信发送状态
 
 Vue.use(Router)
 
@@ -70,5 +71,9 @@ export default new Router({
     path: '/yuqing/feedback',
     name: ' Feedback',
     component: Feedback
+  }, {
+    path: '/Message/MsgStatus',
+    name: ' Message',
+    component: Message
   }]
 })

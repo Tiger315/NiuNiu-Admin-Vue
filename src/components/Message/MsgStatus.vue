@@ -1,0 +1,141 @@
+<template>
+  <div class="MsgStatus-box" v-cloak>
+    <div class="myCount">
+      我的账户
+      <span class="ml10">可用余额</span>
+      <i v-if="Surplus">{{Surplus}}</i>
+      <i v-else class="el-icon-loading ml10"></i>
+      <span class="ml10">当月消费</span>
+      <i v-if="Consumption">{{Consumption}}</i>
+      <i v-else class="el-icon-loading ml10"></i>
+    </div>
+    <!--表格开始-->
+    <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMsgStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
+      <el-table-column type="index" fixed="left" width="70" label="序号" :index="typeIndex"></el-table-column>
+      <el-table-column fixed="left" prop="SendTo" label="发送给" fit></el-table-column>
+      <el-table-column prop="ReqTime" label="请求时间"></el-table-column>
+      <el-table-column prop="SendTime" label="发送时间"></el-table-column>
+      <el-table-column prop="IsProxy" label="是否代理">
+         <template slot-scope="scope">
+          {{scope.row.IsProxy === false ? '否' : '是'}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="ReqIp" label="请求IP"></el-table-column>
+      <el-table-column prop="TrueIp" label="正式IP"></el-table-column>
+    </el-table>
+    <!--表格结束-->
+    <!--分页开始-->
+    <div style="margin-top: 10px; height: 32px; line-height: 32px; text-align: center;">
+      <span style="float: left; text-align: right; color: #606266; font-size: 14px; padding-top: 3px;">共 {{ zPager.total }} 条</span>
+      <el-pagination layout="prev, pager, next" :page-size="zPager.size" :pager-count="zPager.count" :current-page.sync="zPager.currentPage" :total="zPager.total" @current-change="pagerChange">
+      </el-pagination>
+    </div>
+    <!--分页结束-->
+  </div>
+</template>
+<script>
+export default {
+  name: 'MsgStatus',
+  data () {
+    return {
+      tHeight: document.documentElement.clientHeight - 92,
+      zLoading: true,
+      zMsgStatusData: [],
+      zPager: {
+        total: 0,
+        size: 30,
+        count: 11,
+        currentPage: 1
+      },
+      Surplus: '',
+      Consumption: '',
+      clickedIdx: -1 // 当前被点击的元素
+    }
+  },
+  methods: {
+    typeIndex (index) {
+      return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
+    },
+    getMail () {
+      var that = this
+      that.zLoading = true
+      var apiPath = that.apiPath + 'Message/Pager/' + this.zPager.currentPage + '/' + this.zPager.size
+      that.$ajax
+        .get(apiPath)
+        .then(function (response) {
+          var res = response.data
+          if (res.Code === 1000) {
+            that.zMsgStatusData = res.Result.Data
+            that.zPager.total = res.Result.Total
+          }
+          that.zLoading = false
+        })
+        .catch(function (response) {})
+    },
+    getUseData () {
+      var that = this
+      that.$ajax
+        .get(that.apiPath + 'Message/Remain')
+        .then(function (res) {
+          var data = res.data.Result.Data.split(',')
+          that.Surplus = data[0]
+          that.Consumption = data[1]
+        })
+        .catch(function (res) {
+          console.log(res)
+        })
+    },
+    pagerChange (val) {
+      this.getMail()
+    }
+  },
+  created () {
+    this.getMail()
+    this.getUseData()
+  },
+  mounted () {
+    var that = this
+    window.onresize = () => {
+      return (() => {
+        that.tHeight = document.documentElement.clientHeight - 92
+      })()
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+[v-cloak] {
+  display: none;
+}
+.myCount{
+  font-size: 16px;
+  font-weight:700;
+  margin-bottom:20px;
+}
+.myCount i{
+  color:#F56C6C;
+}
+.myCount span{
+  font-size: 14px;
+  font-weight:300;
+}
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
+.el-icon-loading {
+  /* display: none; */
+}
+.active.el-icon-loading {
+  display: inline-block;
+  font-size: 14px;
+  margin-left: 5px;
+}
+.ml10{
+  margin-left: 10px;
+}
+</style>

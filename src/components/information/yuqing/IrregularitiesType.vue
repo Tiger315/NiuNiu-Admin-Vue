@@ -322,6 +322,7 @@ export default {
 .IrregularitiesType .el-range-separator{
   line-height:25px !important;
 }
+
 .SupervisionType .el-tree-node>.el-tree-node__children{
   overflow: initial;
 }
