@@ -1,14 +1,23 @@
 <template>
   <div class="MsgStatus-box" v-cloak>
-    <div class="myCount">
-      我的账户
-      <span class="ml10">可用余额</span>
-      <i v-if="Surplus">{{Surplus}}</i>
-      <i v-else class="el-icon-loading ml10"></i>
-      <span class="ml10">当月消费</span>
-      <i v-if="Consumption">{{Consumption}}</i>
-      <i v-else class="el-icon-loading ml10"></i>
-    </div>
+
+    <el-container style="margin-bottom: 10px;">
+            <el-input placeholder="请输入手机号码" v-model="searchParam.phoneNumber"  style="width: 25%;"  size="small"  clearable></el-input>
+            <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至"  style="width:25%;;margin-left:10px;height:32px;line-height:32px;" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+             <div class="ml10" style="width:180px;">
+                <el-button type="primary" icon="el-icon-search" size="small" @click="getList(1)">搜索</el-button>
+              <el-button type="warning"  size="small"  @click="clearParam" >清空搜索</el-button>
+              </div>
+            <el-container class="myCount">
+                我的账户:
+                <span class="ml10">可用余额</span>
+                <i v-if="Surplus">{{Surplus}}</i>
+                <i v-else class="el-icon-loading ml10"></i>
+                <span class="ml10">当月消费</span>
+                <i v-if="Consumption">{{Consumption}}</i>
+                <i v-else class="el-icon-loading ml10"></i>
+            </el-container>
+     </el-container>
     <!--表格开始-->
     <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMsgStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
       <el-table-column type="index" fixed="left" width="70" label="序号" :index="typeIndex"></el-table-column>
@@ -39,7 +48,7 @@ export default {
   name: 'MsgStatus',
   data () {
     return {
-      tHeight: document.documentElement.clientHeight - 92,
+      tHeight: document.documentElement.clientHeight - 103,
       zLoading: true,
       zMsgStatusData: [],
       zPager: {
@@ -47,6 +56,10 @@ export default {
         size: 30,
         count: 11,
         currentPage: 1
+      },
+      searchParam: {
+        phoneNumber: '',
+        time: ''
       },
       Surplus: '',
       Consumption: '',
@@ -98,7 +111,7 @@ export default {
     var that = this
     window.onresize = () => {
       return (() => {
-        that.tHeight = document.documentElement.clientHeight - 92
+        that.tHeight = document.documentElement.clientHeight - 103
       })()
     }
   }
@@ -106,14 +119,30 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+<style>
+.MsgStatus-box .el-range__icon.el-icon-date{
+    line-height: 0px ;
+}
+.MsgStatus-box .el-range-separator{
+  line-height:25px !important;
+}
+</style>
+
 <style scoped>
+
 [v-cloak] {
   display: none;
 }
 .myCount{
   font-size: 16px;
   font-weight:700;
-  margin-bottom:20px;
+  margin-bottom:10px;
+  display: inline-block;
+  text-align:right;
+  padding-right:20px;
+  width:200px;
+  height:32px;
+  line-height:40px;
 }
 .myCount i{
   color:#F56C6C;
