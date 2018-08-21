@@ -12,16 +12,17 @@
     <!--表格开始-->
     <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMsgStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
       <el-table-column type="index" fixed="left" width="70" label="序号" :index="typeIndex"></el-table-column>
-      <el-table-column fixed="left" prop="SendTo" label="发送给" fit></el-table-column>
-      <el-table-column prop="ReqTime" label="请求时间"></el-table-column>
-      <el-table-column prop="SendTime" label="发送时间"></el-table-column>
-      <el-table-column prop="IsProxy" label="是否代理">
+      <el-table-column fixed="left" prop="SendTo" label="发送给"  width="150" fit></el-table-column>
+      <el-table-column prop="ReqTime" label="请求时间"  width="200"></el-table-column>
+      <el-table-column prop="SendTime" label="发送时间"  width="200"></el-table-column>
+      <el-table-column prop="IsProxy" label="是否代理"  width="100">
          <template slot-scope="scope">
           {{scope.row.IsProxy === false ? '否' : '是'}}
         </template>
       </el-table-column>
-      <el-table-column prop="ReqIp" label="请求IP"></el-table-column>
-      <el-table-column prop="TrueIp" label="正式IP"></el-table-column>
+      <el-table-column prop="ReqIp" label="请求IP" width="150"></el-table-column>
+      <el-table-column prop="TrueIp" label="正式IP" width="150"></el-table-column>
+      <el-table-column prop="Content" label="短信内容"></el-table-column>
     </el-table>
     <!--表格结束-->
     <!--分页开始-->
