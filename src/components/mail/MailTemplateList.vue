@@ -261,10 +261,7 @@ body {
   margin: 0;
   font-size: 14px;
 }
-.add_btn {
-  margin: 0 10px 20px;
 
-}
 .add_btn>.buttons{
   width: 100%;
 text-align: right;
