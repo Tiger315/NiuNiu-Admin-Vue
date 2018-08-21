@@ -25,7 +25,7 @@
                 <i class="el-icon-menu"></i>
                 <span>邮件管理</span>
               </template>
-              <el-menu-item index="2-1" @click="addTab('邮件模版','./#/Mail/MailTemplateList')">邮件模版</el-menu-item>
+              <el-menu-item index="2-1" @click="addTab('邮件模版','./#/Mail/MailTemplateList')">邮件模板</el-menu-item>
               <el-menu-item index="2-2" @click="addTab('邮件发送状态','./#/Mail/MailStatus')">邮件发送状态</el-menu-item>
             </el-submenu>
             <el-submenu index="5">
