@@ -9,6 +9,7 @@
       <i v-if="Consumption">{{Consumption}}</i>
       <i v-else class="el-icon-loading ml10"></i>
     </div>
+
     <!--表格开始-->
     <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMsgStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
       <el-table-column type="index" fixed="left" width="70" label="序号" :index="typeIndex"></el-table-column>
@@ -25,6 +26,7 @@
       <el-table-column prop="Content" label="短信内容" show-overflow-tooltip></el-table-column>
     </el-table>
     <!--表格结束-->
+
     <!--分页开始-->
     <div style="margin-top: 10px; height: 32px; line-height: 32px; text-align: center;">
       <span style="float: left; text-align: right; color: #606266; font-size: 14px; padding-top: 3px;">共 {{ zPager.total }} 条</span>
@@ -57,41 +59,45 @@ export default {
     typeIndex (index) {
       return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
     },
-    getMail () {
+    getMessage () {
       var that = this
       that.zLoading = true
       var apiPath = that.apiPath + 'Message/Pager/' + this.zPager.currentPage + '/' + this.zPager.size
       that.$ajax
         .get(apiPath)
-        .then(function (response) {
-          var res = response.data
-          if (res.Code === 1000) {
-            that.zMsgStatusData = res.Result.Data
-            that.zPager.total = res.Result.Total
+        .then(res => {
+          var r = res.data
+          if (r.Code === 1000) {
+            that.zMsgStatusData = r.Result.Data
+            that.zPager.total = r.Result.Total
           }
           that.zLoading = false
         })
-        .catch(function (response) {})
+        .catch(res => {
+          console.log(res)
+        })
     },
     getUseData () {
       var that = this
+      var apiPath = that.apiPath + 'Message/Remain'
       that.$ajax
-        .get(that.apiPath + 'Message/Remain')
-        .then(function (res) {
-          var data = res.data.Result.Data.split(',')
+        .get(apiPath)
+        .then(res => {
+          var r = res.data
+          var data = r.Result.Data.split(',')
           that.Surplus = data[0]
           that.Consumption = data[1]
         })
-        .catch(function (res) {
+        .catch(res => {
           console.log(res)
         })
     },
     pagerChange (val) {
-      this.getMail()
+      this.getMessage()
     }
   },
   created () {
-    this.getMail()
+    this.getMessage()
     this.getUseData()
   },
   mounted () {
@@ -134,6 +140,6 @@ body {
   margin-left: 5px;
 }
 .ml10{
-  margin-left: 10px;
+  margin-left: 20px;
 }
 </style>
