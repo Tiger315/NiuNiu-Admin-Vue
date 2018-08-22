@@ -2,12 +2,6 @@
   <div class="MsgStatus-box" v-cloak>
 
     <el-container style="margin-bottom: 10px;">
-            <el-input placeholder="请输入手机号码" v-model="searchParam.phoneNumber"  style="width: 25%;"  size="small"  clearable></el-input>
-            <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至"  style="width:25%;;margin-left:10px;height:32px;line-height:32px;" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-             <div class="ml10" style="width:180px;">
-                <el-button type="primary" icon="el-icon-search" size="small" @click="getList(1)">搜索</el-button>
-              <el-button type="warning"  size="small"  @click="clearParam" >清空搜索</el-button>
-              </div>
             <el-container class="myCount">
                 我的账户:
                 <span class="ml10">可用余额</span>
@@ -17,6 +11,13 @@
                 <i v-if="Consumption">{{Consumption}}</i>
                 <i v-else class="el-icon-loading ml10"></i>
             </el-container>
+            <el-input placeholder="请输入手机号码" v-model="searchParam.phoneNumber"  style="width: 25%;"  size="small"  clearable></el-input>
+            <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至"  style="width:25%;;margin-left:10px;height:32px;line-height:32px;" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+             <div class="ml10" style="width:180px;">
+                <el-button type="primary" icon="el-icon-search" size="small" @click="getList(1)">搜索</el-button>
+              <el-button type="warning"  size="small"  @click="clearParam" >清空搜索</el-button>
+              </div>
+
      </el-container>
     <!--表格开始-->
     <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMsgStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
@@ -138,7 +139,7 @@ export default {
   font-weight:700;
   margin-bottom:10px;
   display: inline-block;
-  text-align:right;
+  text-align:left;
   padding-right:20px;
   width:200px;
   height:32px;
