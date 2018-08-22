@@ -1,6 +1,5 @@
 <template>
   <div class="MsgStatus-box" v-cloak>
-
     <el-container style="margin-bottom: 10px;">
             <el-container class="myCount">
                 我的账户:
@@ -11,17 +10,18 @@
                 <i v-if="Consumption">{{Consumption}}</i>
                 <i v-else class="el-icon-loading ml10"></i>
             </el-container>
-            <el-input placeholder="请输入手机号码" v-model="searchParam.phoneNumber"  style="width: 25%;"  size="small"  clearable></el-input>
+            <el-input placeholder="请输入接收号码" v-model="searchParam.phoneNumber"  style="width: 25%;"  size="small"  clearable></el-input>
             <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至"  style="width:25%;;margin-left:10px;height:32px;line-height:32px;" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
              <div class="ml10" style="width:180px;">
-                <el-button type="primary" icon="el-icon-search" size="small" @click="getMail">搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" size="small" @click="getMessage">搜索</el-button>
               <el-button type="warning"  size="small"  @click="clearParam" >清空搜索</el-button>
               </div>
      </el-container>
+
     <!--表格开始-->
     <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMsgStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
       <el-table-column type="index" fixed="left" width="70" label="序号" :index="typeIndex"></el-table-column>
-      <el-table-column fixed="left" prop="SendTo" label="发送给" width="180" fit></el-table-column>
+      <el-table-column fixed="left" prop="SendTo" label="接收号码" width="160" fit></el-table-column>
       <el-table-column prop="ReqTime" label="请求时间" width="200"></el-table-column>
       <el-table-column prop="SendTime" label="发送时间" width="200"></el-table-column>
       <el-table-column prop="IsProxy" label="代理" width="100">
@@ -29,11 +29,12 @@
            <el-tag :type="scope.row.IsProxy === true ? 'primary' : 'danger'" close-transition>{{scope.row.IsProxy === true ? '是' : '否'}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="ReqIp" label="请求IP" width="180"></el-table-column>
-      <el-table-column prop="TrueIp" label="真实IP" width="180"></el-table-column>
+      <el-table-column prop="ReqIp" label="请求IP" width="160"></el-table-column>
+      <el-table-column prop="TrueIp" label="真实IP" width="160"></el-table-column>
       <el-table-column prop="Content" label="短信内容" show-overflow-tooltip></el-table-column>
     </el-table>
     <!--表格结束-->
+
     <!--分页开始-->
     <div style="margin-top: 10px; height: 32px; line-height: 32px; text-align: center;">
       <span style="float: left; text-align: right; color: #606266; font-size: 14px; padding-top: 3px;">共 {{ zPager.total }} 条</span>
@@ -72,50 +73,53 @@ export default {
     typeIndex (index) {
       return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
     },
-    getMail () {
+    getMessage () {
       this.searchParam.processDateStart = this.searchParam.time && this.dealDate(this.searchParam.time[0]) // 开始时间
       this.searchParam.processDateEnd = this.searchParam.time && this.dealDate(this.searchParam.time[1]) // 结束时间
-
       var that = this
       that.zLoading = true
       var apiPath = that.apiPath + 'Message/Pager/' + (that.searchParam.phoneNumber || '[]') + '/' + (that.searchParam.processDateStart || '[]') + '/' + (that.searchParam.processDateEnd || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
       that.$ajax
         .get(apiPath)
-        .then(function (response) {
-          var res = response.data
-          if (res.Code === 1000) {
-            that.zMsgStatusData = res.Result.Data
-            that.zPager.total = res.Result.Total
+        .then(res => {
+          var r = res.data
+          if (r.Code === 1000) {
+            that.zMsgStatusData = r.Result.Data
+            that.zPager.total = r.Result.Total
           }
           that.zLoading = false
         })
-        .catch(function (response) {})
+        .catch(res => {
+          console.log(res)
+        })
     },
     clearParam () { // 清除搜索条件
       for (var key in this.searchParam) {
         this.searchParam[key] = ''
       }
-      this.getMail()
+      this.getMessage()
     },
     getUseData () {
       var that = this
+      var apiPath = that.apiPath + 'Message/Remain'
       that.$ajax
-        .get(that.apiPath + 'Message/Remain')
-        .then(function (res) {
-          var data = res.data.Result.Data.split(',')
+        .get(apiPath)
+        .then(res => {
+          var r = res.data
+          var data = r.Result.Data.split(',')
           that.Surplus = data[0]
           that.Consumption = data[1]
         })
-        .catch(function (res) {
+        .catch(res => {
           console.log(res)
         })
     },
     pagerChange (val) {
-      this.getMail()
+      this.getMessage()
     }
   },
   created () {
-    this.getMail()
+    this.getMessage()
     this.getUseData()
   },
   mounted () {
@@ -174,6 +178,6 @@ body {
   margin-left: 5px;
 }
 .ml10{
-  margin-left: 10px;
+  margin-left: 20px;
 }
 </style>
