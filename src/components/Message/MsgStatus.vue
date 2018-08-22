@@ -1,40 +1,27 @@
 <template>
   <div class="MsgStatus-box" v-cloak>
-<<<<<<< HEAD
-    <div class="myCount">
-      我的账户
-      <span class="ml10">可用余额</span>
-      <i v-if="Surplus">{{Surplus}}</i>
-      <i v-else class="el-icon-loading ml10"></i>
-      <span class="ml10">当月消费</span>
-      <i v-if="Consumption">{{Consumption}}</i>
-      <i v-else class="el-icon-loading ml10"></i>
-    </div>
-
-=======
-
     <el-container style="margin-bottom: 10px;">
-            <el-input placeholder="请输入手机号码" v-model="searchParam.phoneNumber"  style="width: 25%;"  size="small"  clearable></el-input>
-            <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至"  style="width:25%;;margin-left:10px;height:32px;line-height:32px;" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-             <div class="ml10" style="width:180px;">
-                <el-button type="primary" icon="el-icon-search" size="small" @click="getList(1)">搜索</el-button>
-              <el-button type="warning"  size="small"  @click="clearParam" >清空搜索</el-button>
-              </div>
-            <el-container class="myCount">
-                我的账户:
-                <span class="ml10">可用余额</span>
-                <i v-if="Surplus">{{Surplus}}</i>
-                <i v-else class="el-icon-loading ml10"></i>
-                <span class="ml10">当月消费</span>
-                <i v-if="Consumption">{{Consumption}}</i>
-                <i v-else class="el-icon-loading ml10"></i>
-            </el-container>
-     </el-container>
->>>>>>> e08fdbe0fb026efaf04710b67bf5a61f158842c0
+      <el-input placeholder="请输入接收号码" v-model="searchParam.phoneNumber"  style="width: 25%;"  size="small" clearable></el-input>
+      <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" style="width:25%;;margin-left:10px;height:32px;line-height:32px;" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+      <div class="ml10" style="width:180px;">
+        <el-button type="primary" icon="el-icon-search" size="small" @click="getList(1)">搜索</el-button>
+        <el-button type="warning" size="small" @click="clearParam" >清空搜索</el-button>
+      </div>
+      <el-container class="myCount">
+          我的账户:
+          <span class="ml10">可用余额</span>
+          <i v-if="Surplus">{{Surplus}}</i>
+          <i v-else class="el-icon-loading ml10"></i>
+          <span class="ml10">当月消费</span>
+          <i v-if="Consumption">{{Consumption}}</i>
+          <i v-else class="el-icon-loading ml10"></i>
+      </el-container>
+    </el-container>
+
     <!--表格开始-->
     <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMsgStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
       <el-table-column type="index" fixed="left" width="70" label="序号" :index="typeIndex"></el-table-column>
-      <el-table-column fixed="left" prop="SendTo" label="发送给" width="180" fit></el-table-column>
+      <el-table-column fixed="left" prop="SendTo" label="接收号码" width="160" fit></el-table-column>
       <el-table-column prop="ReqTime" label="请求时间" width="200"></el-table-column>
       <el-table-column prop="SendTime" label="发送时间" width="200"></el-table-column>
       <el-table-column prop="IsProxy" label="代理" width="100">
@@ -42,8 +29,8 @@
            <el-tag :type="scope.row.IsProxy === true ? 'primary' : 'danger'" close-transition>{{scope.row.IsProxy === true ? '是' : '否'}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="ReqIp" label="请求IP" width="180"></el-table-column>
-      <el-table-column prop="TrueIp" label="真实IP" width="180"></el-table-column>
+      <el-table-column prop="ReqIp" label="请求IP" width="160"></el-table-column>
+      <el-table-column prop="TrueIp" label="真实IP" width="160"></el-table-column>
       <el-table-column prop="Content" label="短信内容" show-overflow-tooltip></el-table-column>
     </el-table>
     <!--表格结束-->
