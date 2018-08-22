@@ -14,10 +14,9 @@
             <el-input placeholder="请输入手机号码" v-model="searchParam.phoneNumber"  style="width: 25%;"  size="small"  clearable></el-input>
             <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至"  style="width:25%;;margin-left:10px;height:32px;line-height:32px;" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
              <div class="ml10" style="width:180px;">
-                <el-button type="primary" icon="el-icon-search" size="small" @click="getList(1)">搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" size="small" @click="getMail">搜索</el-button>
               <el-button type="warning"  size="small"  @click="clearParam" >清空搜索</el-button>
               </div>
-
      </el-container>
     <!--表格开始-->
     <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMsgStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
@@ -60,7 +59,9 @@ export default {
       },
       searchParam: {
         phoneNumber: '',
-        time: ''
+        time: '',
+        processDateStart: '', // 起始结束时间
+        processDateEnd: '' // 结束时间
       },
       Surplus: '',
       Consumption: '',
@@ -72,9 +73,12 @@ export default {
       return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
     },
     getMail () {
+      this.searchParam.processDateStart = this.searchParam.time && this.dealDate(this.searchParam.time[0]) // 开始时间
+      this.searchParam.processDateEnd = this.searchParam.time && this.dealDate(this.searchParam.time[1]) // 结束时间
+
       var that = this
       that.zLoading = true
-      var apiPath = that.apiPath + 'Message/Pager/' + this.zPager.currentPage + '/' + this.zPager.size
+      var apiPath = that.apiPath + 'Message/Pager/' + (that.searchParam.phoneNumber || '[]') + '/' + (that.searchParam.processDateStart || '[]') + '/' + (that.searchParam.processDateEnd || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
       that.$ajax
         .get(apiPath)
         .then(function (response) {
@@ -86,6 +90,12 @@ export default {
           that.zLoading = false
         })
         .catch(function (response) {})
+    },
+    clearParam () { // 清除搜索条件
+      for (var key in this.searchParam) {
+        this.searchParam[key] = ''
+      }
+      this.getMail()
     },
     getUseData () {
       var that = this
