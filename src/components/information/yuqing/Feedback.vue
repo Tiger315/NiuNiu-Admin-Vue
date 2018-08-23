@@ -124,7 +124,7 @@ export default {
       var apiPath = ''
       if (flag) {
         that.getSearchParam()
-        apiPath = 'http://192.168.0.118:8022/api/v1/' + 'Regulatory_Letters/Pager/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.spliteStockCode || '[]') + '/' + (this.searchParam.send_unit || '[]') + '/' + (this.searchParam.reply_status || 0) + '/' + (this.searchParam.template || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
+        apiPath = that.apiPath + 'Regulatory_Letters/Pager/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.spliteStockCode || '[]') + '/' + (this.searchParam.send_unit || '[]') + '/' + (this.searchParam.reply_status || 0) + '/' + (this.searchParam.template || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
       } else {
         apiPath = that.apiPath + 'Regulatory_Letters/Pager/' + that.zPager.currentPage + '/30'
       }
@@ -184,13 +184,13 @@ export default {
     },
     getTopData () {
       var that = this
-      that.$ajax.get('http://192.168.0.118:8022/api/v1/' + 'StockPlate')
+      that.$ajax.get(that.apiPath + 'StockPlate')
         .then(function (response) {
           var data = response.data.Result.Data
           that.topData.bankuai = data
         })
 
-      that.$ajax.get('http://192.168.0.118:8022/api/v1/' + 'Regulatory_Letters_Company')
+      that.$ajax.get(that.apiPath + 'Regulatory_Letters_Company')
         .then(function (response) {
           var data = response.data.Result.Data
           that.topData.companyCode = data
