@@ -123,8 +123,12 @@
             </div>
           </el-aside>
           <el-container>
-            <el-header class="showPdf" :height="leftModelHeight">
-              <div v-html='zDetail.docContent' class="docTitle"></div>
+            <el-header class="showPdf" height="300">
+              <div class="dialog-box" v-loading="zLoading">
+                <div v-if="zDetail.docUrl=='' || zDetail.docUrl==null " class="pdfTitle" v-html="zDetail.docContent"></div>
+                <div v-if="zDetail.docUrl!='' && zDetail.docUrl!=null " class="showPDF" id="pop">
+                </div>
+            </div>
             </el-header>
             <el-main class="table2" >
               <el-table align="center" header-align="center"  :data="tableData" border style="width: 100%">
@@ -141,6 +145,7 @@
   </div>
 </template>
 <script>
+import PDFJS from '../../../../static/js/pdfjs-1.10.88-dist/build/pdf.js'
 export default {
   name: 'SupervisionType',
   data () {
@@ -291,8 +296,12 @@ export default {
             data['processDate'] = that.dealDate(data['processDate'] - 0)
           } else {
             data = []
+            that.zDetail.docUrl = ''
           }
           that.zDetail = data
+          if (that.zDetail.docUrl) {
+            that.showPDF(data.docUrl)
+          }
         })
         // 相关案例
       that.$ajax
@@ -312,6 +321,39 @@ export default {
         .then(function (response) {
           that.tableData = response.data.Result.Data
         })
+    },
+    showPDF (urls) {
+      var that = this
+      // this.zLoading = true
+      this.zDialog = true
+      PDFJS.workerSrc = '../../../../static/js/pdfjs-1.10.88-dist/build/pdf.worker.js' // 加载核心库
+      $('#pop').empty()
+      PDFJS.getDocument(urls).then(function getPdfHelloWorld (pdf) {
+        for (var i = 1; i < pdf.numPages; i++) {
+          var id = 'page-id-' + i
+          $('#pop').append('<div style="text-align:center"><canvas id="' + id + '"></canvas><div>')
+          that.showall(urls, i, id)
+        }
+        that.zLoading = false
+      })
+      that.pdfUrl = urls
+    },
+    showall (url, page, id) {
+      PDFJS.getDocument(url).then(function getPdfHelloWorld (pdf) {
+        pdf.getPage(page).then(function getPageHelloWorld (page) {
+          var scale = 1.0
+          var viewport = page.getViewport(scale)
+          var canvas = document.getElementById(id)
+          var context = canvas.getContext('2d')
+          canvas.height = viewport.height
+          canvas.width = viewport.width
+          var renderContext = {
+            canvasContext: context,
+            viewport: viewport
+          }
+          page.render(renderContext)
+        })
+      })
     }
   },
   created () {
@@ -447,6 +489,13 @@ span.detail_date {
 }
 .showPdf{
   margin-bottom:20px;
+  overflow-y:scroll ;
+  max-height:650px;
+}
+#pop{
+  background-color: #525659;
+  padding-top:10px;
+  padding-bottom:10px;
 }
 .card-head{
     padding: 0 20px;

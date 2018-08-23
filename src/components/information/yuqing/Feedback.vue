@@ -150,11 +150,10 @@ export default {
     },
     showPDF (urls) {
       var that = this
-      this.zLoading = true
+      // this.zLoading = true
       this.zDialog = true
       PDFJS.workerSrc = '../../../../static/js/pdfjs-1.10.88-dist/build/pdf.worker.js' // 加载核心库
       $('#pop').empty()
-      console.log('22')
       PDFJS.getDocument(urls).then(function getPdfHelloWorld (pdf) {
         for (var i = 1; i < pdf.numPages; i++) {
           var id = 'page-id-' + i
