@@ -51,7 +51,7 @@
                 <el-table-column type="index" fixed="left" width="70"  label="序号" :index="typeIndex"></el-table-column>
                 <el-table-column fixed="left" prop="title" label="标题" min-width="280" fit show-overflow-tooltip>
                   <template slot-scope="scope">
-                    <span style="color: #0d308c; cursor: pointer; font" @click="showDetail(scope.row.id)" >{{scope.row.title}}</span>
+                    <span style="color: #0d308c; cursor: pointer; font" @click="showDetail(scope.row.xa_id)" >{{scope.row.title}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="公司" width="200">
@@ -76,7 +76,7 @@
           <!--分页结束-->
       </el-container>
   </el-container>
-      <el-dialog  :visible.sync="zDialog" :before-close="closeModel" style="font-weight: bold;margin:0px;" fullscreen>
+    <el-dialog  :visible.sync="zDialog" style="font-weight: bold;margin:0px;" fullscreen>
       <div class="dialog-box" v-loading="zLoading">
         <el-container :height="leftModelHeight">
           <el-aside width="33.3%" >
@@ -88,7 +88,7 @@
                     <p>证券简称：{{zDetail.companyName}}</p>
                     <p>所属板块：{{zDetail.companyMarketName}}</p>
                     <p>所属地区：{{zDetail.companyArea}}</p>
-                    <p>所属行业：{{zDetail.SecondIndustryName}}</p>
+                    <p>所属行业：{{zDetail.companyIndustry}}</p>
                     <p>申辩情况：{{zDetail.avermentName}}</p>
                   </div>
               </div>
@@ -109,7 +109,15 @@
               <div class="detail-card">
               <div class="card-head">相关案例</div>
                   <div class="card-body">
-                    <p v-for="val in relationCaseLawList"  :key="val" @click="getDetail (val.id)">{{val.title}}</p>
+                    <p v-for="val in relationCaseLawList"  :key="val.id" @click="getDetail (val.relationXgal_id)">{{val.title}}</p>
+                  </div>
+              </div>
+            </div>
+             <div>
+              <div class="detail-card" :v-if="xgfgLawList">
+              <div class="card-head">相关法规</div>
+                  <div class="card-body">
+                    <p v-for="val in xgfgLawList"  :key="val.id" @click="getDetail (val.relationXgfg_id)">{{val.title}}</p>
                   </div>
               </div>
             </div>
@@ -141,7 +149,7 @@ export default {
       leftModelHeight: document.documentElement.clientHeight - 30 + '',
       dataHeight: document.documentElement.clientHeight - 305,
       zDialog: false,
-      zLoading: false,
+      zLoading: true,
       msgId: '',
       searchParam: {
         titleMust: '', // 必含关键词
@@ -167,6 +175,7 @@ export default {
       searchId: '',
       zDetail: {},
       relationCaseLawList: [],
+      xgfgLawList: [],
       tableData: [],
       condition: {
         procvince: ['上海', '云南', '内蒙古', '北京', '吉林', '四川', '天津', '宁夏', '安徽', '山东', '山西', '广东', '广西', '新疆',
@@ -211,6 +220,7 @@ export default {
 
       that.$ajax.get(searchParams)
         .then(function (response) {
+          that.zLoading = false
           that.violationCase = response.data.Result.Data
           that.searchParam.total = response.data.Result.Total
         })
@@ -269,23 +279,40 @@ export default {
           that.topData.StockInfo = data
         })
     },
-    getDetail (id) {
+    getDetail (row) {
       var that = this
       that.$ajax
-        .get('https://goldeye.cfbond.com/cattle/es_jgh_detail?id=' + id)
+        .get(that.apiPath + '/XA_Wgal?xa_id=' + row)
         .then(function (response) {
           that.zLoading = false
-          that.zDetail = response.data.data
-          that.relationCaseLawList = response.data.data.relationCaseLawList
-          that.tableData = response.data.data.processDetails
+          var data = ''
+          if (response.data.Result.Data.length > 0) {
+            data = response.data.Result.Data[0]
+            data['processDate'] = that.dealDate(data['processDate'] - 0)
+          } else {
+            data = []
+          }
+          that.zDetail = data
         })
-    },
-    closeModel () {
-      this.zDialog = false
-      this.msgId = ''
-      this.searchId = ''
+        // 相关案例
+      that.$ajax
+        .get(that.apiPath + '/XA_Wgal_RelationXgal?xa_id=' + row)
+        .then(function (response) {
+          that.relationCaseLawList = response.data.Result.Data
+        })
+      // 相关法规
+      that.$ajax
+        .get(that.apiPath + '/XA_Wgal_RelationXgfg?xa_id=' + row)
+        .then(function (response) {
+          that.xgfgLawList = response.data.Result.Data
+        })
+        // 涉及当事人
+      that.$ajax
+        .get(that.apiPath + '/XA_Wgal_RelationProcess?xa_id=' + row)
+        .then(function (response) {
+          that.tableData = response.data.Result.Data
+        })
     }
-
   },
   created () {
     this.loadTopMenu()

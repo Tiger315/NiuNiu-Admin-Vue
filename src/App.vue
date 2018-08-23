@@ -55,4 +55,7 @@ ul,li{
     font-size: 0;
     height: 0;
 }
+.el-tree-node>.el-tree-node__children{
+  overflow: inherit;
+}
 </style>
