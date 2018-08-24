@@ -3566,7 +3566,7 @@ exports.PDFFindController = PDFFindController;
 "use strict";
 
 
-var DEFAULT_URL = 'compressed.tracemonkey-pldi-09.pdf';
+//var DEFAULT_URL = 'compressed.tracemonkey-pldi-09.pdf';
 ;
 var pdfjsWebApp = void 0;
 {
@@ -3688,7 +3688,7 @@ function getViewerConfiguration() {
     printContainer: document.getElementById('printContainer'),
     openFileInputName: 'fileInput',
     debuggerScriptPath: './debugger.js',
-    defaultUrl: DEFAULT_URL
+    //defaultUrl: DEFAULT_URL
   };
 }
 function webViewerLoad() {

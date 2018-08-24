@@ -10,7 +10,7 @@ import 'babel-polyfill'
 
 Vue.use(ElementUI)
 Vue.config.productionTip = false
-Vue.prototype.apiPath = 'http://sign.niuniu.com:8814/api/v1/'
+Vue.prototype.apiPath = 'http://api.niuniu.com/api/v1/'
 Vue.prototype.dealDate = function (date) {
   var d = new Date(date)
   var m = ''
