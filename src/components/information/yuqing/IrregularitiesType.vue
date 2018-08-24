@@ -126,11 +126,8 @@
             <el-header class="showPdf" height="300">
               <div class="dialog-box" v-loading="zLoading">
                 <div v-if="zDetail.docUrl=='' || zDetail.docUrl==null " class="pdfTitle" v-html="zDetail.docContent"></div>
-                <!-- <div v-if="zDetail.docUrl!='' && zDetail.docUrl!=null " class="showPDF" id="pop">
-                </div> -->
-                <iframe v-if="zDetail.docUrl!='' && zDetail.docUrl!=null "  style="width:100%;max-height:650px;height:650px" :src="pdfUrl">
-
-                </iframe>
+                <div v-if="zDetail.docUrl!='' && zDetail.docUrl!=null " class="showPDF" id="pop">
+                </div>
             </div>
             </el-header>
             <el-main class="table2" >
@@ -331,16 +328,16 @@ export default {
     showPDF (urls) {
       var that = this
       this.zDialog = true
-      // PDFJS.workerSrc = '../../../../static/js/pdfjs-1.10.88-dist/build/pdf.worker.js' // 加载核心库
-      // $('#pop').empty()
-      // PDFJS.getDocument(urls).then(function getPdfHelloWorld (pdf) {
-      //   for (var i = 1; i < pdf.numPages; i++) {
-      //     var id = 'page-id-' + i
-      //     $('#pop').append('<div style="text-align:center"><canvas id="' + id + '"></canvas><div>')
-      //     that.showall(urls, i, id)
-      //   }
-      //   that.zLoading = false
-      // })
+      PDFJS.workerSrc = '../../../../static/js/pdfjs-1.10.88-dist/build/pdf.worker.js' // 加载核心库
+      $('#pop').empty()
+      PDFJS.getDocument(urls).then(function getPdfHelloWorld (pdf) {
+        for (var i = 1; i < pdf.numPages; i++) {
+          var id = 'page-id-' + i
+          $('#pop').append('<div style="text-align:center"><canvas id="' + id + '"></canvas><div>')
+          that.showall(urls, i, id)
+        }
+        that.zLoading = false
+      })
       that.pdfUrl = urls
     },
     showall (url, page, id) {

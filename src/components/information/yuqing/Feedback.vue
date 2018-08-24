@@ -57,11 +57,8 @@
     <el-dialog  :visible.sync="zDialog" :before-close="closeModel" style="font-weight: bold;margin:0px;" fullscreen>
       <div class="dialog-box" v-loading="zLoading" style="margin:0 auto;">
         <div class="showPDF" id="pop">
-          <!-- <canvas id="the-canvas"></canvas> -->
+          <canvas id="the-canvas"></canvas>
         </div>
-        <iframe style="width:80%;max-height:650px;height:650px;margin-left:10%;" :src="pdfUrl">
-
-        </iframe>
       </div>
     </el-dialog>
       <!--分页结束-->
@@ -154,16 +151,16 @@ export default {
     showPDF (urls) {
       var that = this
       this.zDialog = true
-      // PDFJS.workerSrc = '../../../../static/js/pdfjs-1.10.88-dist/build/pdf.worker.js' // 加载核心库
-      // $('#pop').empty()
-      // PDFJS.getDocument(urls).then(function getPdfHelloWorld (pdf) {
-      //   for (var i = 1; i < pdf.numPages; i++) {
-      //     var id = 'page-id-' + i
-      //     $('#pop').append('<div style="text-align:center"><canvas id="' + id + '"></canvas><div>')
-      //     that.showall(urls, i, id)
-      //   }
-      //   that.zLoading = false
-      // })
+      PDFJS.workerSrc = '../../../../static/js/pdfjs-1.10.88-dist/build/pdf.worker.js' // 加载核心库
+      $('#pop').empty()
+      PDFJS.getDocument(urls).then(function getPdfHelloWorld (pdf) {
+        for (var i = 1; i < pdf.numPages; i++) {
+          var id = 'page-id-' + i
+          $('#pop').append('<div style="text-align:center"><canvas id="' + id + '"></canvas><div>')
+          that.showall(urls, i, id)
+        }
+        that.zLoading = false
+      })
       that.pdfUrl = urls
     },
     showall (url, page, id) {
