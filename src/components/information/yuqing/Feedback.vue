@@ -54,7 +54,12 @@
           <el-pagination layout="prev, pager, next" :page-size="zPager.size" :pager-count="zPager.count" :current-page.sync="zPager.currentPage" :total="zPager.total" @current-change="pagerChange">
           </el-pagination>
       </div>
-    <el-dialog  :visible.sync="zDialog" :before-close="closeModel" style="font-weight: bold;margin:0px;" fullscreen>
+    <el-dialog  :visible.sync="zDialog" :before-close="closeModel" style="font-weight: bold;margin:0px;text-align:center;" fullscreen>
+      <a class="downLoad" :href="pdfUrl" download="">
+        <i class="el-icon-download" ></i>
+        <p >下载PDF</p>
+      </a>
+
       <div class="dialog-box" v-loading="zLoading" style="margin:0 auto;">
         <div class="showPDF" id="pop">
           <canvas id="the-canvas"></canvas>
@@ -253,6 +258,20 @@ export default {
 </style>
 
 <style scoped>
+.downLoad{
+  position:fixed;
+  color:#fff;
+  font-size:18px;
+  cursor:pointer;
+  display:block;
+  left:10px;
+  top:10px;
+  text-decoration:none;
+}
+.downLoad>p{
+  margin:0px;
+  font-size:12px;
+}
 .showPDF{
   justify-content: center !important;
   width:100%;
