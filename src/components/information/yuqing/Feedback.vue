@@ -37,7 +37,7 @@
               <el-table-column fixed="left" prop="Letter_TypeValue" label="问询类型"  width="150"></el-table-column>
               <el-table-column fixed="left" prop="Letter_ContentName"  label="函件内容">
                 <template slot-scope="scope">
-                  <span style="color: #0d308c; cursor: pointer; font" @click="showPDF('54eeb0f2-fa96-487d-ae09-7a820677a696..pdf')">{{ scope.row.Letter_ContentName}}</span>
+                  <span style="color: #0d308c; cursor: pointer; font" @click="showPDF(scope.row.Letter_Content)">{{ scope.row.Letter_ContentName}}</span>
                 </template>
                 </el-table-column>
               <el-table-column fixed="left" prop="Company_ReplyName"  label="公司回复">
