@@ -228,7 +228,7 @@ export default {
   position: fixed;
   right: 10px;
 }
-.Feedback .el-dialog__headerbtn{
+.Feedback .el-dialog__headerbtn .el-dialog__close{
   color: #fff !important;
   font-size: 16px;
 }
