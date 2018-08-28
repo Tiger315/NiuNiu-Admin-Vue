@@ -51,12 +51,11 @@
       </el-pagination>
     </div>
     <!--分页结束-->
-
     <!--dialog开始-->
     <el-dialog :visible.sync="dialog" fullscreen :before-close="beforeClose">
       <div class="dialog-box" v-loadingData.loading="loadingData.diaLoading" style="margin:0 auto;">
         <iframe v-if="urlData.showWordUrl" :src="urlData.showWordUrl" width="80%" :height="dataHeight" frameborder="0" style="margin-left:10%;"></iframe>
-        <iframe  v-if="urlData.pdfUrl" :src="urlData.pdfUrl" frameborder="0" :height="dataHeight"  style="width:100%;margin-top:10px;"></iframe>
+        <iframe v-if="urlData.pdfUrl" :src="urlData.pdfUrl" frameborder="0" :height="dataHeight"  style="width:100%;margin-top:10px;"></iframe>
         <!-- <pdf v-if=.urlData.pdfUrl" :src=.urlData.pdfUrl" v-for="i in.urlData.numPages" @loaded="pdfLoaded"  :key="i"  :page="i"  style="display: inline-block; width: 40%;margin-left:30%;"></pdf> -->
       </div>
     </el-dialog>
