@@ -12,13 +12,13 @@
       <el-container style="margin-bottom: 10px;">
         <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" start-placeholder="起始日期" end-placeholder="结束日期" class="ml20 noMl"></el-date-picker>
         <div class="ml20">
-          <el-button type="primary" icon="el-icon-search" size="small"  @click="loadTableDetail(1)">搜索</el-button>
+          <el-button type="primary" icon="el-icon-search" size="small"  @click="loadTableDetail()">搜索</el-button>
          <el-button type="warning"  size="small"  @click="clearParam" >清空搜索</el-button>
         </div>
       </el-container>
       <!-- 搜索条件结束 -->
       <!--表格开始-->
-     <el-table v-loading="zLoading" :height="dataHeight"  element-loading-text="拼命加载中" :data="violationCase"  stripe style="width: 100%;" empty-text=" " row-key="id">
+     <el-table v-loading="loading" :height="dataHeight"  element-loading-text="拼命加载中" :data="violationCase"  stripe style="width: 100%;" empty-text=" " row-key="id">
               <el-table-column type="index" label="序号" fixed="left" width="70" :index="typeIndex"></el-table-column>
               <el-table-column fixed="left" prop="News_Title" label="标题"  min-width="250"  fit show-overflow-tooltip>
                 <template slot-scope="scope">
@@ -44,8 +44,8 @@ export default {
   data () {
     return {
       dataHeight: document.documentElement.clientHeight - 135,
-      zDialog: true,
-      zLoading: true,
+      dialog: true,
+      loading: true,
       searchParam: {
         titleMust: '', // 必含关键词
         titleCan: '', // 可含关键词
@@ -75,7 +75,7 @@ export default {
         this.searchParam[key] = ''
       }
       this.searchParam.companyMarketId = []
-      this.loadTableDetail(1)
+      this.loadTableDetail()
     },
     loadSources () {
       var that = this
@@ -86,24 +86,20 @@ export default {
           that.resourceArr = response.data.Result.Data
         })
     },
-    loadTableDetail (param) {
+    loadTableDetail () {
       var that = this
       var api = that.apiPath + 'DynamicNews/Pager'
-      if (param) {
-        this.getSearchParam()
-        api = api + '/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + (this.searchSourceNu || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
-      } else {
-        api = api + '/' + this.zPager.currentPage + '/' + this.zPager.size
-      }
+      this.getSearchParam()
+      api = api + '/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + (this.searchSourceNu || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
       that.$ajax
         .get(api)
         .then(function (response) {
-          that.zLoading = false
+          that.loading = false
           that.violationCase = response.data.Result.Data
           that.zPager.total = response.data.Result.Total
         })
         .catch(function () {
-          that.zLoading = false
+          that.loading = false
         })
     },
     getSearchParam () {
