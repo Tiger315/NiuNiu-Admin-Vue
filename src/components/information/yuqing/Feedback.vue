@@ -1,22 +1,26 @@
 <template>
   <div class="Feedback">
     <!-- 搜索条件开始 -->
-    <el-container style="margin-bottom:10px;">
-      <el-input placeholder="包含所有关键词(以空格区分)" v-model="searchParam.titleMust" size="small" clearable class="ml20 noMl"></el-input>
-      <el-input placeholder="包含任意关键词(以空格区分)" v-model="searchParam.titleCan" size="small" clearable class="ml20"></el-input>
-      <el-input placeholder="不包含任意关键词(以空格区分)" v-model="searchParam.titleNot" size="small" clearable class="ml20"></el-input>
-      <el-select multiple collapse-tags clearable size="small" v-model="searchParam.stock_code" placeholder="公司代码、简称、拼音" filterable class="ml20">
-        <el-option v-for='item in topData.companyCode' :key="item.Company_Name+'('+item.Company_Code+')'" :label="item.Company_Name+'('+item.Company_Code+')'" :value="item.Company_Code"></el-option>
-      </el-select>
+    <el-container style="margin-bottom:10px;padding:0 20% 0 0;">
+        <el-input placeholder="包含所有关键词(以空格区分)" v-model="searchParam.titleMust" size="small" clearable  class="ml20 noMl"></el-input>
+        <el-input placeholder="包含任意关键词(以空格区分)" v-model="searchParam.titleCan" size="small" clearable class="ml20"></el-input>
+        <el-input placeholder="不包含任意关键词(以空格区分)" v-model="searchParam.titleNot" size="small" clearable class="ml20"></el-input>
     </el-container>
-    <el-container style="margin-bottom:10px;">
-      <el-select collapse-tags clearable size="small" placeholder="所属板块" v-model="searchParam.template" filterable class="ml20 noMl">
-        <el-option v-for='item in topData.bankuai' :key="item.Value" :label="item.Text" :value="item.Value"></el-option>
-      </el-select>
-      <el-select collapse-tags clearable size="small" v-model="searchParam.reply_status" placeholder="回复状态" filterable class="ml20">
-        <el-option v-for='item in topData.replyStatus' :key="item.code" :label="item.status" :value="item.code"></el-option>
-      </el-select>
-      <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" class="ml20"></el-date-picker>
+    <el-container style="margin-bottom:10px;padding:0 20% 0 0;">
+        <el-select multiple collapse-tags clearable size="small" v-model="searchParam.stock_code" placeholder="公司代码、简称、拼音" filterable class="ml20 noMl">
+          <el-option :label="item.Name+'('+item.Code+')'" :key="item.Name+'('+item.Code+')'" v-for='item in topData.companyCode' :value="item.Code"></el-option>
+          <!-- <el-option v-for='item in topData.companyCode' :key="item.Company_Name+'('+item.Company_Code+')'" :label="item.Company_Name+'('+item.Company_Code+')'" :value="item.Company_Code"></el-option> -->
+        </el-select>
+        <el-select collapse-tags clearable size="small" placeholder="所属板块" v-model="searchParam.template" filterable class="ml20">
+          <el-option v-for='item in topData.bankuai' :key="item.Value" :label="item.Text" :value="item.Value"></el-option>
+        </el-select>
+        <el-select collapse-tags clearable size="small" v-model="searchParam.reply_status" placeholder="回复状态" filterable class="ml20">
+          <el-option v-for='item in topData.replyStatus' :key="item.code" :label="item.status" :value="item.code"></el-option>
+        </el-select>
+     </el-container>
+    <el-container style="margin-bottom:10px;padding:0 20% 0 0;">
+      <el-date-picker v-model="searchParam.processDateStart" type="date" placeholder="开始日期" class="ml20 noMl"></el-date-picker>
+      <el-date-picker v-model="searchParam.processDateEnd" type="date" placeholder="结束日期" class="ml20"></el-date-picker>
       <div class="ml20">
         <el-button type="primary" icon="el-icon-search" size="small" @click="getList">搜索</el-button>
         <el-button type="warning" size="small" @click="clearParam">清空搜索</el-button>
@@ -25,22 +29,24 @@
     <!-- 搜索条件结束 -->
 
     <!-- 表格数据开始 -->
-    <el-table v-loadingData.loading="loadingData.loading" element-loadingData.loading-text="拼命加载中" :height="dataHeight" :data="tableData" stripe style="width: 100%;" empty-text=" " row-key="id">
+    <el-table v-loading.loading="loadingData.loading" element-loading-text="拼命加载中" :height="dataHeight" :data="tableData" stripe style="width: 100%;" empty-text=" " row-key="id">
       <el-table-column type="index" fixed="left" label="序号" width="70" :index="typeIndex">序号</el-table-column>
-       <el-table-column fixed="left" prop="Letter_ContentName" label="函件内容" min-width="200" fit show-overflow-tooltip>
+      <el-table-column fixed="left" prop="Letter_ContentName" label="函件内容" min-width="200" fit show-overflow-tooltip>
         <template slot-scope="scope">
           <span style="color: #0d308c; cursor: pointer; font" @click="showWord(scope.row.Letter_Content)">{{ scope.row.Letter_ContentName }}</span>
         </template>
       </el-table-column>
-      <el-table-column  prop="Company_ReplyName" label="公司回复" min-width="200" fit show-overflow-tooltip>
+      <el-table-column prop="Company_ReplyName" label="公司回复" min-width="200" fit show-overflow-tooltip>
         <template slot-scope="scope">
-          <span style="color: #0d308c; cursor: pointer; font" @click="showPDF(scope.row.Company_Reply)">{{ scope.row.Company_ReplyName }}</span>
+          <div v-for="(item,key) in scope.row.Reply" :key="key"  style="color: #0d308c; cursor: pointer;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;  " @click="showWord(item.ReplyUrl)">
+            {{ item.ReplyName }}
+          </div>
         </template>
       </el-table-column>
-      <el-table-column  prop="Company_Code" label="证券代码" width="150"></el-table-column>
+      <el-table-column prop="Company_Code" label="证券代码" width="150"></el-table-column>
       <el-table-column prop="Company_Name" label="证券简称" width="150"></el-table-column>
       <el-table-column prop="Letter_TypeValue" label="问询类型" width="150"></el-table-column>
-      <el-table-column prop="SendDate" width="150" label="发函日期"></el-table-column>
+      <el-table-column width="150" :formatter="dealDateFormate" label="发函日期"></el-table-column>
     </el-table>
     <!-- 表格数据结束 -->
 
@@ -51,12 +57,12 @@
       </el-pagination>
     </div>
     <!--分页结束-->
+
     <!--dialog开始-->
     <el-dialog :visible.sync="dialog" fullscreen :before-close="beforeClose">
-      <div class="dialog-box" v-loadingData.loading="loadingData.diaLoading" style="margin:0 auto;">
+      <div class="dialog-box" v-loading.loading="loadingData.diaLoading" style="margin:0 auto;">
         <iframe v-if="urlData.showWordUrl" :src="urlData.showWordUrl" width="80%" :height="dataHeight" frameborder="0" style="margin-left:10%;"></iframe>
-        <iframe v-if="urlData.pdfUrl" :src="urlData.pdfUrl" frameborder="0" :height="dataHeight"  style="width:100%;margin-top:10px;"></iframe>
-        <!-- <pdf v-if=.urlData.pdfUrl" :src=.urlData.pdfUrl" v-for="i in.urlData.numPages" @loaded="pdfLoaded"  :key="i"  :page="i"  style="display: inline-block; width: 40%;margin-left:30%;"></pdf> -->
+        <iframe v-if="urlData.pdfUrl" :src="urlData.pdfUrl" frameborder="0" :height="dataHeight" style="width:80%;margin-top:10px;margin-left:10%;"></iframe>
       </div>
     </el-dialog>
     <!--dialog结束-->
@@ -64,12 +70,12 @@
 </template>
 <script>
 import pdf from 'vue-pdf'
-var loadingTask = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf')
+// var loadingTask = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf')
 export default {
   name: 'Feedback',
   data () {
     return {
-      dataHeight: document.documentElement.clientHeight - 135,
+      dataHeight: document.documentElement.clientHeight - 177,
       loadingData: {
         loading: false,
         diaLoading: false
@@ -77,7 +83,7 @@ export default {
       dialog: false,
       urlData: {
         showWordUrl: '',
-        pdfUrl: loadingTask,
+        pdfUrl: '',
         numPages: undefined
       },
       searchParam: {
@@ -105,7 +111,6 @@ export default {
         count: 11,
         currentPage: 1
       }
-
     }
   },
   components: {
@@ -120,17 +125,37 @@ export default {
       return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
     },
     clearParam () {
+      this.zPager.currentPage = 1
       for (var key in this.searchParam) {
         this.searchParam[key] = ''
       }
       this.searchParam.stock_code = []
       this.getList()
     },
+    dealDateFormate (row) {
+      let date = row.SendDate
+      let dates = date.split(' ')[0]
+      return dates
+    },
     getList () {
-      this.loadingData.loading = true
       var that = this
-      var apiPath = ''
+      if (this.searchParam.processDateStart || this.searchParam.processDateEnd) {
+        if (!this.searchParam.processDateStart) {
+          this.$message.error('请选择开始日期！')
+          return
+        }
+        if (!this.searchParam.processDateEnd) {
+          this.$message.error('请选择结束日期！')
+          return
+        }
+        if (this.searchParam.processDateStart > this.searchParam.processDateEnd) {
+          this.$message.error('开始时间不能大于结束时间！')
+          return
+        }
+      }
       that.getSearchParam()
+      that.loadingData.loading = true
+      var apiPath = ''
       apiPath = that.apiPath + 'Regulatory_Letters/Pager/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.spliteStockCode || '[]') + '/' + (this.searchParam.send_unit || '[]') + '/' + (this.searchParam.reply_status || 0) + '/' + (this.searchParam.template || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
       that.$ajax.get(apiPath)
         .then(function (response) {
@@ -143,8 +168,8 @@ export default {
     getSearchParam () {
       // 获取查询的参数
       // 处理开始结束时间
-      this.searchParam.processDateStart = this.searchParam.time && this.dealDate(this.searchParam.time[0]) // 开始时间
-      this.searchParam.processDateEnd = this.searchParam.time && this.dealDate(this.searchParam.time[1]) // 结束时间
+      this.searchParam.processDateStart = this.searchParam.processDateStart && this.dealDate(this.searchParam.processDateStart) // 开始时间
+      this.searchParam.processDateEnd = this.searchParam.processDateEnd && this.dealDate(this.searchParam.processDateEnd) // 结束时间
       // 处理公司代码
       if (this.searchParam && this.searchParam.stock_code) {
         this.searchParam.stock_code.length > 1 ? this.searchParam.spliteStockCode = this.searchParam.stock_code.join(',') : this.searchParam.spliteStockCode = this.searchParam.stock_code[0]
@@ -157,8 +182,14 @@ export default {
       this.dialog = true
     },
     showWord (urls) { // 展示word
-      this.urlData.showWordUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + urls
-      this.dialog = true
+      var Idx = urls.indexOf('pdf')
+      if (Idx === -1) {
+        this.urlData.showWordUrl = 'https://view.officeapps.live.com/op/view.aspx?src=' + urls
+        this.dialog = true
+      }
+      if (Idx >= 0) {
+        this.showPDF(urls)
+      }
     },
     pdfLoaded () { // pdf加载完后清除loading
       this.loadingData.diaLoading = false
@@ -176,7 +207,7 @@ export default {
           that.topData.bankuai = data
         })
 
-      that.$ajax.get(that.apiPath + 'Regulatory_Letters_Company')
+      that.$ajax.get(that.apiPath + 'StockInfo')
         .then(function (response) {
           var data = response.data.Result.Data
           that.topData.companyCode = data
@@ -194,7 +225,7 @@ export default {
     const that = this
     window.onresize = () => {
       return (() => {
-        that.dataHeight = document.documentElement.clientHeight - 135
+        that.dataHeight = document.documentElement.clientHeight - 177
       })()
     }
     if (this.urlData.pdfUrl) {
@@ -207,18 +238,18 @@ export default {
 }
 </script>
 <style>
-.dialog-box .el-loadingData.loading-mask{
-  width:40% !important;
-  margin-left:30%;
-  background-color:rgba(0,0,0,0);
-  z-index:99999;
+.dialog-box .el-loadingData.loading-mask {
+  width: 40% !important;
+  margin-left: 30%;
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 99999;
 }
 .noMl.ml20 {
   margin-left: 0px;
 }
 .ml20 {
   margin-left: 20px;
-  width: 350px;
+  width: 33.3% !important;
 }
 .Feedback .el-dialog {
   background-color: rgba(0, 0, 0, 0.3);
@@ -230,7 +261,6 @@ export default {
 .Feedback .el-dialog__headerbtn .el-dialog__close {
   color: #fff !important;
   font-size: 18px;
-
 }
 .el-input__inner {
   height: 32px;
@@ -272,6 +302,14 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+.el-container > div:first-child{
+  margin-left:0px;
+}
+.el-container > div {
+  width: 33.3%;
+  margin: 0 15px 0 0;
+  box-sizing: border-box;
 }
 #pop canvas {
   width: 100%;

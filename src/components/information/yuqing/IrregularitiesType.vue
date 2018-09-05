@@ -2,11 +2,10 @@
   <div class="IrregularitiesType">
     <el-container :height="leftHeight">
       <el-aside width="20%" :height="leftHeight" class="left">
-        <div class="title">违规类型</div>
-        <div style="width:100%;display: -ms-flexbox;display: flex;-ms-flex-direction: row;flex-direction: row;-ms-flex: 1;flex: 1;-ms-flex-preferred-size: auto;flex-basis: auto;box-sizing: border-box;min-width: 0;">
-          <el-tree :data="treeData" style="width:100%;"></el-tree>
+        <div :class="titleActive==true?'title active':'title'" @click="searchList(-1)">违规类型</div>
+        <div  style="display: -ms-flexbox;display: flex;-ms-flex-direction: row;flex-direction: row;-ms-flex: 1;flex: 1;-ms-flex-preferred-size: auto;flex-basis: auto;box-sizing: border-box;min-width: 0;">
+          <el-tree v-loading="loadingData.leftDataLoading" :expand-on-click-node="zhankai" :data="treeData"  @node-click="searchList"></el-tree>
         </div>
-
       </el-aside>
       <el-container>
         <!-- 搜索条件开始 -->
@@ -15,13 +14,17 @@
             <el-input placeholder="必含关键词（以空格区分）" v-model="searchParam.titleMust" size="small" clearable></el-input>
             <el-input placeholder="可含关键词（以空格区分）" v-model="searchParam.titleCan" size="small" clearable></el-input>
             <el-input placeholder="不含关键词（以空格区分）" v-model="searchParam.titleNot" size="small" clearable></el-input>
-            <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
           </el-container>
           <el-container style="margin-top: 10px;">
+            <el-date-picker v-model="searchParam.processDateStart" type="date" placeholder="开始日期"></el-date-picker>
+            <el-date-picker v-model="searchParam.processDateEnd" type="date" placeholder="结束日期"></el-date-picker>
             <el-select multiple collapse-tags clearable size="small" v-model="searchParam.companyCode" placeholder="请输入公司代码、简称" filterable>
               <el-option :label="item.Name+'('+item.Code+')'" :key="item.Name+'('+item.Code+')'" v-for='item in topData.StockInfo' :value="item.Code"></el-option>
             </el-select>
-            <el-select collapse-tags clearable size="small" placeholder="所属板块" v-model="searchParam.companyMarketId" filterable>
+
+          </el-container>
+          <el-container style="margin-top: 10px;">
+             <el-select collapse-tags clearable size="small" placeholder="所属板块" v-model="searchParam.companyMarketId" filterable>
               <el-option :value="item" :key="item" v-for='item in topData.area'></el-option>
             </el-select>
             <el-select collapse-tags clearable size="small" placeholder="所属行业" v-model="searchParam.industryInfo" filterable>
@@ -33,21 +36,21 @@
           </el-container>
           <el-container style="margin-top: 10px; margin-bottom: 10px;justify-content:left;">
             <el-select collapse-tags multiple clearable size="small" v-model="searchParam.involveObjectId" placeholder="处罚对象" filterable>
-                <el-option :value="item" :key="item" v-for='item in topData.chufaRole'></el-option>
-              </el-select>
-              <el-select collapse-tags clearable size="small" placeholder="处罚机构" v-model="searchParam.supervisionOrganId" filterable>
-                <el-option :value="item.name" :key="item.id" v-for='item in topData.jys'></el-option>
-              </el-select>
+              <el-option :value="item" :key="item" v-for='item in topData.chufaRole'></el-option>
+            </el-select>
+            <el-select collapse-tags clearable size="small" placeholder="处罚机构" v-model="searchParam.supervisionOrganId" filterable>
+              <el-option :value="item.name" :key="item.id" v-for='item in topData.jys'></el-option>
+            </el-select>
             <div>
               <el-button type="primary" icon="el-icon-search" size="small" @click="searchList">搜索</el-button>
               <el-button type="warning" size="small" @click="clearParam">清空搜索</el-button>
             </div>
-            <div></div>
           </el-container>
         </el-header>
         <!-- 搜索条件结束 -->
+
         <!--表格开始-->
-        <el-main >
+        <el-main>
           <el-table v-loading="loadingData.loading" element-loading-text="拼命加载中" :height="tableHeight" :data="detailData.violationCaseData" stripe style="width: 100%;" row-key="id">
             <el-table-column type="index" fixed="left" width="70" label="序号" :index="typeIndex"></el-table-column>
             <el-table-column fixed="left" prop="title" label="标题" min-width="280" fit show-overflow-tooltip>
@@ -66,6 +69,7 @@
           </el-table>
         </el-main>
         <!--表格结束-->
+
         <!--分页开始-->
         <el-footer height="45">
           <div style="text-align: center;width:100%; margin-top: 10px; ">
@@ -131,7 +135,7 @@
               </div>
             </el-header>
             <el-main class="table2">
-              <el-table align="center" header-align="center" :data="loadingData.tableData" border style="width: 100%"  v-loading="loadingData.violatioLoading">
+              <el-table align="center" header-align="center" :data="loadingData.tableData" border style="width: 100%" v-loading="loadingData.violatioLoading">
                 <el-table-column fixed prop="involveObjectName" label="涉及当事人" width="350"> </el-table-column>
                 <el-table-column fixed prop="objectPositionName" label="涉及对象"></el-table-column>
                 <el-table-column fixed prop="supervisionTypeName" label="监管类型"></el-table-column>
@@ -153,21 +157,24 @@ export default {
     return {
       leftHeight: document.documentElement.clientHeight - 35,
       leftModelHeight: document.documentElement.clientHeight - 30 + '',
-      tableHeight: document.documentElement.clientHeight - 190,
+      tableHeight: document.documentElement.clientHeight - 232,
+      zhankai: false,
       dialog: false,
       tableData: [],
       treeData: [],
       msgId: '',
       pdfUrl: loadingTask,
       numPages: undefined,
+      titleActive: true, // 左侧标题是否为选中状态
       searchParam: {
+        treeCode: '',
         titleMust: '', // 必含关键词
         titleCan: '', // 可含关键词
         titleNot: '', // 不含关键词
         companyCode: '', // 公司代码简称
         involveObjectId: '', // 处罚对象身份
         avermentId: '', // 申辩情况
-        processDateStart: '', // 起始结束时间
+        processDateStart: '', // 起始时间
         processDateEnd: '', // 结束时间
         companyMarketId: '', // 所属板块
         industryInfo: '', // 所属行业
@@ -202,6 +209,7 @@ export default {
       loadingData: {
         loading: true,
         detLoading: false,
+        leftDataLoading: false,
         baseInfoLoading: false, // 基本信息loading
         relaCaseLoading: false, // 相关案例loading
         xgfgLawLoading: false, // 相关法规loading
@@ -225,18 +233,54 @@ export default {
       this.searchParam.count = 11
       this.searchParam.sortType = 'desc'
       this.searchParam.currentPage = 1
-      this.searchList()
+      this.titleActive = true
+      this.searchList(-1)
     },
     showDetail (id) {
       this.dialog = true
       this.searchId = id
       this.getDetail(this.searchId)
     },
-    searchList () {
+    searchList (flag) { // flag标记是否是点击左侧的tree加载表格
+      if (flag && flag !== -1) {
+        this.treeCode = flag.Code
+        this.titleActive = false
+      } else if (flag === -1) { // 点击的是左侧tree的标题，样式为选中状态并且重新加载表格
+        this.titleActive = true
+        this.treeCode = ''
+      } else {
+        this.titleActive = false
+      }
+      if (this.searchParam.processDateStart || this.searchParam.processDateEnd) {
+        if (!this.searchParam.processDateStart) {
+          this.$message.error('请选择开始日期！')
+          return
+        }
+        if (!this.searchParam.processDateEnd) {
+          this.$message.error('请选择结束日期！')
+          return
+        }
+        if (this.searchParam.processDateStart > this.searchParam.processDateEnd) {
+          this.$message.error('开始时间不能大于结束时间！')
+          return
+        }
+      }
       this.loadingData.loading = true
       var that = this
       that.getSearchParam()
-      var searchParams = that.apiPath + 'XA_Wgal/Pager/' + (that.searchParam.titleMust || '[]') + '/' + (that.searchParam.titleCan || '[]') + '/' + (that.searchParam.titleNot || '[]') + '/' + (that.searchParam.processDateStart || '[]') + '/' + (that.searchParam.processDateEnd || '[]') + '/' + (that.searchParam.spliteStockCode || '[]') + '/' + (that.searchParam.companyMarketId || '[]') + '/' + (that.searchParam.industryInfo || '[]') + '/' + (that.searchParam.companyArea || '[]') + '/' + that.searchParam.currentPage + '/30'
+      var treeCode = this.treeCode || encodeURI('[]')
+      var titleMust = (that.searchParam.titleMust && encodeURI(that.searchParam.titleMust)) || encodeURI('[]')
+      var titleCan = (that.searchParam.titleCan && encodeURI(that.searchParam.titleCan)) || encodeURI('[]')
+      var titleNot = (that.searchParam.titleCan && encodeURI(that.searchParam.titleNot)) || encodeURI('[]')
+      var companyMarketId = (that.searchParam.companyMarketId && encodeURI(that.searchParam.companyMarketId)) || encodeURI('[]')
+      var industryInfo = (that.searchParam.industryInfo && encodeURI(that.searchParam.industryInfo)) || encodeURI('[]')
+      var companyArea = (that.searchParam.companyArea && encodeURI(that.searchParam.companyArea)) || encodeURI('[]')
+      var involveObjectId = (that.searchParam.involveObjectId && encodeURI(that.searchParam.involveObjectId)) || encodeURI('[]')
+      var supervisionOrganId = (that.searchParam.supervisionOrganId && encodeURI(that.searchParam.supervisionOrganId)) || encodeURI('[]')
+      var searchParams = that.apiPath + 'XA_Wgal/' + titleMust + '/' + titleCan + '/' + titleNot + '/' +
+      (that.searchParam.processDateStart || encodeURI('[]')) + '/' + (that.searchParam.processDateEnd || encodeURI('[]')) + '/' +
+      (that.searchParam.spliteStockCode || encodeURI('[]')) + '/' + companyMarketId +
+      '/' + industryInfo + '/' + companyArea + '/' + involveObjectId + '/' + supervisionOrganId + '/' + treeCode + '/' + that.searchParam.currentPage + '/30'
       that.$ajax.get(searchParams)
         .then(function (response) {
           that.loadingData.loading = false
@@ -253,9 +297,9 @@ export default {
     },
     getSearchParam () {
       // 获取查询的参数
-      // 处理开始结束时间
-      this.searchParam.processDateStart = this.searchParam.time && this.dealDate(this.searchParam.time[0]) // 开始时间
-      this.searchParam.processDateEnd = this.searchParam.time && this.dealDate(this.searchParam.time[1]) // 结束时间
+      // 处   理开始结束时间
+      this.searchParam.processDateStart = this.searchParam.processDateStart && this.dealDate(this.searchParam.processDateStart) // 开始时间
+      this.searchParam.processDateEnd = this.searchParam.processDateEnd && this.dealDate(this.searchParam.processDateEnd) // 结束时间
       // 处理公司代码
       if (this.searchParam && this.searchParam.companyCode) {
         this.searchParam.companyCode.length > 1 ? this.searchParam.spliteStockCode = this.searchParam.companyCode.join(',') : this.searchParam.spliteStockCode = this.searchParam.companyCode[0]
@@ -265,6 +309,7 @@ export default {
     },
     loadLeftMenu () { // 侧边栏
       var that = this
+      that.loadingData.leftDataLoading = true
       that.$ajax.get(that.apiPath + 'ViolationType')
         .then(function (response) {
           var datas = response.data
@@ -273,6 +318,7 @@ export default {
             var str = JSON.stringify(treeData).replace(/Name/g, 'label')
             str = str.replace(/Child/g, 'children')
             that.treeData = JSON.parse(str)
+            that.loadingData.leftDataLoading = false
           }
         })
         .catch(function (response) {
@@ -301,7 +347,9 @@ export default {
     getDetail (row) {
       var that = this
       for (var key in that.loadingData) {
-        that.loadingData[key] = true
+        if (key !== 'leftDataLoading') {
+          that.loadingData[key] = true
+        }
       }
       that.$ajax
         .get(that.apiPath + '/XA_Wgal?xa_id=' + row)
@@ -365,7 +413,7 @@ export default {
     const that = this
     window.onresize = () => {
       return (() => {
-        that.tableHeight = document.documentElement.clientHeight - 190
+        that.tableHeight = document.documentElement.clientHeight - 232
         that.leftHeight = document.documentElement.clientHeight - 35
       })()
     }
@@ -378,6 +426,13 @@ export default {
 }
 </script>
 <style>
+.ml20 {
+  margin-left: 20px;
+  width: 33.3% !important;
+}
+.el-tree__empty-block{
+width:180px;
+}
 .annotationLayer {
   transform: scale(1) !important;
 }
@@ -463,7 +518,7 @@ export default {
   justify-content: center;
 }
 .el-container > div {
-  width: 25%;
+  width: 33.3%;
   margin: 0 15px;
   box-sizing: border-box;
 }
@@ -526,5 +581,8 @@ span.detail_date {
   color: rgba(0, 0, 0, 0.65);
   font-weight: 300;
   cursor: pointer;
+}
+.IrregularitiesType .title:hover,.IrregularitiesType .title.active{
+  background-color: #f5f7fa;
 }
 </style>
