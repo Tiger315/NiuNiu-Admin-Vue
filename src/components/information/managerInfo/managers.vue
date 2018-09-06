@@ -1,39 +1,34 @@
 <template>
-  <div class="Managers">
+  <div class="Managers"  :element-loading-text="loadingData.loadingText" v-loading.loading="loadingData.loading">
+    <form id="exportRule" :action="downloadUrl" method="get" style="display: none;">
+    </form>
     <!-- 搜索条件开始 -->
-    <el-container style="margin-bottom:10px;padding:0 20% 0 0;">
-        <el-input placeholder="包含所有关键词(以空格区分)" v-model="searchParam.titleMust" size="small" clearable  class="ml20 noMl"></el-input>
-        <el-input placeholder="包含任意关键词(以空格区分)" v-model="searchParam.titleCan" size="small" clearable class="ml20"></el-input>
-        <el-input placeholder="不包含任意关键词(以空格区分)" v-model="searchParam.titleNot" size="small" clearable class="ml20"></el-input>
-    </el-container>
     <el-container style="margin-bottom:10px;padding:0 20% 0 0;">
         <el-select multiple collapse-tags clearable size="small" v-model="searchParam.stock_code" placeholder="公司代码、简称、拼音" filterable class="ml20 noMl">
           <el-option :label="item.Name+'('+item.Code+')'" :key="item.Name+'('+item.Code+')'" v-for='item in topData.companyCode' :value="item.Code"></el-option>
-          <!-- <el-option v-for='item in topData.companyCode' :key="item.Company_Name+'('+item.Company_Code+')'" :label="item.Company_Name+'('+item.Company_Code+')'" :value="item.Company_Code"></el-option> -->
         </el-select>
-        <el-select collapse-tags clearable size="small" placeholder="所属板块" v-model="searchParam.template" filterable class="ml20">
-          <el-option v-for='item in topData.bankuai' :key="item.Value" :label="item.Text" :value="item.Value"></el-option>
+        <el-select collapse-tags clearable size="small" placeholder="人员身份" v-model="searchParam.identity" filterable class="ml20">
+          <el-option v-for='item in topData.shenfen' :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
-        <el-select collapse-tags clearable size="small" v-model="searchParam.reply_status" placeholder="回复状态" filterable class="ml20">
-          <el-option v-for='item in topData.replyStatus' :key="item.code" :label="item.status" :value="item.code"></el-option>
-        </el-select>
-     </el-container>
+        <el-input placeholder="姓名" v-model="searchParam.name" size="small" clearable class="ml20"></el-input>
+    </el-container>
     <el-container style="margin-bottom:10px;padding:0 20% 0 0;">
-      <el-date-picker v-model="searchParam.processDateStart" type="date" placeholder="开始日期" class="ml20 noMl"></el-date-picker>
-      <el-date-picker v-model="searchParam.processDateEnd" type="date" placeholder="结束日期" class="ml20"></el-date-picker>
-      <div class="ml20">
         <el-button type="primary" icon="el-icon-search" size="small" @click="getList">搜索</el-button>
         <el-button type="warning" size="small" @click="clearParam">清空搜索</el-button>
-      </div>
     </el-container>
     <!-- 搜索条件结束 -->
-
+    <div style="margin-bottom:10px;text-align:right;padding-right:20px;" >
+      <el-button type="primary" size="small" @click="exportExcel">
+        导出
+        <!-- <a style="color:#fff;text-decoration:none;"  download :href="downloadUrl">导出</a> -->
+      </el-button>
+    </div>
     <!-- 表格数据开始 -->
-    <el-table v-loading.loading="loadingData.loading" element-loading-text="拼命加载中" :height="dataHeight" :data="tableData" stripe style="width: 100%;" empty-text=" " row-key="id">
+    <el-table  element-loading-text="拼命加载中" :height="dataHeight" :data="tableData" stripe style="width: 100%;" empty-text=" " row-key="id">
       <el-table-column type="index" fixed="left" label="序号" width="70" :index="typeIndex">序号</el-table-column>
       <el-table-column prop="CompanyCode" label="公司代码" width="150"></el-table-column>
       <el-table-column prop="Name" label="公司名称" width="150"></el-table-column>
-      <el-table-column prop="UserName" label="总经理" width="100"></el-table-column>
+      <el-table-column prop="UserName" label="姓名" width="100"></el-table-column>
       <el-table-column prop="Sex" label="性别" width="100"></el-table-column>
       <el-table-column prop="Highest_Degree" label="学历" width="100"></el-table-column>
       <el-table-column prop="Resume" label="简介"  fit show-overflow-tooltip>
@@ -64,6 +59,7 @@
   </div>
 </template>
 <script>
+import $ from 'jquery'
 export default {
   name: 'Managers',
   data () {
@@ -71,32 +67,31 @@ export default {
       dataHeight: document.documentElement.clientHeight - 177,
       loadingData: {
         loading: false,
-        diaLoading: false
+        diaLoading: false,
+        loadingText: '拼命加载中'
       },
+      downloadUrl: 'http://192.168.0.118:8022/api/v1/CompanyManagerExport',
       dialog: false,
       detailData: '',
-      urlData: {
-        showWordUrl: '',
-        pdfUrl: '',
-        numPages: undefined
-      },
       searchParam: {
-        time: '',
-        titleMust: '', // 必含关键词
-        titleCan: '', // 可含关键词
-        titleNot: '', // 不含关键词
         stock_code: [], // 公司代码
-        spliteStockCode: '',
-        send_unit: '', // 发文单位
-        reply_status: '', // 回复状态
-        template: '', // 所属板块
-        processDateStart: '', // 起始时间
-        processDateEnd: '' // 结束时间
+        identity: '', // 人员身份
+        name: ''// 姓名
       },
       topData: {
-        bankuai: [],
-        replyStatus: [{ 'status': '全部', 'code': 0 }, { 'status': '已回复', 'code': 1 }, { 'status': '未回复', 'code': 2 }],
-        companyCode: []
+        shenfen: [{
+          id: 0,
+          name: '全部'
+        }, {
+          id: 1,
+          name: '董事会'
+        }, {
+          id: 3,
+          name: '监视会'
+        }, {
+          id: 2,
+          name: '高级管理人员'
+        }]
       },
       tableData: [],
       zPager: {
@@ -119,7 +114,24 @@ export default {
     typeIndex (index) {
       return index + (this.zPager.currentPage - 1) * this.zPager.size + 1
     },
-    clearParam () {
+    exportExcel () {
+      var that = this
+      that.loadingData.loading = true
+      that.loadingData.loadingText = '正在导出，请稍后...'
+      var apiPath = ''
+      apiPath = 'http://192.168.0.118:8022/api/v1/' + 'CompanyManagerExport'
+      that.$ajax.get(apiPath)
+        .then(function (response) {
+          that.loadingData.loading = false
+          that.loadingData.loadingText = '拼命加载中'
+          $('#exportRule').submit()
+        }).catch(function (res) {
+          console.log(res)
+          that.loadingData.loading = false
+          that.loadingData.loadingText = '拼命加载中'
+        })
+    },
+    clearParam () { // 清空查询条件
       this.zPager.currentPage = 1
       for (var key in this.searchParam) {
         this.searchParam[key] = ''
@@ -127,7 +139,7 @@ export default {
       this.searchParam.stock_code = []
       this.getList()
     },
-    PositionDate (row) {
+    PositionDate (row) { // 处理表格中的任职时间
       let startDate = row.Position_StartDate && row.Position_StartDate.split('T')[0]
       let endDate = row.Position_EndDate && row.Position_EndDate.split('T')[0]
       if (startDate && endDate) {
@@ -140,21 +152,6 @@ export default {
     },
     getList () {
       var that = this
-      if (this.searchParam.processDateStart || this.searchParam.processDateEnd) {
-        // if (!this.searchParam.processDateStart) {
-        //   this.$message.error('请选择开始日期！')
-        //   return
-        // }
-        // if (!this.searchParam.processDateEnd) {
-        //   this.$message.error('请选择结束日期！')
-        //   return
-        // }
-        if (this.searchParam.processDateStart > this.searchParam.processDateEnd) {
-          this.$message.error('开始时间不能大于结束时间！')
-          return
-        }
-      }
-      that.getSearchParam()
       that.loadingData.loading = true
       var apiPath = ''
       apiPath = that.apiPath + 'CompanyManager/Pager/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.spliteStockCode || '[]') + '/' + (this.searchParam.send_unit || '[]') + '/' + (this.searchParam.reply_status || 0) + '/' + (this.searchParam.template || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
@@ -167,26 +164,8 @@ export default {
           that.zPager.total = data.Total
         })
     },
-    getSearchParam () {
-      // 获取查询的参数
-      // 处理开始结束时间
-      this.searchParam.processDateStart = this.searchParam.processDateStart && this.dealDate(this.searchParam.processDateStart) // 开始时间
-      this.searchParam.processDateEnd = this.searchParam.processDateEnd && this.dealDate(this.searchParam.processDateEnd) // 结束时间
-      // 处理公司代码
-      if (this.searchParam && this.searchParam.stock_code) {
-        this.searchParam.stock_code.length > 1 ? this.searchParam.spliteStockCode = this.searchParam.stock_code.join(',') : this.searchParam.spliteStockCode = this.searchParam.stock_code[0]
-      } else {
-        this.searchParam.spliteStockCode = ''
-      }
-    },
     getTopData () {
       var that = this
-      that.$ajax.get(that.apiPath + 'StockPlate')
-        .then(function (response) {
-          var data = response.data.Result.Data
-          that.topData.bankuai = data
-        })
-
       that.$ajax.get(that.apiPath + 'StockInfo')
         .then(function (response) {
           var data = response.data.Result.Data
