@@ -20,7 +20,6 @@
     <div style="margin-bottom:10px;text-align:right;padding-right:20px;" >
       <el-button type="primary" size="small" @click="exportExcel">
         导出
-        <!-- <a style="color:#fff;text-decoration:none;"  download :href="downloadUrl">导出</a> -->
       </el-button>
     </div>
     <!-- 表格数据开始 -->
@@ -70,13 +69,14 @@ export default {
         diaLoading: false,
         loadingText: '拼命加载中'
       },
-      downloadUrl: 'http://192.168.0.118:8022/api/v1/CompanyManagerExport',
+      downloadUrl: '',
       dialog: false,
       detailData: '',
       searchParam: {
         stock_code: [], // 公司代码
         identity: '', // 人员身份
-        name: ''// 姓名
+        name: '', // 姓名
+        spliteStockCode: ''
       },
       topData: {
         shenfen: [{
@@ -119,17 +119,31 @@ export default {
       that.loadingData.loading = true
       that.loadingData.loadingText = '正在导出，请稍后...'
       var apiPath = ''
-      apiPath = 'http://192.168.0.118:8022/api/v1/' + 'CompanyManagerExport'
+      if (this.searchParam.stock_code.length === 0 && !this.searchParam.identity && !this.searchParam.name) {
+        apiPath = that.apiPath + 'CompanyManagerExport'
+      } else {
+        apiPath = that.apiPath + 'CompanyManagerExport' + (this.searchParam.spliteStockCode || '[]') + '/' + (this.searchParam.name || '[]') + '/' + (this.searchParam.identity || '0')
+      }
+      that.downloadUrl = apiPath
       that.$ajax.get(apiPath)
         .then(function (response) {
+          $('#exportRule').attr('action', that.downloadUrl)
+          $('#exportRule').submit()
           that.loadingData.loading = false
           that.loadingData.loadingText = '拼命加载中'
-          $('#exportRule').submit()
         }).catch(function (res) {
           console.log(res)
           that.loadingData.loading = false
           that.loadingData.loadingText = '拼命加载中'
         })
+    },
+    getSearchParam () {
+      // 处理公司代码
+      if (this.searchParam && this.searchParam.stock_code) {
+        this.searchParam.stock_code.length > 1 ? this.searchParam.spliteStockCode = this.searchParam.stock_code.join(',') : this.searchParam.spliteStockCode = this.searchParam.stock_code[0]
+      } else {
+        this.searchParam.spliteStockCode = ''
+      }
     },
     clearParam () { // 清空查询条件
       this.zPager.currentPage = 1
@@ -152,10 +166,14 @@ export default {
     },
     getList () {
       var that = this
+      that.getSearchParam()
       that.loadingData.loading = true
       var apiPath = ''
-      apiPath = that.apiPath + 'CompanyManager/Pager/' + (this.searchParam.titleMust || '[]') + '/' + (this.searchParam.titleCan || '[]') + '/' + (this.searchParam.titleNot || '[]') + '/' + (this.searchParam.spliteStockCode || '[]') + '/' + (this.searchParam.send_unit || '[]') + '/' + (this.searchParam.reply_status || 0) + '/' + (this.searchParam.template || '[]') + '/' + (this.searchParam.processDateStart || '[]') + '/' + (this.searchParam.processDateEnd || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
-      apiPath = 'http://192.168.0.118:8022/api/v1/' + 'CompanyManager/Pager/' + this.zPager.currentPage + '/' + this.zPager.size
+      if (this.searchParam.stock_code.length === 0 && !this.searchParam.identity && !this.searchParam.name) {
+        apiPath = that.apiPath + 'CompanyManager/Pager/' + this.zPager.currentPage + '/' + this.zPager.size
+      } else {
+        apiPath = that.apiPath + 'CompanyManager/Pager/' + (this.searchParam.spliteStockCode || '[]') + '/' + (this.searchParam.name || '[]') + '/' + (this.searchParam.identity || '0') + '/' + this.zPager.currentPage + '/' + this.zPager.size
+      }
       that.$ajax.get(apiPath)
         .then(function (response) {
           that.loadingData.loading = false
