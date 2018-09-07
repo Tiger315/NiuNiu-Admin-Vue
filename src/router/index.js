@@ -15,6 +15,7 @@ import IrregularitiesType from '@/components/information/yuqing/IrregularitiesTy
 import Feedback from '@/components/information/yuqing/Feedback' // 舆情监管函件
 import Message from '@/components/Message/MsgStatus' // 短信发送状态
 import MsgTemplateList from '@/components/Message/MsgTemplateList' // 新增短信模版
+import managerInfo from '@/components/information/managerInfo/managers'// 公司管理人员信息
 
 Vue.use(Router)
 
@@ -80,5 +81,9 @@ export default new Router({
     path: '/Message/MsgTemplateList',
     name: ' MsgTemplateList',
     component: MsgTemplateList
+  }, {
+    path: '/Info/managers',
+    name: ' managerInfo',
+    component: managerInfo
   }]
 })

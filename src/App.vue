@@ -55,4 +55,21 @@ ul,li{
     font-size: 0;
     height: 0;
 }
+.el-tree-node>.el-tree-node__children{
+  overflow: inherit;
+}
+.el-button--primary{
+  background-color: #0d308c !important;
+  border-color: #0d308c !important;
+}
+.el-pager li.active {
+    color: #0d308c !important;
+    cursor: default !important;
+}
+.el-pager li:hover,.el-loading-spinner .el-loading-text{
+    color: #0d308c !important;
+}
+.el-loading-spinner .path{
+ stroke:#0d308c !important;
+}
 </style>

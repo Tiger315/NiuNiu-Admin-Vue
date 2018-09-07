@@ -18,7 +18,6 @@
               </template>
               <el-menu-item index="1-1" @click="addTab('新增法律法规','./static/pages/Law/law_add.html')">新增法律法规</el-menu-item>
               <el-menu-item index="1-2" @click="addTab('法律法规列表','./#/Law/LawList')">法律法规列表</el-menu-item>
-
             </el-submenu>
             <el-submenu index="2">
               <template slot="title">
@@ -44,6 +43,7 @@
               <el-menu-item index="1-3" @click="addTab('IPO实时列表','./#/Info/CsrcIPO')">IPO实时列表</el-menu-item>
               <el-menu-item index="3-1" @click="addTab('信披智库','./#/Info/InfoDisclosure')">信披智库</el-menu-item>
               <el-menu-item index="3-1" @click="addTab('慧博研究报告','./#/Info/HuiboPresentation')">慧博研究报告</el-menu-item>
+              <el-menu-item index="3-1" @click="addTab('慧博研究报告','./#/Info/managers')">公司管理人员信息</el-menu-item>
               <el-submenu index="1-4">
                 <template slot="title">金眼舆情系统</template>
                 <el-menu-item index="1-4-1"  @click="addTab('监管动态','./#/yuqing/supervisionType')">监管动态</el-menu-item>
