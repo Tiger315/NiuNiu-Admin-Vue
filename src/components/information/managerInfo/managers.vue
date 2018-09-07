@@ -28,6 +28,7 @@
       <el-table-column prop="CompanyCode" label="公司代码" width="150"></el-table-column>
       <el-table-column prop="Name" label="公司名称" width="150"></el-table-column>
       <el-table-column prop="UserName" label="姓名" width="100"></el-table-column>
+      <el-table-column prop="Position" label="职位" width="100"></el-table-column>
       <el-table-column prop="Sex" label="性别" width="100"></el-table-column>
       <el-table-column prop="Highest_Degree" label="学历" width="100"></el-table-column>
       <el-table-column prop="Resume" label="简介"  fit show-overflow-tooltip>
