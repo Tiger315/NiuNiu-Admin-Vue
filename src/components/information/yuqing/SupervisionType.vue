@@ -31,7 +31,7 @@
         </template>
       </el-table-column>
       <el-table-column fixed="left" prop="Source_Name" label="来源" width="200"></el-table-column>
-      <el-table-column fixed="left" label="发布日期" prop="News_Date" width="150"></el-table-column>
+      <el-table-column fixed="left" label="发布日期" :formatter="dealDateFormate" width="150"></el-table-column>
     </el-table>
     <!--表格结束-->
     <!--分页开始-->
@@ -48,7 +48,7 @@ export default {
   name: 'SupervisionType',
   data () {
     return {
-      dataHeight: document.documentElement.clientHeight - 135,
+      dataHeight: document.documentElement.clientHeight - 177,
       dialog: true,
       loading: true,
       searchParam: {
@@ -93,7 +93,7 @@ export default {
         })
     },
     loadTableDetail () {
-      if (this.searchParam.processDateStart || this.searchParam.processDateEnd) {
+      if (this.searchParam.processDateStart && this.searchParam.processDateEnd) {
         // if (!this.searchParam.processDateStart) {
         //   this.$message.error('请选择开始日期！')
         //   return
@@ -122,6 +122,11 @@ export default {
           that.loading = false
         })
     },
+    dealDateFormate (row) {
+      let date = row.News_Date
+      let dates = date.split(' ')[0]
+      return dates
+    },
     getSearchParam () {
       // 获取查询的参数
       this.searchParam.processDateStart = this.searchParam.processDateStart && this.dealDate(this.searchParam.processDateStart) // 开始时间
@@ -143,7 +148,7 @@ export default {
     const that = this
     window.onresize = () => {
       return (() => {
-        that.dataHeight = document.documentElement.clientHeight - 135
+        that.dataHeight = document.documentElement.clientHeight - 177
       })()
     }
   }
