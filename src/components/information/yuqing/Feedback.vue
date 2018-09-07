@@ -271,14 +271,9 @@ export default {
   position: fixed;
   right: 10px;
 }
-<<<<<<< HEAD
-.Feedback .el-dialog__headerbtn {
-  color: #fff;
-=======
 .Feedback .el-dialog__headerbtn .el-dialog__close {
   color: #fff !important;
   font-size: 18px;
->>>>>>> e3df024abf234d663a561e0bfeeb7b69c1b8a06f
 }
 .el-input__inner {
   height: 32px;
@@ -300,8 +295,6 @@ export default {
 </style>
 
 <style scoped>
-<<<<<<< HEAD
-=======
 .downLoad {
   position: fixed;
   color: #fff;
@@ -316,7 +309,6 @@ export default {
   margin: 0px;
   font-size: 12px;
 }
->>>>>>> e3df024abf234d663a561e0bfeeb7b69c1b8a06f
 .showPDF {
   justify-content: center !important;
   width: 100%;
@@ -324,8 +316,6 @@ export default {
   flex-direction: column;
   justify-content: center;
 }
-<<<<<<< HEAD
-=======
 .el-container > div:first-child{
   margin-left:0px;
 }
@@ -334,7 +324,6 @@ export default {
   margin: 0 15px 0 0;
   box-sizing: border-box;
 }
->>>>>>> e3df024abf234d663a561e0bfeeb7b69c1b8a06f
 #pop canvas {
   width: 100%;
   float: left;
