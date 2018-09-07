@@ -149,8 +149,6 @@
   </div>
 </template>
 <script>
-import pdf from 'vue-pdf'
-var loadingTask = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf')
 export default {
   name: 'IrregularitiesType',
   data () {
@@ -163,7 +161,6 @@ export default {
       tableData: [],
       treeData: [],
       msgId: '',
-      pdfUrl: loadingTask,
       numPages: undefined,
       titleActive: true, // 左侧标题是否为选中状态
       searchParam: {
@@ -216,9 +213,6 @@ export default {
         violatioLoading: false// 违规案例loading
       }
     }
-  },
-  components: {
-    pdf
   },
   methods: {
     typeIndex (index) {

@@ -69,8 +69,7 @@
   </div>
 </template>
 <script>
-import pdf from 'vue-pdf'
-// var loadingTask = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf')
+
 export default {
   name: 'Feedback',
   data () {
@@ -112,9 +111,6 @@ export default {
         currentPage: 1
       }
     }
-  },
-  components: {
-    pdf
   },
   methods: {
     closeModel () {
@@ -238,18 +234,6 @@ export default {
 }
 </script>
 <style>
-<<<<<<< HEAD
-.noMl.ml20 {
-  margin-left: 0px;
-}
-.ml20 {
-  margin-left: 20px;
-  width: 350px;
-}
-.Feedback .el-dialog {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-=======
 .dialog-box .el-loadingData.loading-mask {
   width: 40% !important;
   margin-left: 30%;
@@ -266,7 +250,6 @@ export default {
 .Feedback .el-dialog {
   background-color: rgba(0, 0, 0, 0.3);
 }
->>>>>>> e3df024abf234d663a561e0bfeeb7b69c1b8a06f
 .Feedback .el-dialog__header {
   position: fixed;
   right: 10px;
