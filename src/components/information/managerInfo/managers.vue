@@ -118,11 +118,12 @@ export default {
       var that = this
       that.loadingData.loading = true
       that.loadingData.loadingText = '正在导出，请稍后...'
+      that.getSearchParam()
       var apiPath = ''
       if (this.searchParam.stock_code.length === 0 && !this.searchParam.identity && !this.searchParam.name) {
         apiPath = that.apiPath + 'CompanyManagerExport'
       } else {
-        apiPath = that.apiPath + 'CompanyManagerExport' + (this.searchParam.spliteStockCode || '[]') + '/' + (this.searchParam.name || '[]') + '/' + (this.searchParam.identity || '0')
+        apiPath = that.apiPath + 'CompanyManagerExport' + '/' + (this.searchParam.spliteStockCode || '[]') + '/' + (this.searchParam.name || '[]') + '/' + (this.searchParam.identity || '0')
       }
       that.downloadUrl = apiPath
       that.$ajax.get(apiPath)
