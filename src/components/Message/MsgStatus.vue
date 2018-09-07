@@ -1,36 +1,39 @@
 <template>
   <div class="MsgStatus-box" v-cloak>
     <el-container style="margin-bottom: 10px;">
-            <el-container class="myCount">
-                我的账户:
-                <span class="ml10">可用余额</span>
-                <i v-if="Surplus">{{Surplus}}</i>
-                <i v-else class="el-icon-loading ml10"></i>
-                <span class="ml10">当月消费</span>
-                <i v-if="Consumption">{{Consumption}}</i>
-                <i v-else class="el-icon-loading ml10"></i>
-            </el-container>
-            <el-input placeholder="请输入接收号码" v-model="searchParam.phoneNumber"  style="width: 25%;"  size="small"  clearable></el-input>
-            <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至"  style="width:25%;;margin-left:10px;height:32px;line-height:32px;" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-             <div class="ml10" style="width:180px;">
-                <el-button type="primary" icon="el-icon-search" size="small" @click="getMessage">搜索</el-button>
-              <el-button type="warning"  size="small"  @click="clearParam" >清空搜索</el-button>
-              </div>
-     </el-container>
+      <el-container class="myCount">
+        我的账户:
+        <span class="ml10">可用余额</span>
+        <i v-if="Surplus">{{Surplus}}</i>
+        <i v-else class="el-icon-loading ml10"></i>
+        <span class="ml10">当月消费</span>
+        <i v-if="Consumption">{{Consumption}}</i>
+        <i v-else class="el-icon-loading ml10"></i>
+      </el-container>
+      <el-input placeholder="请输入接收号码" v-model="searchParam.phoneNumber" style="width: 25%;" size="small" clearable></el-input>
+      <el-date-picker type="daterange" v-model="searchParam.time" range-separator="至" style="width:25%;;margin-left:10px;height:32px;line-height:32px;" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+      <div class="ml10" style="width:180px;">
+        <el-button type="primary" icon="el-icon-search" size="small" @click="getMessage">搜索</el-button>
+        <el-button type="warning" size="small" @click="clearParam">清空搜索</el-button>
+      </div>
+    </el-container>
 
     <!--表格开始-->
     <el-table v-loading="zLoading" element-loading-text="拼命加载中" :data="zMsgStatusData" :height="tHeight" stripe style="width: 100%;" empty-text=" " row-key="id">
       <el-table-column type="index" fixed="left" width="70" label="序号" :index="typeIndex"></el-table-column>
-      <el-table-column fixed="left" prop="SendTo" label="接收号码" width="160" fit></el-table-column>
-      <el-table-column prop="ReqTime" label="请求时间" width="200"></el-table-column>
-      <el-table-column prop="SendTime" label="发送时间" width="200"></el-table-column>
-      <el-table-column prop="IsProxy" label="代理" width="100">
-         <template slot-scope="scope">
-           <el-tag :type="scope.row.IsProxy === true ? 'primary' : 'danger'" close-transition>{{scope.row.IsProxy === true ? '是' : '否'}}</el-tag>
+      <el-table-column fixed="left" prop="Source" label="来源" width="110">
+        <template slot-scope="scope">
+          <el-tag :type="primary" close-transition>{{scope.row.Source}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="SendTo" label="接收号码" width="140" fit></el-table-column>
+      <el-table-column prop="ReqTime" label="请求时间" width="180"></el-table-column>
+      <el-table-column prop="IsProxy" label="代理" width="80">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.IsProxy === true ? 'primary' : 'danger'" close-transition>{{scope.row.IsProxy === true ? '是' : '否'}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="ReqIp" label="请求IP" width="160"></el-table-column>
-      <el-table-column prop="TrueIp" label="真实IP" width="160"></el-table-column>
       <el-table-column prop="Content" label="短信内容" show-overflow-tooltip></el-table-column>
     </el-table>
     <!--表格结束-->
@@ -78,7 +81,7 @@ export default {
       this.searchParam.processDateEnd = this.searchParam.time && this.dealDate(this.searchParam.time[1]) // 结束时间
       var that = this
       that.zLoading = true
-      var apiPath = that.apiPath + 'Message/Pager/' + (that.searchParam.phoneNumber || '[]') + '/' + (that.searchParam.processDateStart || '[]') + '/' + (that.searchParam.processDateEnd || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
+      var apiPath = that.apiPath + 'Message/' + (that.searchParam.phoneNumber || '[]') + '/' + (that.searchParam.processDateStart || '[]') + '/' + (that.searchParam.processDateEnd || '[]') + '/' + this.zPager.currentPage + '/' + this.zPager.size
       that.$ajax
         .get(apiPath)
         .then(res => {
@@ -135,36 +138,35 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.MsgStatus-box .el-range__icon.el-icon-date{
-    line-height: 0px ;
+.MsgStatus-box .el-range__icon.el-icon-date {
+  line-height: 0px;
 }
-.MsgStatus-box .el-range-separator{
-  line-height:25px !important;
+.MsgStatus-box .el-range-separator {
+  line-height: 25px !important;
 }
 </style>
 
 <style scoped>
-
 [v-cloak] {
   display: none;
 }
-.myCount{
+.myCount {
   font-size: 16px;
-  font-weight:700;
-  margin-bottom:10px;
+  font-weight: 700;
+  margin-bottom: 10px;
   display: inline-block;
-  text-align:left;
-  padding-right:20px;
-  width:200px;
-  height:32px;
-  line-height:40px;
+  text-align: left;
+  padding-right: 20px;
+  width: 200px;
+  height: 32px;
+  line-height: 40px;
 }
-.myCount i{
-  color:#F56C6C;
+.myCount i {
+  color: #f56c6c;
 }
-.myCount span{
+.myCount span {
   font-size: 14px;
-  font-weight:300;
+  font-weight: 300;
 }
 html,
 body {
@@ -177,7 +179,7 @@ body {
   font-size: 14px;
   margin-left: 5px;
 }
-.ml10{
+.ml10 {
   margin-left: 20px;
 }
 </style>
