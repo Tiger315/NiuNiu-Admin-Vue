@@ -138,7 +138,7 @@
               <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博" :data-id="zCurLaw.id"></a>
             </div>
             <el-button slot="reference" type="primary" size="small" icon="el-icon-share">分 享</el-button>
-            <el-button slot="reference" type="primary" size="small" icon="el-icon-download" @click="exportToWord">导 出 (Only Word)</el-button>
+            <!-- <el-button slot="reference" type="primary" size="small" icon="el-icon-download" @click="exportToWord">导 出 (Only Word)</el-button> -->
           </el-popover>
         </el-button-group>
       </span>
