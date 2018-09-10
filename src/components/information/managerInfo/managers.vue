@@ -88,7 +88,7 @@ export default {
           name: '董事会'
         }, {
           id: 3,
-          name: '监视会'
+          name: '监事会'
         }, {
           id: 2,
           name: '高级管理人员'
